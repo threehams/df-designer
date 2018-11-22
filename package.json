@@ -1,0 +1,42 @@
+{
+  "name": "df-designer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@emotion/core": "^10.0.0-beta.13",
+    "@emotion/css": "^10.0.0-beta.13",
+    "@types/lodash": "^4.14.118",
+    "@types/lodash-es": "^4.17.1",
+    "@types/react": "^16.7.6",
+    "@types/react-dom": "^16.0.9",
+    "@types/react-redux": "6.0.9",
+    "@types/redux-devtools-extension": "^2.13.2",
+    "@types/redux-thunk": "^2.1.0",
+    "@types/reselect": "^2.2.0",
+    "@zeit/next-typescript": "^1.1.1",
+    "babel-plugin-emotion": "^9.2.11",
+    "emotion": "^10.0.0-beta.13",
+    "immer": "^1.8.0",
+    "lodash-es": "^4.17.11",
+    "next": "^7.0.2",
+    "react": "^16.7.0-alpha.2",
+    "react-dom": "^16.7.0-alpha.2",
+    "react-redux": "^5.1.1",
+    "redux": "^4.0.1",
+    "redux-devtools-extension": "^2.13.5",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "typesafe-actions": "^2.0.4",
+    "typescript": "^3.1.6"
+  }
+}
