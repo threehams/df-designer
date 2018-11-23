@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { css, Global, jsx } from "@emotion/core";
-import { range } from "lodash";
 import { connect } from "react-redux";
 
 import { Tile, Toolbar } from "../components/";
@@ -25,7 +24,7 @@ const IndexBase: React.SFC<Props> = ({ width, height }) => {
           }`}
       />
       <div>
-        {range(0, width).map(y => {
+        {Array.from(Array(height).keys()).map(y => {
           return (
             <div
               key={y}
@@ -34,7 +33,7 @@ const IndexBase: React.SFC<Props> = ({ width, height }) => {
                 flex-flow: row nowrap;
               `}
             >
-              {range(0, height).map(x => {
+              {Array.from(Array(width).keys()).map(x => {
                 return <Tile key={x} x={x} y={y} />;
               })}
             </div>

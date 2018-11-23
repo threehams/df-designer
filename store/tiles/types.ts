@@ -8,5 +8,5 @@ export interface TilesState {
   readonly width: number;
   readonly height: number;
   readonly selecting: boolean;
-  readonly data: { [key: string]: Tile };
+  readonly dug: Set<string>;
 }

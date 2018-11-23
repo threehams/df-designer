@@ -1,31 +1,17 @@
 import produce, { applyPatches, Patch } from "immer";
-import { flatMap, range } from "lodash";
 import { ActionType, getType } from "typesafe-actions";
 import { State } from "../";
 import * as actions from "./actions";
-import { Tile, TilesState } from "./types";
+import { Tile, TilesState, TileStatus } from "./types";
 
-const BOARD_HEIGHT = 80;
+const BOARD_HEIGHT = 40;
 const BOARD_WIDTH = 80;
 
-const initialTiles = (width: number, height: number) => {
-  return flatMap(range(0, height), x => {
-    return range(0, width).map(y => [x, y]);
-  }).reduce((result: TilesState["data"], [x, y]) => {
-    result[`${x},${y}`] = {
-      x,
-      y,
-      status: "undug",
-    };
-    return result;
-  }, {});
-};
-
 const INITIAL_STATE = {
-  width: BOARD_HEIGHT,
+  width: BOARD_WIDTH,
   height: BOARD_HEIGHT,
-  data: initialTiles(BOARD_WIDTH, BOARD_HEIGHT),
   selecting: false,
+  dug: new Set(),
 };
 
 interface History {
@@ -55,12 +41,18 @@ export const tilesReducer = (
       switch (action.type) {
         case getType(actions.updateTile): {
           const { x, y, status } = action.payload;
-          draft.data[`${x},${y}`].status = status;
+          const id = `${x},${y}`;
+          const newSet = new Set(draft.dug);
+          if (status === "dug") {
+            newSet.add(id);
+          } else {
+            newSet.delete(id);
+          }
+          draft.dug = newSet;
           return;
         }
         case getType(actions.resetBoard): {
-          draft.data = initialTiles(state.width, state.height);
-          return;
+          return INITIAL_STATE;
         }
         case getType(actions.startSelection): {
           draft.selecting = true;
@@ -77,6 +69,10 @@ export const tilesReducer = (
   );
 };
 
-export const selectTile = (state: State, { x, y }: Pick<Tile, "x" | "y">) => {
-  return state.tiles.data[`${x},${y}`];
+export const selectStatus = (
+  state: State,
+  { x, y }: Pick<Tile, "x" | "y">,
+): TileStatus => {
+  const id = `${x},${y}`;
+  return state.tiles.dug.has(id) ? "dug" : "undug";
 };

@@ -3,7 +3,7 @@ import { css, jsx } from "@emotion/core";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
-import { selectTile, TileStatus } from "../store/tiles";
+import { selectStatus, TileStatus } from "../store/tiles";
 import * as tilesActions from "../store/tiles/actions";
 
 jsx; // tslint:disable-line
@@ -66,7 +66,9 @@ const TileBase: React.SFC<Props> = ({
 
 export const Tile = connect(
   (state: State, props: Pick<Props, "x" | "y">) => {
-    return selectTile(state, { x: props.x, y: props.y });
+    return {
+      status: selectStatus(state, { x: props.x, y: props.y }),
+    };
   },
   {
     clickTile: tilesActions.clickTile,
