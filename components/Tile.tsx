@@ -1,11 +1,15 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core";
-import css from "@emotion/css";
+import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
-import { selectTile, startSelection, clickTile } from "../state/store";
+import {
+  clickTile,
+  selectTile,
+  startSelection,
+  State,
+  TileStatus,
+} from "../state/store";
 
-import { State, TileStatus } from "../state/store";
-jsx;
+jsx; // tslint:disable-line
 
 interface Props {
   x: number;

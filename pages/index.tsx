@@ -1,23 +1,19 @@
 /** @jsx jsx */
-import { jsx, Global } from "@emotion/core";
-import css from "@emotion/css";
-import { connect } from "react-redux";
+import { css, Global, jsx } from "@emotion/core";
 import { range } from "lodash";
+import { connect } from "react-redux";
 
 import { Tile, Toolbar } from "../components/";
-import { State } from "state/store";
-import { undo, redo } from "../state/store";
+import { redo, State, undo } from "../state/store";
 
-jsx;
+jsx; // tslint:disable-line
 
 interface Props {
   width: number;
   height: number;
-  undo: typeof undo;
-  redo: typeof redo;
 }
 
-const IndexBase: React.SFC<Props> = ({ width, height, undo, redo }) => {
+const IndexBase: React.SFC<Props> = ({ width, height }) => {
   return (
     <>
       <Toolbar />
@@ -53,7 +49,7 @@ const Index = connect(
       height: state.tiles.height,
     };
   },
-  { undo, redo },
+  {},
 )(IndexBase);
 
 export default Index;

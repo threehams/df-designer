@@ -1,15 +1,9 @@
-import {
-  createStore,
-  applyMiddleware,
-  combineReducers,
-  Dispatch,
-  Action,
-} from "redux";
+import produce, { applyPatches, Patch } from "immer";
+import { flatMap, range } from "lodash";
+import { applyMiddleware, combineReducers, createStore, Dispatch } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
-import { createAction, ActionType, getType } from "typesafe-actions";
-import { flatMap, range } from "lodash";
-import produce, { applyPatches, Patch } from "immer";
+import { ActionType, createAction, getType } from "typesafe-actions";
 
 // models
 export type TileStatus = "undug" | "dug" | "smoothed" | "engraved";
@@ -104,11 +98,9 @@ const history: History = {
 
 const tilesReducer = (state: TilesState = INITIAL_STATE, action: Actions) => {
   if (action.type === getType(undo)) {
-    console.log(history);
     return state;
   }
   if (action.type === getType(redo)) {
-    console.log(history);
     return state;
   }
   return produce(
