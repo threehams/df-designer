@@ -2,18 +2,22 @@
 import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
-import { redo, selectTool, State, undo } from "../state/store";
+import { State } from "../store";
+import * as tilesActions from "../store/tiles/actions";
+import { Tool } from "../store/tool";
+import * as toolActions from "../store/tool/actions";
 import { Button } from "./";
 
 jsx; // tslint:disable-line
 
 interface Props {
-  undo: typeof undo;
-  redo: typeof redo;
-  selectTool: typeof selectTool;
+  undo: typeof tilesActions.undo;
+  redo: typeof tilesActions.redo;
+  setTool: typeof toolActions.setTool;
+  tool: Tool;
 }
 
-const ToolbarBase: React.SFC<Props> = ({ undo, redo, selectTool, tool }) => {
+const ToolbarBase: React.SFC<Props> = ({ undo, redo, setTool, tool }) => {
   return (
     <header
       css={css`
@@ -30,16 +34,10 @@ const ToolbarBase: React.SFC<Props> = ({ undo, redo, selectTool, tool }) => {
         <Button onClick={redo}>&gt;</Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button onClick={() => selectTool("paint")} active={tool === "paint"}>
+        <Button onClick={() => setTool("paint")} active={tool === "paint"}>
           Paint
         </Button>
-        <Button
-          onClick={() => selectTool("rectangle")}
-          active={tool === "rectangle"}
-        >
-          Rect
-        </Button>
-        <Button onClick={() => selectTool("erase")} active={tool === "erase"}>
+        <Button onClick={() => setTool("erase")} active={tool === "erase"}>
           Erase
         </Button>
       </ButtonGroup>
@@ -71,5 +69,9 @@ export const Toolbar = connect(
       tool: state.tool,
     };
   },
-  { undo, redo, selectTool },
+  {
+    undo: tilesActions.undo,
+    redo: tilesActions.redo,
+    setTool: toolActions.setTool,
+  },
 )(ToolbarBase);

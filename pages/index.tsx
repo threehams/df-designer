@@ -4,7 +4,7 @@ import { range } from "lodash";
 import { connect } from "react-redux";
 
 import { Tile, Toolbar } from "../components/";
-import { redo, State, undo } from "../state/store";
+import { State } from "../store";
 
 jsx; // tslint:disable-line
 
@@ -21,16 +21,24 @@ const IndexBase: React.SFC<Props> = ({ width, height }) => {
         styles={`
           body {
             margin: 0;
+            font-family: 'Open Sans', sans-serif;
           }`}
       />
       <div
         css={css`
-          line-height: 0;
+          display: flex;
+          flex-flow: column nowrap;
         `}
       >
         {range(0, width).map(y => {
           return (
-            <div key={y}>
+            <div
+              key={y}
+              css={css`
+                display: flex;
+                flex-flow: row nowrap;
+              `}
+            >
               {range(0, height).map(x => {
                 return <Tile key={x} x={x} y={y} />;
               })}
