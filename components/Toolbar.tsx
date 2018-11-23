@@ -14,10 +14,17 @@ interface Props {
   undo: typeof tilesActions.undo;
   redo: typeof tilesActions.redo;
   setTool: typeof toolActions.setTool;
+  resetBoard: typeof tilesActions.resetBoard;
   tool: Tool;
 }
 
-const ToolbarBase: React.SFC<Props> = ({ undo, redo, setTool, tool }) => {
+const ToolbarBase: React.SFC<Props> = ({
+  undo,
+  redo,
+  resetBoard,
+  setTool,
+  tool,
+}) => {
   return (
     <header
       css={css`
@@ -25,6 +32,13 @@ const ToolbarBase: React.SFC<Props> = ({ undo, redo, setTool, tool }) => {
         display: flex;
       `}
     >
+      <ButtonGroup
+        css={css`
+          margin-right: 15px;
+        `}
+      >
+        <Button onClick={resetBoard}>Reset</Button>
+      </ButtonGroup>
       <ButtonGroup
         css={css`
           margin-right: 15px;
@@ -73,5 +87,6 @@ export const Toolbar = connect(
     undo: tilesActions.undo,
     redo: tilesActions.redo,
     setTool: toolActions.setTool,
+    resetBoard: tilesActions.resetBoard,
   },
 )(ToolbarBase);
