@@ -24,12 +24,7 @@ const IndexBase: React.SFC<Props> = ({ width, height }) => {
             font-family: 'Open Sans', sans-serif;
           }`}
       />
-      <div
-        css={css`
-          display: flex;
-          flex-flow: column nowrap;
-        `}
-      >
+      <div>
         {range(0, width).map(y => {
           return (
             <div

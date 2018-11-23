@@ -1,2 +1,5 @@
 export type Tool = "paint" | "erase";
-export type ToolState = Tool;
+export interface ToolState {
+  current: Tool;
+  last: Tool | null;
+}

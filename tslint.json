@@ -11,6 +11,7 @@
     "jsx-no-lambda": false,
     "jsx-alignment": false,
     "jsx-wrap-multiline": false,
-    "trailing-comma": false
+    "trailing-comma": false,
+    "jsx-self-close": false
   }
 }

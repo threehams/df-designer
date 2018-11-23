@@ -31,7 +31,6 @@ const TileBase: React.SFC<Props> = ({
   startSelection,
 }) => {
   const background = colors[status];
-  const [active, setActive] = useState(false);
   return (
     <div
       onMouseDown={event => {
@@ -42,36 +41,26 @@ const TileBase: React.SFC<Props> = ({
       }}
       onMouseEnter={event => {
         event.stopPropagation();
-        setActive(true);
         if (event.buttons === 1) {
           clickTile(x, y);
         }
-      }}
-      onMouseLeave={event => {
-        event.stopPropagation();
-        setActive(false);
       }}
       css={css`
         background-color: ${background};
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        height: 32px;
+        height: 16px;
         position: relative;
-        width: 32px;
+        width: 16px;
+
+        &:hover:before {
+          content: "X";
+          color: yellow;
+          pointer-events: none;
+        }
       `}
-    >
-      {active && (
-        <div
-          css={css`
-            pointer-events: none;
-            color: yellow;
-          `}
-        >
-          X
-        </div>
-      )}
-    </div>
+    />
   );
 };
 

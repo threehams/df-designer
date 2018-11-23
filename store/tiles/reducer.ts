@@ -5,8 +5,8 @@ import { State } from "../";
 import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
 
-const BOARD_HEIGHT = 20;
-const BOARD_WIDTH = 20;
+const BOARD_HEIGHT = 80;
+const BOARD_WIDTH = 80;
 
 const initialTiles = (width: number, height: number) => {
   return flatMap(range(0, height), x => {

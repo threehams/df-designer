@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { State } from "../store";
 import * as tilesActions from "../store/tiles/actions";
-import { Tool } from "../store/tool";
+import { selectTool, Tool } from "../store/tool";
 import * as toolActions from "../store/tool/actions";
 import { Button } from "./";
 
@@ -66,7 +66,7 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = ({ children, className }) => {
 export const Toolbar = connect(
   (state: State) => {
     return {
-      tool: state.tool,
+      tool: selectTool(state),
     };
   },
   {

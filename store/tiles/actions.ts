@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import { State } from "../";
-import { Tool } from "../tool";
+import { selectTool, Tool } from "../tool";
 import { selectTile } from "./reducer";
 import { TileStatus } from "./types";
 
@@ -18,7 +18,7 @@ export const updateTile = createAction("tiles/UPDATE_TILE", resolve => {
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
-    const tool = state.tool;
+    const tool = selectTool(state);
     const status = toolStatus[tool];
     if (selectTile(state, { x, y }).status !== status) {
       return dispatch(updateTile(x, y, status));
