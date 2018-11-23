@@ -18,8 +18,8 @@ export const toolReducer = (
       action.type === getType(actions.setTool) &&
       action.payload.tool !== state.current
     ) {
-      state.last = state.current;
-      state.current = action.payload.tool;
+      draft.last = state.current;
+      draft.current = action.payload.tool;
     }
   });
 };
