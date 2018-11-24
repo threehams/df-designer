@@ -18,6 +18,7 @@
     "no-submodule-imports": false,
     "radix": false,
     "comment-format": false,
-    "max-line-length": false
+    "max-line-length": false,
+    "no-console": true
   }
 }

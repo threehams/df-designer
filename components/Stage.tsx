@@ -17,17 +17,13 @@ interface SpriteMap {
   [key: string]: PIXI.Sprite;
 }
 const keys = Object.keys as <T>(o: T) => (Extract<keyof T, string>)[];
-// const entries = Object.entries as <T, U>(o: T) => (Extract<keyof T, string>)[];
 type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
-const textures = Object.entries(tilesetNames).reduce(
-  (result, [name, num]) => {
+const textures = keys(tilesetNames).reduce(
+  (result, name) => {
+    const num = tilesetNames[name];
     const x = (num % 16) * 16;
     const y = Math.floor(num / 16) * 16;
-    if (name === "floorRough1") {
-      console.log(num);
-      console.log(x, y);
-    }
     result[name] = new PIXI.Texture(
       spriteSheet,
       new PIXI.Rectangle(x, y, 16, 16),
@@ -39,13 +35,12 @@ const textures = Object.entries(tilesetNames).reduce(
 
 const StageBase: React.SFC<Props> = ({ tiles, patches, clickTile }) => {
   const stageElement = useRef<HTMLDivElement>(null);
-  const app = useRef<PIXI.Application>(null);
+  const app = useRef<PIXI.Application | null>(null);
   const sprites = useRef<SpriteMap>({});
   useEffect(() => {
+    // @ts-ignore strange typing in react
     app.current = new PIXI.Application({ width: 2048, height: 2048 });
-    if (stageElement.current) {
-      stageElement.current.appendChild(app.current.view);
-    }
+    stageElement.current!.appendChild(app.current.view);
     const background = new PIXI.Sprite();
     background.interactive = true;
     background.on("pointerdown", (event: PIXI.interaction.InteractionEvent) => {
@@ -73,13 +68,10 @@ const StageBase: React.SFC<Props> = ({ tiles, patches, clickTile }) => {
   }, []);
   useEffect(
     () => {
-      if (!app.current) {
-        return;
-      }
       for (const patch of patches) {
         const key = patch.path[0].toString();
         if (patch.op === "add") {
-          addSprite(key, app.current, sprites.current);
+          addSprite(key, app.current!, sprites.current);
         } else if (patch.op === "remove") {
           removeSprite(key, sprites.current);
         }
