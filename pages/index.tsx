@@ -3,7 +3,7 @@ import { Global, jsx, css } from "@emotion/core";
 import dynamic from "next/dynamic";
 
 import { connect } from "react-redux";
-import { Toolbar } from "../components/";
+import { Toolbar, Sidebar } from "../components/";
 import { State } from "../store";
 
 jsx; // tslint:disable-line
@@ -15,8 +15,15 @@ const Stage = dynamic(() => import("../components/Stage"), {
 
 const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
   return (
-    <>
-      <Toolbar />
+    <div
+      css={css`
+        display: grid;
+        grid-template-areas:
+          "header header"
+          "main sidebar";
+        height: 100vh;
+      `}
+    >
       <Global
         styles={`
           body {
@@ -29,20 +36,36 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
           }
           `}
       />
+
+      <div
+        css={css`
+          grid-area: header;
+        `}
+      >
+        <Toolbar />
+      </div>
       {/*
        * may want to scroll within PIXI
        * https://medium.com/game-development-stuff/how-to-block-the-page-scroll-while-scrolling-inside-a-pixi-js-canvas-8981306583e6
        */}
       <div
         css={css`
-          height: calc(100vh - 53px);
           overflow-x: auto;
           overflow-y: auto;
+          grid-area: main;
         `}
       >
         <Stage key={version} />
       </div>
-    </>
+      <div
+        css={css`
+          grid-area: sidebar;
+          width: 300px;
+        `}
+      >
+        <Sidebar />
+      </div>
+    </div>
   );
 };
 

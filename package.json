@@ -16,6 +16,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.0-beta.13",
     "@emotion/css": "^10.0.0-beta.13",
+    "@types/next": "^7.0.5",
     "@types/pixi.js": "^4.8.3",
     "@types/react": "^16.7.6",
     "@types/react-dom": "^16.0.9",

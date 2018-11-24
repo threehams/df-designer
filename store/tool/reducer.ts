@@ -3,7 +3,11 @@ import { ActionType, getType } from "typesafe-actions";
 import { State } from "../";
 import * as actions from "./actions";
 import { tilesActions } from "../tiles";
-import { ToolState } from "./types";
+import { ToolState, Phase, PhaseConfig, CommandConfig } from "./types";
+import { toolActions } from ".";
+import { commands } from "./commands";
+import { phases } from "./phases";
+import { createSelector } from "reselect";
 
 const INITIAL_STATE: ToolState = {
   current: "paint",
@@ -11,6 +15,9 @@ const INITIAL_STATE: ToolState = {
   export: false,
   selectionStart: null,
   phase: "dig",
+  command: null,
+  phases: [],
+  commands: [],
 };
 
 export const toolReducer = (
@@ -34,12 +41,15 @@ export const toolReducer = (
         draft.selectionStart = { x: action.payload.x, y: action.payload.y };
         return;
       }
-      case getType(actions.endSelection): {
-        draft.selectionStart = null;
-        return;
-      }
+      case getType(actions.endSelection):
       case getType(tilesActions.updateTiles):
         draft.selectionStart = null;
+        return;
+      case getType(toolActions.setPhase):
+        draft.phase = action.payload.phase;
+        return;
+      case getType(toolActions.setCommand):
+        draft.command = action.payload.command;
         return;
     }
   });
@@ -47,4 +57,25 @@ export const toolReducer = (
 
 export const selectTool = (state: State) => {
   return state.tool.current;
+};
+
+export const selectCommand = (state: State) => {
+  return state.tool.command;
+};
+
+export const selectCommands = createSelector(
+  (_: State, props: { phase: Phase }) => props.phase,
+  phase => {
+    return Object.values(commands).filter(
+      command => command.phase === phase,
+    ) as CommandConfig[];
+  },
+);
+
+export const selectPhase = (state: State) => {
+  return state.tool.phase;
+};
+
+export const selectPhases = (state: State) => {
+  return Object.values(phases) as PhaseConfig[];
 };

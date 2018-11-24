@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { State } from "../store";
 import { tilesActions, selectExported } from "../store/tiles";
 import { toolActions, selectTool, Tool } from "../store/tool";
-import { Button } from "./";
+import { Button, ButtonGroup } from "./";
 
 jsx; // tslint:disable-line
 
@@ -61,27 +61,6 @@ const ToolbarBase: React.SFC<Props> = ({
       </ButtonGroup>
       {exported && <textarea value={exported} onChange={() => {}} />}
     </header>
-  );
-};
-
-interface ButtonGroupProps {
-  className?: string;
-}
-const ButtonGroup: React.SFC<ButtonGroupProps> = ({ children, className }) => {
-  return (
-    <div
-      className={className}
-      css={css`
-        & > * + * {
-          margin-left: 5px;
-        }
-        & + * {
-          margin-left: 15px;
-        }
-      `}
-    >
-      {children}
-    </div>
   );
 };
 

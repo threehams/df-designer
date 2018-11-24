@@ -1,6 +1,10 @@
 import { commands } from "./commands";
-export type Phase = "dig" | "build" | "place" | "query";
+import { phases } from "./phases";
+
 export type Tool = "paint" | "erase" | "rectangle";
+export type Command = keyof typeof commands;
+export type Phase = keyof typeof phases;
+
 export interface ToolState {
   readonly current: Tool;
   readonly last: Tool | null;
@@ -9,13 +13,23 @@ export interface ToolState {
     x: number;
     y: number;
   } | null;
-  phase: Phase;
+  readonly phase: Phase;
+  readonly command: Command | null;
+  readonly phases: Phase[];
+  readonly commands: CommandConfig[];
 }
+
 export interface CommandConfig {
+  name: string;
+  command: Command;
   requiredTool?: Tool | null;
   width?: number;
   height?: number;
   key: string;
   phase: Phase;
 }
-export type Command = keyof typeof commands;
+
+export interface PhaseConfig {
+  name: string;
+  phase: Phase;
+}
