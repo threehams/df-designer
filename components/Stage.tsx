@@ -1,9 +1,9 @@
 import { Patch } from "immer";
 import * as PIXI from "pixi.js";
-import { useEffect, useRef, MutableRefObject } from "react";
+import { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
-import * as actions from "../store/tiles/actions";
+import { tilesActions } from "../store/tiles";
 import { tilesetNames } from "../lib/tilesetNames";
 import seedRandom from "seedrandom";
 import { keys } from "../lib/keys";
@@ -12,7 +12,7 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 interface Props {
   tiles: State["tiles"]["data"];
   patches: Patch[];
-  clickTile: typeof actions.clickTile;
+  clickTile: typeof tilesActions.clickTile;
 }
 interface SpriteMap {
   [key: string]: PIXI.Sprite;
@@ -120,7 +120,7 @@ const Stage = connect(
     };
   },
   {
-    clickTile: actions.clickTile,
+    clickTile: tilesActions.clickTile,
   },
 )(StageBase);
 

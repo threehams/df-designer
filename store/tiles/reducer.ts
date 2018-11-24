@@ -4,7 +4,6 @@ import { State } from "../";
 import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
 import { createSelector } from "reselect";
-import { keys } from "../../lib/keys";
 
 const INITIAL_STATE: TilesState = {
   data: {},
