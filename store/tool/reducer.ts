@@ -10,6 +10,7 @@ const INITIAL_STATE: ToolState = {
   last: null,
   export: false,
   selectionStart: null,
+  phase: "dig",
 };
 
 export const toolReducer = (

@@ -1,3 +1,5 @@
+import { commands } from "./commands";
+export type Phase = "dig" | "build" | "place" | "query";
 export type Tool = "paint" | "erase" | "rectangle";
 export interface ToolState {
   readonly current: Tool;
@@ -7,4 +9,13 @@ export interface ToolState {
     x: number;
     y: number;
   } | null;
+  phase: Phase;
 }
+export interface CommandConfig {
+  requiredTool?: Tool | null;
+  width?: number;
+  height?: number;
+  key: string;
+  phase: Phase;
+}
+export type Command = keyof typeof commands;
