@@ -15,6 +15,9 @@ export const removeTile = createAction("tiles/REMOVE_TILE", resolve => {
 });
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
+    if (x < 0 || y < 0) {
+      return;
+    }
     const state = getState();
     const tool = selectTool(state);
     const current = selectStatus(state, { x, y });

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import { State } from "../store";
 import * as tilesActions from "../store/tiles/actions";
+import { selectExported } from "../store/tiles";
 import { selectTool, Tool } from "../store/tool";
 import * as toolActions from "../store/tool/actions";
 import { Button } from "./";
@@ -15,7 +16,9 @@ interface Props {
   redo: typeof tilesActions.redo;
   setTool: typeof toolActions.setTool;
   resetBoard: typeof tilesActions.resetBoard;
+  toggleExport: typeof toolActions.toggleExport;
   tool: Tool;
+  exported: string | null;
 }
 
 const ToolbarBase: React.SFC<Props> = ({
@@ -24,6 +27,8 @@ const ToolbarBase: React.SFC<Props> = ({
   resetBoard,
   setTool,
   tool,
+  toggleExport,
+  exported,
 }) => {
   return (
     <header
@@ -32,18 +37,10 @@ const ToolbarBase: React.SFC<Props> = ({
         display: flex;
       `}
     >
-      <ButtonGroup
-        css={css`
-          margin-right: 15px;
-        `}
-      >
+      <ButtonGroup>
         <Button onClick={resetBoard}>Reset</Button>
       </ButtonGroup>
-      <ButtonGroup
-        css={css`
-          margin-right: 15px;
-        `}
-      >
+      <ButtonGroup>
         <Button onClick={undo}>&lt;</Button>
         <Button onClick={redo}>&gt;</Button>
       </ButtonGroup>
@@ -55,6 +52,10 @@ const ToolbarBase: React.SFC<Props> = ({
           Erase
         </Button>
       </ButtonGroup>
+      <ButtonGroup>
+        <Button onClick={toggleExport}>Export</Button>
+      </ButtonGroup>
+      {exported && <textarea value={exported} onChange={() => {}} />}
     </header>
   );
 };
@@ -70,6 +71,9 @@ const ButtonGroup: React.SFC<ButtonGroupProps> = ({ children, className }) => {
         & > * + * {
           margin-left: 5px;
         }
+        & + * {
+          margin-left: 15px;
+        }
       `}
     >
       {children}
@@ -81,6 +85,7 @@ export const Toolbar = connect(
   (state: State) => {
     return {
       tool: selectTool(state),
+      exported: state.tool.export ? selectExported(state) : null,
     };
   },
   {
@@ -88,5 +93,6 @@ export const Toolbar = connect(
     redo: tilesActions.redo,
     setTool: toolActions.setTool,
     resetBoard: tilesActions.resetBoard,
+    toggleExport: toolActions.toggleExport,
   },
 )(ToolbarBase);

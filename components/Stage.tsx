@@ -6,6 +6,7 @@ import { State } from "../store";
 import * as actions from "../store/tiles/actions";
 import { tilesetNames } from "../lib/tilesetNames";
 import seedRandom from "seedrandom";
+import { keys } from "../lib/keys";
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 interface Props {
@@ -16,7 +17,6 @@ interface Props {
 interface SpriteMap {
   [key: string]: PIXI.Sprite;
 }
-const keys = Object.keys as <T>(o: T) => (Extract<keyof T, string>)[];
 type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
 const textures = keys(tilesetNames).reduce(

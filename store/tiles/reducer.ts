@@ -2,7 +2,9 @@ import produce, { applyPatches, Patch } from "immer";
 import { ActionType, getType } from "typesafe-actions";
 import { State } from "../";
 import * as actions from "./actions";
-import { Tile, TilesState, TileStatus } from "./types";
+import { Tile, TilesState } from "./types";
+import { createSelector } from "reselect";
+import { keys } from "../../lib/keys";
 
 const INITIAL_STATE: TilesState = {
   data: {},
@@ -79,4 +81,46 @@ export const selectStatus = (
 ): Tile => {
   const id = `${x},${y}`;
   return state.tiles.data[id];
+};
+
+export const selectExported = createSelector(
+  (state: State) => state.tiles.data,
+  tiles => {
+    const dimensions = Object.entries(tiles).reduce(
+      (result, [id]) => {
+        const { x, y } = getCoordinates(id);
+        result.minX = x < result.minX ? x : result.minX;
+        result.minY = y < result.minY ? y : result.minY;
+        result.maxX = x + 1 > result.maxX ? x + 1 : result.maxX;
+        result.maxY = y + 1 > result.maxY ? y + 1 : result.maxY;
+        return result;
+      },
+      {
+        minX: Infinity,
+        maxX: 0,
+        minY: Infinity,
+        maxY: 0,
+      },
+    );
+    if (dimensions.minX === Infinity || dimensions.minY === Infinity) {
+      return null;
+    }
+    const grid = Array.from(
+      Array(dimensions.maxY - dimensions.minY).keys(),
+    ).map(() => {
+      return Array(dimensions.maxX - dimensions.minX).fill("`");
+    });
+    for (const [id, status] of Object.entries(tiles)) {
+      const { x, y } = getCoordinates(id);
+      if (status.includes("dug")) {
+        grid[y - dimensions.minY][x - dimensions.minX] = "d";
+      }
+    }
+    return grid.map(x => x.join(",")).join("\n");
+  },
+);
+
+const getCoordinates = (id: string) => {
+  const [x, y] = id.split(",");
+  return { x: parseInt(x), y: parseInt(y) };
 };

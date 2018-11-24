@@ -7,6 +7,7 @@ import { ToolState } from "./types";
 const INITIAL_STATE: ToolState = {
   current: "paint",
   last: null,
+  export: false,
 };
 
 export const toolReducer = (
@@ -14,12 +15,18 @@ export const toolReducer = (
   action: ActionType<typeof actions>,
 ) => {
   return produce(state, draft => {
-    if (
-      action.type === getType(actions.setTool) &&
-      action.payload.tool !== state.current
-    ) {
-      draft.last = state.current;
-      draft.current = action.payload.tool;
+    switch (action.type) {
+      case getType(actions.setTool): {
+        if (action.payload.tool !== state.current) {
+          draft.last = state.current;
+          draft.current = action.payload.tool;
+        }
+        return;
+      }
+      case getType(actions.toggleExport): {
+        draft.export = !state.export;
+        return;
+      }
     }
   });
 };
