@@ -1,9 +1,12 @@
 import { Patch } from "immer";
 import * as PIXI from "pixi.js";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, MutableRefObject } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
 import * as actions from "../store/tiles/actions";
+import { tilesetNames } from "../lib/tilesetNames";
+import seedRandom from "seedrandom";
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 interface Props {
   tiles: State["tiles"]["data"];
@@ -13,6 +16,26 @@ interface Props {
 interface SpriteMap {
   [key: string]: PIXI.Sprite;
 }
+const keys = Object.keys as <T>(o: T) => (Extract<keyof T, string>)[];
+// const entries = Object.entries as <T, U>(o: T) => (Extract<keyof T, string>)[];
+type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
+const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
+const textures = Object.entries(tilesetNames).reduce(
+  (result, [name, num]) => {
+    const x = (num % 16) * 16;
+    const y = Math.floor(num / 16) * 16;
+    if (name === "floorRough1") {
+      console.log(num);
+      console.log(x, y);
+    }
+    result[name] = new PIXI.Texture(
+      spriteSheet,
+      new PIXI.Rectangle(x, y, 16, 16),
+    );
+    return result;
+  },
+  {} as TilesetMap,
+);
 
 const StageBase: React.SFC<Props> = ({ tiles, patches, clickTile }) => {
   const stageElement = useRef<HTMLDivElement>(null);
@@ -53,14 +76,14 @@ const StageBase: React.SFC<Props> = ({ tiles, patches, clickTile }) => {
       if (!app.current) {
         return;
       }
-      patches.forEach(patch => {
+      for (const patch of patches) {
         const key = patch.path[0].toString();
         if (patch.op === "add") {
           addSprite(key, app.current, sprites.current);
         } else if (patch.op === "remove") {
           removeSprite(key, sprites.current);
         }
-      });
+      }
     },
     [patches],
   );
@@ -68,12 +91,20 @@ const StageBase: React.SFC<Props> = ({ tiles, patches, clickTile }) => {
   return <div ref={stageElement} />;
 };
 
+const floorTextures = [
+  textures.floorRough1,
+  textures.floorRough2,
+  textures.floorRough3,
+  textures.floorRough4,
+];
+
 const addSprite = (key: string, app: PIXI.Application, sprites: SpriteMap) => {
   if (sprites[key]) {
     return;
   }
+  const floorTexture = floorTextures[Math.floor(seedRandom(key)() * 4)];
   const [x, y] = key.split(",");
-  const sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+  const sprite = new PIXI.Sprite(floorTexture);
   sprite.width = 20;
   sprite.height = 20;
   sprite.x = parseInt(x) * 20;

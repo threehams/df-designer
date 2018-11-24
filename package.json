@@ -16,7 +16,6 @@
   "dependencies": {
     "@emotion/core": "^10.0.0-beta.13",
     "@emotion/css": "^10.0.0-beta.13",
-    "@types/next": "^7.0.5",
     "@types/pixi.js": "^4.8.3",
     "@types/react": "^16.7.6",
     "@types/react-dom": "^16.0.9",
@@ -24,6 +23,7 @@
     "@types/redux-devtools-extension": "^2.13.2",
     "@types/redux-thunk": "^2.1.0",
     "@types/reselect": "^2.2.0",
+    "@types/seedrandom": "^2.4.27",
     "@zeit/next-typescript": "^1.1.1",
     "babel-plugin-emotion": "^9.2.11",
     "emotion": "^10.0.0-beta.13",
@@ -37,9 +37,10 @@
     "redux-devtools-extension": "^2.13.5",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
+    "seedrandom": "^2.4.4",
     "tslint": "^5.11.0",
     "tslint-react": "^3.6.0",
     "typesafe-actions": "^2.0.4",
-    "typescript": "^3.1.6"
+    "typescript": "^3.3.0-dev.20181122"
   }
 }
