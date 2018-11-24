@@ -19,6 +19,7 @@
     "radix": false,
     "comment-format": false,
     "max-line-length": false,
-    "no-console": true
+    "no-console": true,
+    "forin": { "severity": "error" }
   }
 }

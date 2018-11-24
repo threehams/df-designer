@@ -31,7 +31,7 @@ const ToolbarBase: React.SFC<Props> = ({
   return (
     <header
       css={css`
-        padding: 10px 0;
+        padding: 10px;
         display: flex;
       `}
     >
@@ -45,6 +45,12 @@ const ToolbarBase: React.SFC<Props> = ({
       <ButtonGroup>
         <Button onClick={() => setTool("paint")} active={tool === "paint"}>
           Paint
+        </Button>
+        <Button
+          onClick={() => setTool("rectangle")}
+          active={tool === "rectangle"}
+        >
+          Select
         </Button>
         <Button onClick={() => setTool("erase")} active={tool === "erase"}>
           Erase

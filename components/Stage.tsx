@@ -13,6 +13,7 @@ interface Props {
   tiles: State["tiles"]["data"];
   patches: Patch[];
   clickTile: typeof tilesActions.clickTile;
+  endClickTile: typeof tilesActions.endClickTile;
 }
 interface SpriteMap {
   [key: string]: PIXI.Sprite;
@@ -33,9 +34,37 @@ const textures = keys(tilesetNames).reduce(
   {} as TilesetMap,
 );
 
-const StageBase: React.SFC<Props> = ({ tiles, patches, clickTile }) => {
+const moveCursor = (x: number, y: number, cursor: PIXI.Sprite) => {
+  cursor.visible = true;
+  cursor.x = x * 20;
+  cursor.y = y * 20;
+};
+
+const createCursor = () => {
+  const cursor = new PIXI.Sprite(PIXI.Texture.WHITE);
+  cursor.height = 20;
+  cursor.width = 20;
+  cursor.visible = false;
+  cursor.alpha = 0.5;
+  return cursor;
+};
+
+const tilePosition = ({ x, y }: { x: number; y: number }) => {
+  return {
+    x: Math.floor(x / 20),
+    y: Math.floor(y / 20),
+  };
+};
+
+const StageBase: React.SFC<Props> = ({
+  tiles,
+  patches,
+  clickTile,
+  endClickTile,
+}) => {
   const stageElement = useRef<HTMLDivElement>(null);
   const app = useRef<PIXI.Application | null>(null);
+  const cursor = useRef<PIXI.Sprite>(createCursor());
   const sprites = useRef<SpriteMap>({});
   useEffect(() => {
     // @ts-ignore strange typing in react
@@ -44,21 +73,23 @@ const StageBase: React.SFC<Props> = ({ tiles, patches, clickTile }) => {
     const background = new PIXI.Sprite();
     background.interactive = true;
     background.on("pointerdown", (event: PIXI.interaction.InteractionEvent) => {
-      const { x, y } = event.data.global;
-      const tileX = Math.floor(x / 20);
-      const tileY = Math.floor(y / 20);
-      clickTile(tileX, tileY);
+      const { x, y } = tilePosition(event.data.global);
+      clickTile(x, y);
     });
     background.on("pointermove", (event: PIXI.interaction.InteractionEvent) => {
-      const { x, y } = event.data.global;
+      const { x, y } = tilePosition(event.data.global);
+      moveCursor(x, y, cursor.current);
       if (event.data.buttons === 1) {
-        const tileX = Math.floor(x / 20);
-        const tileY = Math.floor(y / 20);
-        clickTile(tileX, tileY);
+        clickTile(x, y);
       }
+    });
+    background.on("pointerup", (event: PIXI.interaction.InteractionEvent) => {
+      const { x, y } = tilePosition(event.data.global);
+      endClickTile(x, y);
     });
     background.hitArea = new PIXI.Rectangle(0, 0, 2048, 2048);
     app.current.stage.addChild(background);
+    app.current.stage.addChild(cursor.current);
 
     return () => {
       if (app.current) {
@@ -121,6 +152,7 @@ const Stage = connect(
   },
   {
     clickTile: tilesActions.clickTile,
+    endClickTile: tilesActions.endClickTile,
   },
 )(StageBase);
 

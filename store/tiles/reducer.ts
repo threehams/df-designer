@@ -4,6 +4,7 @@ import { State } from "../";
 import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
 import { createSelector } from "reselect";
+import { range } from "../../lib/range";
 
 const INITIAL_STATE: TilesState = {
   data: {},
@@ -48,6 +49,16 @@ export const tilesReducer = (
             const { x, y, status } = action.payload;
             const id = `${x},${y}`;
             draft[id] = [status];
+            return;
+          }
+          case getType(actions.updateTiles): {
+            const { startX, startY, endX, endY, status } = action.payload;
+            for (const x of range(startX, endX + 1)) {
+              for (const y of range(startY, endY + 1)) {
+                const id = `${x},${y}`;
+                draft[id] = [status];
+              }
+            }
             return;
           }
           case getType(actions.removeTile): {

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { Global, jsx } from "@emotion/core";
+import { Global, jsx, css } from "@emotion/core";
 import dynamic from "next/dynamic";
 
 import { connect } from "react-redux";
@@ -21,10 +21,25 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
         styles={`
           body {
             margin: 0;
+            height: 100vh;
             font-family: 'Open Sans', sans-serif;
-          }`}
+          }
+          canvas {
+            display: block;
+          }
+          `}
       />
-      <div>
+      {/*
+       * may want to scroll within PIXI
+       * https://medium.com/game-development-stuff/how-to-block-the-page-scroll-while-scrolling-inside-a-pixi-js-canvas-8981306583e6
+       */}
+      <div
+        css={css`
+          height: calc(100vh - 53px);
+          overflow-x: auto;
+          overflow-y: auto;
+        `}
+      >
         <Stage key={version} />
       </div>
     </>
