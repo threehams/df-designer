@@ -1,18 +1,17 @@
 /** @jsx jsx */
-import { css, Global, jsx } from "@emotion/core";
-import { connect } from "react-redux";
+import { Global, jsx } from "@emotion/core";
+import dynamic from "next/dynamic";
 
-import { Tile, Toolbar } from "../components/";
-import { State } from "../store";
+import { Toolbar } from "../components/";
 
 jsx; // tslint:disable-line
 
-interface Props {
-  width: number;
-  height: number;
-}
+// @ts-ignore bad library type definition
+const Stage = dynamic(() => import("../components/Stage"), {
+  ssr: false,
+});
 
-const IndexBase: React.SFC<Props> = ({ width, height }) => {
+const Index: React.SFC<{}> = () => {
   return (
     <>
       <Toolbar />
@@ -24,34 +23,10 @@ const IndexBase: React.SFC<Props> = ({ width, height }) => {
           }`}
       />
       <div>
-        {Array.from(Array(height).keys()).map(y => {
-          return (
-            <div
-              key={y}
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              {Array.from(Array(width).keys()).map(x => {
-                return <Tile key={x} x={x} y={y} />;
-              })}
-            </div>
-          );
-        })}
+        <Stage />
       </div>
     </>
   );
 };
-
-const Index = connect(
-  (state: State) => {
-    return {
-      width: state.tiles.width,
-      height: state.tiles.height,
-    };
-  },
-  {},
-)(IndexBase);
 
 export default Index;

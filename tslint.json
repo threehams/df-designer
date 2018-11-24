@@ -12,6 +12,10 @@
     "jsx-alignment": false,
     "jsx-wrap-multiline": false,
     "trailing-comma": false,
-    "jsx-self-close": false
+    "jsx-self-close": false,
+    "eofline": false,
+    "semicolon": false,
+    "no-submodule-imports": false,
+    "radix": false
   }
 }

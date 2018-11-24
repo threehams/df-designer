@@ -1,12 +1,8 @@
-export type TileStatus = "undug" | "dug" | "smoothed" | "engraved";
-export interface Tile {
-  x: number;
-  y: number;
-  status: TileStatus;
-}
+import { Patch } from "immer";
+
+export type TileStatus = "dug" | "smoothed" | "engraved";
+export type Tile = TileStatus[];
 export interface TilesState {
-  readonly width: number;
-  readonly height: number;
-  readonly selecting: boolean;
-  readonly dug: Set<string>;
+  readonly data: { [key: string]: Tile };
+  readonly patches: Patch[];
 }

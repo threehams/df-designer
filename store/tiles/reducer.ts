@@ -4,14 +4,9 @@ import { State } from "../";
 import * as actions from "./actions";
 import { Tile, TilesState, TileStatus } from "./types";
 
-const BOARD_HEIGHT = 40;
-const BOARD_WIDTH = 80;
-
-const INITIAL_STATE = {
-  width: BOARD_WIDTH,
-  height: BOARD_HEIGHT,
-  selecting: false,
-  dug: new Set(),
+const INITIAL_STATE: TilesState = {
+  data: {},
+  patches: [],
 };
 
 interface History {
@@ -26,7 +21,7 @@ const history: History = {
 };
 
 export const tilesReducer = (
-  state: TilesState = INITIAL_STATE,
+  state = INITIAL_STATE,
   action: ActionType<typeof actions>,
 ) => {
   if (action.type === getType(actions.undo)) {
@@ -35,44 +30,48 @@ export const tilesReducer = (
   if (action.type === getType(actions.redo)) {
     return state;
   }
-  return produce(
-    state,
-    draft => {
-      switch (action.type) {
-        case getType(actions.updateTile): {
-          const { x, y, status } = action.payload;
-          const id = `${x},${y}`;
-          const newSet = new Set(draft.dug);
-          if (status === "dug") {
-            newSet.add(id);
-          } else {
-            newSet.delete(id);
+  if (action.type === getType(actions.resetBoard)) {
+    return INITIAL_STATE;
+  }
+  let patches: Patch[];
+  return produce(state, () => {
+    const newData = produce(
+      state.data,
+      draft => {
+        switch (action.type) {
+          case getType(actions.updateTile): {
+            const { x, y, status } = action.payload;
+            const id = `${x},${y}`;
+            draft[id] = [status];
+            return;
           }
-          draft.dug = newSet;
-          return;
+          case getType(actions.removeTile): {
+            const { x, y } = action.payload;
+            const id = `${x},${y}`;
+            delete draft[id];
+            return;
+          }
         }
-        case getType(actions.resetBoard): {
-          return INITIAL_STATE;
+      },
+      (newPatches, inversePatches) => {
+        patches = newPatches;
+        if (inversePatches.length) {
+          history.transaction.push(...inversePatches);
         }
-        case getType(actions.startSelection): {
-          draft.selecting = true;
-          return;
-        }
-      }
-    },
-    (patches, inversePatches) => {
-      if (inversePatches.length) {
-        history.transaction.push(...inversePatches);
-      }
-      applyPatches(state, patches);
-    },
-  );
+        applyPatches(state, newPatches);
+      },
+    );
+    return {
+      data: newData,
+      patches,
+    };
+  });
 };
 
 export const selectStatus = (
   state: State,
-  { x, y }: Pick<Tile, "x" | "y">,
-): TileStatus => {
+  { x, y }: { x: number; y: number },
+): Tile => {
   const id = `${x},${y}`;
-  return state.tiles.dug.has(id) ? "dug" : "undug";
+  return state.tiles.data[id];
 };

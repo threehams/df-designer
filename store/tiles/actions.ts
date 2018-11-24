@@ -5,27 +5,27 @@ import { selectTool, Tool } from "../tool";
 import { selectStatus } from "./reducer";
 import { TileStatus } from "./types";
 
-const toolStatus: { [key in Tool]: TileStatus } = {
-  paint: "dug",
-  erase: "undug",
-};
-
 export const updateTile = createAction("tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, status: TileStatus) => {
     return resolve({ x, y, status });
   };
 });
+export const removeTile = createAction("tiles/REMOVE_TILE", resolve => {
+  return (x: number, y: number) => resolve({ x, y, status });
+});
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
-    const status = toolStatus[tool];
-    if (selectStatus(state, { x, y }) !== status) {
-      return dispatch(updateTile(x, y, status));
+    const current = selectStatus(state, { x, y });
+    if (!current && tool === "paint") {
+      return dispatch(updateTile(x, y, "dug"));
+    }
+    if (current && tool === "erase") {
+      return dispatch(removeTile(x, y));
     }
   };
 };
-export const startSelection = createAction("tiles/START_SELECTION");
 export const resetBoard = createAction("tiles/RESET_BOARD");
 export const undo = createAction("tiles/UNDO");
 export const redo = createAction("tiles/REDO");
