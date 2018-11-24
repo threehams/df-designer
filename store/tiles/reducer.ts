@@ -7,6 +7,7 @@ import { Tile, TilesState, TileStatus } from "./types";
 const INITIAL_STATE: TilesState = {
   data: {},
   patches: [],
+  version: 0,
 };
 
 interface History {
@@ -31,7 +32,10 @@ export const tilesReducer = (
     return state;
   }
   if (action.type === getType(actions.resetBoard)) {
-    return INITIAL_STATE;
+    return {
+      ...INITIAL_STATE,
+      version: state.version + 1,
+    };
   }
   let patches: Patch[];
   return produce(state, () => {
@@ -62,6 +66,7 @@ export const tilesReducer = (
       },
     );
     return {
+      ...state,
       data: newData,
       patches,
     };

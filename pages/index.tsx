@@ -2,16 +2,18 @@
 import { Global, jsx } from "@emotion/core";
 import dynamic from "next/dynamic";
 
+import { connect } from "react-redux";
 import { Toolbar } from "../components/";
+import { State } from "../store";
 
 jsx; // tslint:disable-line
 
-// @ts-ignore bad library type definition
+// @ts-ignore incorrect library type definition on next/dynamic
 const Stage = dynamic(() => import("../components/Stage"), {
   ssr: false,
 });
 
-const Index: React.SFC<{}> = () => {
+const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
   return (
     <>
       <Toolbar />
@@ -23,10 +25,15 @@ const Index: React.SFC<{}> = () => {
           }`}
       />
       <div>
-        <Stage />
+        <Stage key={version} />
       </div>
     </>
   );
 };
 
+const Index = connect((state: State) => {
+  return {
+    version: state.tiles.version,
+  };
+})(IndexBase);
 export default Index;

@@ -1,6 +1,6 @@
 import { Patch } from "immer";
 import * as PIXI from "pixi.js";
-import { RefObject, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
 import * as actions from "../store/tiles/actions";

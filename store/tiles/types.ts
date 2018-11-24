@@ -5,4 +5,5 @@ export type Tile = TileStatus[];
 export interface TilesState {
   readonly data: { [key: string]: Tile };
   readonly patches: Patch[];
+  readonly version: number;
 }
