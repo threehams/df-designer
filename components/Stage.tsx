@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
 import { tilesActions } from "../store/tiles";
+import { selectCommandMap, CommandMap, Command } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import seedRandom from "seedrandom";
 import { keys } from "../lib/keys";
@@ -14,9 +15,10 @@ interface Props {
   patches: Patch[];
   clickTile: typeof tilesActions.clickTile;
   endClickTile: typeof tilesActions.endClickTile;
+  commandMap: CommandMap;
 }
 interface SpriteMap {
-  [key: string]: PIXI.Sprite;
+  [key: string]: { [Key in Command]?: PIXI.Sprite };
 }
 type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
@@ -61,13 +63,13 @@ const StageBase: React.SFC<Props> = ({
   patches,
   clickTile,
   endClickTile,
+  commandMap,
 }) => {
   const stageElement = useRef<HTMLDivElement>(null);
   const app = useRef<PIXI.Application | null>(null);
   const cursor = useRef<PIXI.Sprite>(createCursor());
   const sprites = useRef<SpriteMap>({});
   useEffect(() => {
-    // @ts-ignore strange typing in react
     app.current = new PIXI.Application({ width: 2048, height: 2048 });
     stageElement.current!.appendChild(app.current.view);
     const background = new PIXI.Sprite();
@@ -102,9 +104,23 @@ const StageBase: React.SFC<Props> = ({
       for (const patch of patches) {
         const key = patch.path[0].toString();
         if (patch.op === "add") {
-          addSprite(key, app.current!, sprites.current);
+          addSprite(
+            key,
+            patch.value,
+            app.current!,
+            sprites.current,
+            commandMap,
+          );
         } else if (patch.op === "remove") {
           removeSprite(key, sprites.current);
+        } else if (patch.op === "replace") {
+          updateSprite(
+            key,
+            patch.value,
+            app.current!,
+            sprites.current,
+            commandMap,
+          );
         }
       }
     },
@@ -114,31 +130,70 @@ const StageBase: React.SFC<Props> = ({
   return <div ref={stageElement} />;
 };
 
-const floorTextures = [
-  textures.floorRough1,
-  textures.floorRough2,
-  textures.floorRough3,
-  textures.floorRough4,
-];
-
-const addSprite = (key: string, app: PIXI.Application, sprites: SpriteMap) => {
-  if (sprites[key]) {
-    return;
+const addSprite = (
+  key: string,
+  commands: Command[],
+  app: PIXI.Application,
+  sprites: SpriteMap,
+  commandMap: CommandMap,
+) => {
+  sprites[key] = {};
+  for (const command of commands) {
+    const textureSet = commandMap[command].textures;
+    const textureName =
+      textureSet[Math.floor(seedRandom(key)() * textureSet.length)];
+    const texture = textures[textureName];
+    const [x, y] = key.split(",");
+    const sprite = new PIXI.Sprite(texture);
+    sprite.width = 20;
+    sprite.height = 20;
+    sprite.x = parseInt(x) * 20;
+    sprite.y = parseInt(y) * 20;
+    sprites[key][command] = sprite;
+    app.stage.addChild(sprite);
   }
-  const floorTexture = floorTextures[Math.floor(seedRandom(key)() * 4)];
-  const [x, y] = key.split(",");
-  const sprite = new PIXI.Sprite(floorTexture);
-  sprite.width = 20;
-  sprite.height = 20;
-  sprite.x = parseInt(x) * 20;
-  sprite.y = parseInt(y) * 20;
-  sprites[key] = sprite;
-  app.stage.addChild(sprite);
+};
+
+const updateSprite = (
+  key: string,
+  commands: Command[],
+  app: PIXI.Application,
+  sprites: SpriteMap,
+  commandMap: CommandMap,
+) => {
+  const existing = keys(sprites[key]);
+  for (const command of commands) {
+    if (existing.includes(command)) {
+      continue;
+    }
+    const textureSet = commandMap[command].textures;
+    const textureName =
+      textureSet[Math.floor(seedRandom(key)() * textureSet.length)];
+    const texture = textures[textureName];
+    const [x, y] = key.split(",");
+    const sprite = new PIXI.Sprite(texture);
+    sprite.width = 20;
+    sprite.height = 20;
+    sprite.x = parseInt(x) * 20;
+    sprite.y = parseInt(y) * 20;
+    sprites[key][command] = sprite;
+    app.stage.addChild(sprite);
+  }
+  existing
+    .filter(command => !commands.includes(command))
+    .forEach(command => {
+      sprites[key][command]!.destroy();
+      delete sprites[key][command];
+    });
 };
 
 const removeSprite = (key: string, sprites: SpriteMap) => {
   if (sprites[key]) {
-    sprites[key].destroy();
+    Object.values(sprites[key]).forEach(sprite => {
+      if (sprite) {
+        sprite.destroy();
+      }
+    });
     delete sprites[key];
   }
 };
@@ -148,6 +203,7 @@ const Stage = connect(
     return {
       tiles: state.tiles.data,
       patches: state.tiles.patches,
+      commandMap: selectCommandMap(),
     };
   },
   {

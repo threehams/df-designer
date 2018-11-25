@@ -5,6 +5,7 @@ import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
 import { createSelector } from "reselect";
 import { range } from "../../lib/range";
+import { Command, selectCommandMap } from "../tool";
 
 const INITIAL_STATE: TilesState = {
   data: {},
@@ -46,17 +47,17 @@ export const tilesReducer = (
       draft => {
         switch (action.type) {
           case getType(actions.updateTile): {
-            const { x, y, status } = action.payload;
+            const { x, y, command } = action.payload;
             const id = `${x},${y}`;
-            draft[id] = [status];
+            draft[id] = addCommand(command, draft[id]);
             return;
           }
           case getType(actions.updateTiles): {
-            const { startX, startY, endX, endY, status } = action.payload;
+            const { startX, startY, endX, endY, command } = action.payload;
             for (const x of range(startX, endX + 1)) {
               for (const y of range(startY, endY + 1)) {
                 const id = `${x},${y}`;
-                draft[id] = [status];
+                draft[id] = addCommand(command, draft[id]);
               }
             }
             return;
@@ -85,10 +86,28 @@ export const tilesReducer = (
   });
 };
 
-export const selectStatus = (
+// Replace a command from the same phase, while keeping the rest.
+const addCommand = (command: Command, current: Command[] | null) => {
+  if (!current) {
+    return [command];
+  }
+  const commandMap = selectCommandMap();
+  const newPhase = commandMap[command].phase;
+  for (const [index, currentCommand] of current.entries()) {
+    const currentPhase = commandMap[currentCommand].phase;
+    if (newPhase === currentPhase) {
+      const newCommands = current.slice();
+      newCommands[index] = command;
+      return newCommands;
+    }
+  }
+  return [command];
+};
+
+export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
-): Tile => {
+): Tile | null => {
   const id = `${x},${y}`;
   return state.tiles.data[id];
 };
@@ -122,7 +141,7 @@ export const selectExported = createSelector(
     });
     for (const [id, status] of Object.entries(tiles)) {
       const { x, y } = getCoordinates(id);
-      if (status.includes("dug")) {
+      if (status.includes("mine")) {
         grid[y - dimensions.minY][x - dimensions.minX] = "d";
       }
     }

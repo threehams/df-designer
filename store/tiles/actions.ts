@@ -1,14 +1,14 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import { State } from "../";
-import { selectTool } from "../tool";
-import { selectStatus } from "./reducer";
-import { TileStatus } from "./types";
+import { selectTool, selectCommand, selectCommandMap } from "../tool";
+import { selectTile } from "./reducer";
+import { Command, CommandMap } from "../tool/types";
 import { toolActions } from "../tool";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
-  return (x: number, y: number, status: TileStatus) => {
-    return resolve({ x, y, status });
+  return (x: number, y: number, command: Command) => {
+    return resolve({ x, y, command });
   };
 });
 export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
@@ -17,9 +17,9 @@ export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
     startY: number,
     endX: number,
     endY: number,
-    status: TileStatus,
+    command: Command,
   ) => {
-    return resolve({ startX, startY, endX, endY, status });
+    return resolve({ startX, startY, endX, endY, command });
   };
 });
 export const updateSelection = createAction(
@@ -29,7 +29,7 @@ export const updateSelection = createAction(
   },
 );
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
-  return (x: number, y: number) => resolve({ x, y, status });
+  return (x: number, y: number) => resolve({ x, y });
 });
 export const resetBoard = createAction("app/tiles/RESET_BOARD");
 export const undo = createAction("app/tiles/UNDO");
@@ -42,14 +42,17 @@ export const clickTile = (x: number, y: number) => {
     }
     const state = getState();
     const tool = selectTool(state);
-    const currentTile = selectStatus(state, { x, y });
+    const command = selectCommand(state);
+    const tileCommand = selectTile(state, { x, y });
     if (tool === "rectangle" && !state.tool.selectionStart) {
       return dispatch(toolActions.startSelection(x, y));
     }
-    if (!currentTile && tool === "paint") {
-      return dispatch(updateTile(x, y, "dug"));
+    if (tool === "paint") {
+      if (shouldUpdate(tileCommand, command)) {
+        return dispatch(updateTile(x, y, command));
+      }
     }
-    if (currentTile && tool === "erase") {
+    if (tileCommand && tool === "erase") {
       return dispatch(removeTile(x, y));
     }
   };
@@ -58,6 +61,7 @@ export const endClickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
+    const command = selectCommand(state);
     if (tool !== "rectangle" || !state.tool.selectionStart) {
       return;
     }
@@ -71,8 +75,12 @@ export const endClickTile = (x: number, y: number) => {
         Math.min(startY, y),
         Math.max(startX, x),
         Math.max(startY, y),
-        "dug",
+        command,
       ),
     );
   };
+};
+
+const shouldUpdate = (tileCommand: Command[] | null, command: Command) => {
+  return !tileCommand || !tileCommand.includes(command);
 };

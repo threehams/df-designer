@@ -1,6 +1,6 @@
-export type Phase = "dig" | "build" | "place" | "query";
+import { Phase, PhaseConfig } from "./types";
 
-export const phases = {
+export const phases: { [Key in Phase]: PhaseConfig } = {
   dig: {
     name: "Dig",
     phase: "dig",

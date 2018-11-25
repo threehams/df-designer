@@ -1,7 +1,7 @@
 import { Patch } from "immer";
+import { Command } from "../tool";
 
-export type TileStatus = "dug" | "smoothed" | "engraved";
-export type Tile = TileStatus[];
+export type Tile = Command[];
 export interface TilesState {
   readonly data: { [key: string]: Tile };
   readonly patches: Patch[];

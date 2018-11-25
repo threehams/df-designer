@@ -3,7 +3,7 @@ import { ActionType, getType } from "typesafe-actions";
 import { State } from "../";
 import * as actions from "./actions";
 import { tilesActions } from "../tiles";
-import { ToolState, Phase, PhaseConfig, CommandConfig } from "./types";
+import { ToolState, Phase } from "./types";
 import { toolActions } from ".";
 import { commands } from "./commands";
 import { phases } from "./phases";
@@ -15,7 +15,7 @@ const INITIAL_STATE: ToolState = {
   export: false,
   selectionStart: null,
   phase: "dig",
-  command: null,
+  command: "mine",
   phases: [],
   commands: [],
 };
@@ -64,18 +64,20 @@ export const selectCommand = (state: State) => {
 };
 
 export const selectCommands = createSelector(
-  (_: State, props: { phase: Phase }) => props.phase,
+  (_: State, props: { phase: Phase | null }) => props.phase,
   phase => {
-    return Object.values(commands).filter(
-      command => command.phase === phase,
-    ) as CommandConfig[];
+    return Object.values(commands).filter(command =>
+      phase ? command.phase === phase : true,
+    );
   },
 );
+
+export const selectCommandMap = () => commands;
 
 export const selectPhase = (state: State) => {
   return state.tool.phase;
 };
 
-export const selectPhases = (state: State) => {
-  return Object.values(phases) as PhaseConfig[];
+export const selectPhases = () => {
+  return Object.values(phases);
 };

@@ -77,7 +77,7 @@ export const Sidebar = connect(
     return {
       phase,
       command: selectCommand(state),
-      phases: selectPhases(state),
+      phases: selectPhases(),
       commands: selectCommands(state, { phase }),
     };
   },

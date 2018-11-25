@@ -1,10 +1,28 @@
-import { commands } from "./commands";
-import { phases } from "./phases";
-
+import { tilesetNames } from "../../lib/tilesetNames";
 export type Tool = "paint" | "erase" | "rectangle";
-export type Command = keyof typeof commands;
-export type Phase = keyof typeof phases;
-
+export type Command =
+  | "armorStand"
+  | "bed"
+  | "channel"
+  | "door"
+  | "downStair"
+  | "engrave"
+  | "floodgate"
+  | "floorGrate"
+  | "floorHatch"
+  | "fortification"
+  | "mine"
+  | "seat"
+  | "smooth"
+  | "tomb"
+  | "upDownStair"
+  | "upRamp"
+  | "upStair"
+  | "verticalBars"
+  | "wallGrate";
+export type Phase = "dig" | "build" | "place" | "query";
+type TilesetName = keyof typeof tilesetNames;
+export type CommandMap = { [Key in Command]: CommandConfig };
 export interface ToolState {
   readonly current: Tool;
   readonly last: Tool | null;
@@ -14,19 +32,22 @@ export interface ToolState {
     y: number;
   } | null;
   readonly phase: Phase;
-  readonly command: Command | null;
+  readonly command: Command;
   readonly phases: Phase[];
   readonly commands: CommandConfig[];
 }
 
 export interface CommandConfig {
-  name: string;
+  bitmask?: boolean;
   command: Command;
-  requiredTool?: Tool | null;
-  width?: number;
   height?: number;
   key: string;
+  name: string;
   phase: Phase;
+  requiredCommand?: Command[];
+  requiredTool?: Tool | null;
+  textures: TilesetName[];
+  width?: number;
 }
 
 export interface PhaseConfig {
