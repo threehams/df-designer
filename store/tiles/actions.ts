@@ -1,9 +1,9 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import { State } from "../";
-import { selectTool, selectCommand, selectCommandMap } from "../tool";
+import { selectTool, selectCommand } from "../tool";
 import { selectTile } from "./reducer";
-import { Command, CommandMap } from "../tool/types";
+import { Command } from "../tool/types";
 import { toolActions } from "../tool";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
@@ -29,7 +29,7 @@ export const updateSelection = createAction(
   },
 );
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
-  return (x: number, y: number) => resolve({ x, y });
+  return (x: number, y: number, command: Command) => resolve({ x, y, command });
 });
 export const resetBoard = createAction("app/tiles/RESET_BOARD");
 export const undo = createAction("app/tiles/UNDO");
@@ -53,7 +53,7 @@ export const clickTile = (x: number, y: number) => {
       }
     }
     if (tileCommand && tool === "erase") {
-      return dispatch(removeTile(x, y));
+      return dispatch(removeTile(x, y, command));
     }
   };
 };

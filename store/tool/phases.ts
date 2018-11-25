@@ -5,6 +5,10 @@ export const phases: { [Key in Phase]: PhaseConfig } = {
     name: "Dig",
     phase: "dig",
   },
+  designate: {
+    name: "Designate",
+    phase: "designate",
+  },
   build: {
     name: "Build",
     phase: "build",

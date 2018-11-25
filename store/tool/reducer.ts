@@ -57,6 +57,10 @@ export const toolReducer = (
         return;
       case getType(toolActions.setCommand):
         draft.command = action.payload.command;
+        if (draft.current === "erase") {
+          draft.last = "erase";
+          draft.current = "paint";
+        }
         return;
     }
   });

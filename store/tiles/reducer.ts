@@ -67,9 +67,14 @@ export const tilesReducer = (
             return;
           }
           case getType(actions.removeTile): {
-            const { x, y } = action.payload;
+            const { x, y, command } = action.payload;
             const id = idFromCoordinates(x, y);
-            delete draft[id];
+            const newCommands = removeCommand(command, draft[id]);
+            if (newCommands.length) {
+              draft[id] = newCommands;
+            } else {
+              delete draft[id];
+            }
             return;
           }
         }
@@ -87,6 +92,20 @@ export const tilesReducer = (
       data: newData,
       patches,
     };
+  });
+};
+
+const removeCommand = (command: Command, current: Command[] | null) => {
+  if (!current) {
+    return [];
+  }
+  const commandMap = selectCommandMap();
+  const newPhase = commandMap[command].phase;
+  return current.filter(currentCommand => {
+    if (newPhase === "dig") {
+      return false;
+    }
+    return commandMap[currentCommand].phase !== newPhase;
   });
 };
 

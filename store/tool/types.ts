@@ -19,8 +19,9 @@ export type Command =
   | "upRamp"
   | "upStair"
   | "verticalBars"
-  | "wallGrate";
-export type Phase = "dig" | "build" | "place" | "query";
+  | "wallGrate"
+  | "foodStockpile";
+export type Phase = "dig" | "designate" | "build" | "place" | "query";
 type TilesetName = keyof typeof tilesetNames;
 export type CommandMap = { [Key in Command]: CommandConfig };
 export interface ToolState {
@@ -44,7 +45,6 @@ export interface CommandConfig {
   key: string;
   name: string;
   phase: Phase;
-  requiredCommand?: Command[];
   requiredTool?: Tool | null;
   textures: TilesetName[];
   width?: number;
