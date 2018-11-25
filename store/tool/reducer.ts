@@ -16,8 +16,6 @@ const INITIAL_STATE: ToolState = {
   selectionStart: null,
   phase: "dig",
   command: "mine",
-  phases: [],
-  commands: [],
 };
 
 export const toolReducer = (

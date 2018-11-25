@@ -82,5 +82,10 @@ export const endClickTile = (x: number, y: number) => {
 };
 
 const shouldUpdate = (tileCommand: Command[] | null, command: Command) => {
-  return !tileCommand || !tileCommand.includes(command);
+  if (!tileCommand) {
+    return true;
+  }
+  if (tileCommand.includes(command)) {
+    return false;
+  }
 };

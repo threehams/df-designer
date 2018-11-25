@@ -34,8 +34,6 @@ export interface ToolState {
   } | null;
   readonly phase: Phase;
   readonly command: Command;
-  readonly phases: Phase[];
-  readonly commands: CommandConfig[];
 }
 
 export interface CommandConfig {
