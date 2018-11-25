@@ -55,7 +55,7 @@ export const commands: CommandMap = {
     command: "smooth",
     key: "s",
     phase: "dig",
-    textures: ["smoothWallCross"],
+    textures: ["plus"],
     requiredCommand: ["mine"],
     bitmask: true,
   },

@@ -130,6 +130,26 @@ const StageBase: React.SFC<Props> = ({
   return <div ref={stageElement} />;
 };
 
+const newTile = (
+  key: string,
+  app: PIXI.Application,
+  command: Command,
+  commandMap: CommandMap,
+) => {
+  const textureSet = commandMap[command].textures;
+  const textureName =
+    textureSet[Math.floor(seedRandom(key)() * textureSet.length)];
+  const texture = textures[textureName];
+  const [x, y] = key.split(",");
+  const sprite = new PIXI.Sprite(texture);
+  sprite.width = 20;
+  sprite.height = 20;
+  sprite.x = parseInt(x) * 20;
+  sprite.y = parseInt(y) * 20;
+  app.stage.addChild(sprite);
+  return sprite;
+};
+
 const addSprite = (
   key: string,
   commands: Command[],
@@ -139,18 +159,7 @@ const addSprite = (
 ) => {
   sprites[key] = {};
   for (const command of commands) {
-    const textureSet = commandMap[command].textures;
-    const textureName =
-      textureSet[Math.floor(seedRandom(key)() * textureSet.length)];
-    const texture = textures[textureName];
-    const [x, y] = key.split(",");
-    const sprite = new PIXI.Sprite(texture);
-    sprite.width = 20;
-    sprite.height = 20;
-    sprite.x = parseInt(x) * 20;
-    sprite.y = parseInt(y) * 20;
-    sprites[key][command] = sprite;
-    app.stage.addChild(sprite);
+    sprites[key][command] = newTile(key, app, command, commandMap);
   }
 };
 
@@ -166,18 +175,7 @@ const updateSprite = (
     if (existing.includes(command)) {
       continue;
     }
-    const textureSet = commandMap[command].textures;
-    const textureName =
-      textureSet[Math.floor(seedRandom(key)() * textureSet.length)];
-    const texture = textures[textureName];
-    const [x, y] = key.split(",");
-    const sprite = new PIXI.Sprite(texture);
-    sprite.width = 20;
-    sprite.height = 20;
-    sprite.x = parseInt(x) * 20;
-    sprite.y = parseInt(y) * 20;
-    sprites[key][command] = sprite;
-    app.stage.addChild(sprite);
+    sprites[key][command] = newTile(key, app, command, commandMap);
   }
   existing
     .filter(command => !commands.includes(command))
