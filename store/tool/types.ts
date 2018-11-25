@@ -40,7 +40,7 @@ export interface CommandConfig {
   bitmask?: boolean;
   command: Command;
   height?: number;
-  key: string;
+  shortcut: string;
   name: string;
   phase: Phase;
   requiredTool?: Tool | null;

@@ -1,9 +1,9 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import { State } from "../";
-import { selectTool, selectCommand } from "../tool";
+import { selectTool, selectCommand, selectCommandMap } from "../tool";
 import { selectTile } from "./reducer";
-import { Command } from "../tool/types";
+import { Command, CommandConfig } from "../tool/types";
 import { toolActions } from "../tool";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
@@ -44,11 +44,17 @@ export const clickTile = (x: number, y: number) => {
     const tool = selectTool(state);
     const command = selectCommand(state);
     const tileCommand = selectTile(state, { x, y });
+    const commandMap = selectCommandMap();
     if (tool === "rectangle" && !state.tool.selectionStart) {
       return dispatch(toolActions.startSelection(x, y));
     }
     if (tool === "paint") {
-      if (shouldUpdate(tileCommand, command)) {
+      if (
+        shouldUpdate(
+          (tileCommand || []).map(c => commandMap[c]),
+          commandMap[command],
+        )
+      ) {
         return dispatch(updateTile(x, y, command));
       }
     }
@@ -81,11 +87,19 @@ export const endClickTile = (x: number, y: number) => {
   };
 };
 
-const shouldUpdate = (tileCommand: Command[] | null, command: Command) => {
-  if (!tileCommand) {
-    return true;
-  }
-  if (tileCommand.includes(command)) {
+const shouldUpdate = (
+  tileCommands: CommandConfig[],
+  command: CommandConfig,
+) => {
+  if (tileCommands.includes(command)) {
     return false;
   }
+  if (
+    (command.phase !== "dig" &&
+      !tileCommands.filter(c => c.phase === "dig").length) ||
+    tileCommands.filter(c => c.phase !== "dig").length
+  ) {
+    return false;
+  }
+  return true;
 };

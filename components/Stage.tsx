@@ -58,6 +58,11 @@ const StageBase: React.SFC<Props> = ({
     app.current.stage.addChild(background);
     app.current.stage.addChild(cursor.current);
 
+    Object.entries(tiles).forEach(([key, commands]) => {
+      addSprite(key, commands, app.current!, sprites.current, commandMap);
+      const { x, y } = coordinatesFromId(key);
+      updateWalls(x, y, app.current!, tiles, walls.current, commandMap);
+    });
     return () => {
       if (app.current) {
         app.current.destroy();
@@ -88,7 +93,7 @@ const StageBase: React.SFC<Props> = ({
           );
         }
         const { x, y } = coordinatesFromId(key);
-        updateWalls(x, y, app.current!, tiles, walls.current);
+        updateWalls(x, y, app.current!, tiles, walls.current, commandMap);
       }
     },
     [patches],
@@ -141,17 +146,18 @@ const updateWalls = (
   app: PIXI.Application,
   tiles: TilesMap,
   walls: WallMap,
+  commandMap: CommandMap,
 ) => {
   for (const { x, y } of neighborIds(centerX, centerY)) {
-    updateWall(x, y, tiles, app, walls);
+    updateWall(x, y, tiles, app, walls, commandMap);
   }
 };
 
-const exposed = (commands: Command[] | null) => {
+const exposed = (commands: Command[] | null, commandMap: CommandMap) => {
   if (!commands) {
     return false;
   }
-  return commands.filter(command => command === "mine").length;
+  return commands.filter(command => commandMap[command].phase === "dig").length;
 };
 
 const updateWall = (
@@ -160,9 +166,10 @@ const updateWall = (
   tiles: TilesMap,
   app: PIXI.Application,
   walls: WallMap,
+  commandMap: CommandMap,
 ) => {
   const centerId = idFromCoordinates(centerX, centerY);
-  if (exposed(tiles[centerId])) {
+  if (exposed(tiles[centerId], commandMap)) {
     if (walls[centerId]) {
       walls[centerId].destroy();
       delete walls[centerId];
@@ -173,7 +180,7 @@ const updateWall = (
   for (const [index, { x, y }] of neighborIds(centerX, centerY).entries()) {
     const id = idFromCoordinates(x, y);
     // bitmask
-    if (exposed(tiles[id])) {
+    if (exposed(tiles[id], commandMap)) {
       textureId += index + 1;
     }
   }

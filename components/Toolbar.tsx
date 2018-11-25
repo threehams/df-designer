@@ -38,10 +38,12 @@ const ToolbarBase: React.SFC<Props> = ({
       <ButtonGroup>
         <Button onClick={resetBoard}>Reset</Button>
       </ButtonGroup>
-      <ButtonGroup>
-        <Button onClick={undo}>&lt;</Button>
-        <Button onClick={redo}>&gt;</Button>
-      </ButtonGroup>
+      {false && (
+        <ButtonGroup>
+          <Button onClick={undo}>Undo</Button>
+          <Button onClick={redo}>Redo</Button>
+        </ButtonGroup>
+      )}
       <ButtonGroup>
         <Button onClick={() => setTool("paint")} active={tool === "paint"}>
           Paint

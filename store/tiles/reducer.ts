@@ -5,7 +5,7 @@ import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
 import { createSelector } from "reselect";
 import { range } from "../../lib/range";
-import { Command, selectCommandMap } from "../tool";
+import { Command, selectCommandMap, selectPhases } from "../tool";
 import {
   coordinatesFromId,
   idFromCoordinates,
@@ -136,8 +136,10 @@ export const selectTile = (
 };
 
 export const selectExported = createSelector(
+  selectCommandMap,
+  selectPhases,
   (state: State) => state.tiles.data,
-  tiles => {
+  (commandMap, phases, tiles) => {
     const dimensions = Object.entries(tiles).reduce(
       (result, [id]) => {
         const { x, y } = coordinatesFromId(id);
@@ -162,10 +164,16 @@ export const selectExported = createSelector(
     ).map(() => {
       return Array(dimensions.maxX - dimensions.minX).fill("`");
     });
-    for (const [id, status] of Object.entries(tiles)) {
-      const { x, y } = coordinatesFromId(id);
-      if (status.includes("mine")) {
-        grid[y - dimensions.minY][x - dimensions.minX] = "d";
+    for (const phase of phases) {
+      for (const [id, commands] of Object.entries(tiles)) {
+        const { x, y } = coordinatesFromId(id);
+        const command = commands.find(
+          comm => commandMap[comm].phase === phase.phase,
+        );
+        if (command) {
+          grid[y - dimensions.minY][x - dimensions.minX] =
+            commandMap[command].shortcut;
+        }
       }
     }
     return grid.map(x => x.join(",")).join("\n");
