@@ -6,6 +6,10 @@ import { Tile, TilesState } from "./types";
 import { createSelector } from "reselect";
 import { range } from "../../lib/range";
 import { Command, selectCommandMap } from "../tool";
+import {
+  coordinatesFromId,
+  idFromCoordinates,
+} from "../../lib/coordinatesFromId";
 
 const INITIAL_STATE: TilesState = {
   data: {},
@@ -48,7 +52,7 @@ export const tilesReducer = (
         switch (action.type) {
           case getType(actions.updateTile): {
             const { x, y, command } = action.payload;
-            const id = `${x},${y}`;
+            const id = idFromCoordinates(x, y);
             draft[id] = addCommand(command, draft[id]);
             return;
           }
@@ -56,7 +60,7 @@ export const tilesReducer = (
             const { startX, startY, endX, endY, command } = action.payload;
             for (const x of range(startX, endX + 1)) {
               for (const y of range(startY, endY + 1)) {
-                const id = `${x},${y}`;
+                const id = idFromCoordinates(x, y);
                 draft[id] = addCommand(command, draft[id]);
               }
             }
@@ -64,7 +68,7 @@ export const tilesReducer = (
           }
           case getType(actions.removeTile): {
             const { x, y } = action.payload;
-            const id = `${x},${y}`;
+            const id = idFromCoordinates(x, y);
             delete draft[id];
             return;
           }
@@ -101,14 +105,14 @@ const addCommand = (command: Command, current: Command[] | null) => {
       return newCommands;
     }
   }
-  return [command];
+  return [...current, command];
 };
 
 export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
 ): Tile | null => {
-  const id = `${x},${y}`;
+  const id = idFromCoordinates(x, y);
   return state.tiles.data[id];
 };
 
@@ -117,7 +121,7 @@ export const selectExported = createSelector(
   tiles => {
     const dimensions = Object.entries(tiles).reduce(
       (result, [id]) => {
-        const { x, y } = getCoordinates(id);
+        const { x, y } = coordinatesFromId(id);
         result.minX = x < result.minX ? x : result.minX;
         result.minY = y < result.minY ? y : result.minY;
         result.maxX = x + 1 > result.maxX ? x + 1 : result.maxX;
@@ -140,7 +144,7 @@ export const selectExported = createSelector(
       return Array(dimensions.maxX - dimensions.minX).fill("`");
     });
     for (const [id, status] of Object.entries(tiles)) {
-      const { x, y } = getCoordinates(id);
+      const { x, y } = coordinatesFromId(id);
       if (status.includes("mine")) {
         grid[y - dimensions.minY][x - dimensions.minX] = "d";
       }
@@ -148,8 +152,3 @@ export const selectExported = createSelector(
     return grid.map(x => x.join(",")).join("\n");
   },
 );
-
-const getCoordinates = (id: string) => {
-  const [x, y] = id.split(",");
-  return { x: parseInt(x), y: parseInt(y) };
-};

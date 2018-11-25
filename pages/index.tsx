@@ -20,7 +20,7 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
         display: grid;
         grid-template-areas:
           "header header"
-          "main sidebar";
+          "sidebar main";
         height: 100vh;
       `}
     >

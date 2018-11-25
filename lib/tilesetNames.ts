@@ -137,10 +137,10 @@ export const tilesetNames = {
   animalTrap: 127, // 127 ⌂ Animal trap, low mountains on world map, part of mechanic's workshop, trunk$
   // Row 09 (128-143)
   mechanism: 128, // 128 Ç Text, Mechanisms
-  ü: 129, // 129 ü Text
-  é: 130, // 130 é Text
-  â: 131, // 131 â Text
-  angel: 132, // 132 ä Text, Angels
+  plant: 129, // 129 ü Text
+  cluster: 130, // 130 é Text
+  rockWall1: 131, // 131 â Text
+  rockWall2: 132, // 132 ä Text, Angels
   à: 133, // 133 à Text
   å: 134, // 134 å Text
   totem: 135, // 135 ç Text, Totems

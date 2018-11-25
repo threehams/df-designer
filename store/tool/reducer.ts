@@ -46,7 +46,14 @@ export const toolReducer = (
         draft.selectionStart = null;
         return;
       case getType(toolActions.setPhase):
-        draft.phase = action.payload.phase;
+        if (draft.phase !== action.payload.phase) {
+          draft.phase = action.payload.phase;
+          // this is weird
+          draft.command = selectCommands(
+            {},
+            { phase: action.payload.phase },
+          )[0].command;
+        }
         return;
       case getType(toolActions.setCommand):
         draft.command = action.payload.command;
@@ -64,7 +71,7 @@ export const selectCommand = (state: State) => {
 };
 
 export const selectCommands = createSelector(
-  (_: State, props: { phase: Phase | null }) => props.phase,
+  (_: any, props: { phase: Phase | null }) => props.phase,
   phase => {
     return Object.values(commands).filter(command =>
       phase ? command.phase === phase : true,
