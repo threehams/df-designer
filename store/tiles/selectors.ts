@@ -1,6 +1,6 @@
-import { State } from "../";
+import { State } from "../types";
 import { createSelector } from "reselect";
-import { selectCommandMap, selectPhases } from "../tool";
+import { selectCommandMap, selectPhases } from "../tool/reducer";
 import { coordinatesFromId } from "../../lib/coordinatesFromId";
 
 export const selectExported = createSelector(

@@ -1,6 +1,6 @@
 import produce, { applyPatches, Patch } from "immer";
 import { ActionType, getType } from "typesafe-actions";
-import { State } from "../";
+import { State } from "../types";
 import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
 import { range } from "../../lib/range";

@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
-import { State } from "../";
+import { State } from "../types";
 import { selectTool, selectCommand, selectCommandMap } from "../tool";
 import { selectTile } from "./reducer";
 import { Command, CommandConfig } from "../tool/types";

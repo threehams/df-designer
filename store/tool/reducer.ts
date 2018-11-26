@@ -1,8 +1,8 @@
 import produce from "immer";
 import { ActionType, getType } from "typesafe-actions";
-import { State } from "../";
+import { State } from "../types";
 import * as actions from "./actions";
-import { tilesActions } from "../tiles";
+import * as tilesActions from "../tiles/actions";
 import { ToolState, Phase } from "./types";
 import { toolActions } from ".";
 import { commands } from "./commands";
