@@ -55,8 +55,8 @@ export const toolReducer = (
         return;
       case getType(toolActions.setCommand):
         draft.command = action.payload.command;
-        if (draft.current === "erase") {
-          draft.last = "erase";
+        if (draft.current === "fillIn") {
+          draft.last = "fillIn";
           draft.current = "paint";
         }
         return;

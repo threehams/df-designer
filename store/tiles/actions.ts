@@ -58,7 +58,7 @@ export const clickTile = (x: number, y: number) => {
         return dispatch(updateTile(x, y, command));
       }
     }
-    if (tileCommand && tool === "erase") {
+    if (tileCommand && tool === "fillIn") {
       return dispatch(removeTile(x, y, command));
     }
   };

@@ -1,5 +1,5 @@
 import { tilesetNames } from "../../lib/tilesetNames";
-export type Tool = "paint" | "erase" | "rectangle";
+export type Tool = "paint" | "rectangle" | "fillIn" | "remove";
 export type Command =
   | "armorStand"
   | "bed"

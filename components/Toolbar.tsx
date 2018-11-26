@@ -1,11 +1,17 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
+import dynamic from "next/dynamic";
 
 import { State } from "../store";
 import { tilesActions, selectExported } from "../store/tiles";
 import { toolActions, selectTool, Tool } from "../store/tool";
 import { Button, ButtonGroup } from "./";
+
+// @ts-ignore incorrect library type definition on next/dynamic
+const GenerateExcel = dynamic(() => import("../components/Stage"), {
+  ssr: false,
+});
 
 jsx; // tslint:disable-line
 
@@ -54,8 +60,11 @@ const ToolbarBase: React.SFC<Props> = ({
         >
           Select
         </Button>
-        <Button onClick={() => setTool("erase")} active={tool === "erase"}>
-          Erase
+        <Button onClick={() => setTool("fillIn")} active={tool === "fillIn"}>
+          Fill In
+        </Button>
+        <Button onClick={() => setTool("remove")} active={tool === "remove"}>
+          Remove Items
         </Button>
       </ButtonGroup>
       <ButtonGroup>
