@@ -1,63 +1,77 @@
 /** @jsx jsx */
-import { css, Global, jsx } from "@emotion/core";
-import { range } from "lodash";
-import { connect } from "react-redux";
+import { Global, jsx, css } from "@emotion/core";
+import dynamic from "next/dynamic";
 
-import { Tile, Toolbar } from "../components/";
+import { connect } from "react-redux";
+import { Toolbar, Sidebar } from "../components/";
 import { State } from "../store";
 
 jsx; // tslint:disable-line
 
-interface Props {
-  width: number;
-  height: number;
-}
+// @ts-ignore incorrect library type definition on next/dynamic
+const Stage = dynamic(() => import("../components/Stage"), {
+  ssr: false,
+});
 
-const IndexBase: React.SFC<Props> = ({ width, height }) => {
+const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
   return (
-    <>
-      <Toolbar />
+    <div
+      css={css`
+        display: grid;
+        grid-template-areas:
+          "header header"
+          "sidebar main";
+        height: 100vh;
+      `}
+    >
       <Global
         styles={`
           body {
             margin: 0;
+            height: 100vh;
             font-family: 'Open Sans', sans-serif;
-          }`}
+          }
+          canvas {
+            display: block;
+          }
+          `}
       />
+
       <div
         css={css`
-          display: flex;
-          flex-flow: column nowrap;
+          grid-area: header;
         `}
       >
-        {range(0, width).map(y => {
-          return (
-            <div
-              key={y}
-              css={css`
-                display: flex;
-                flex-flow: row nowrap;
-              `}
-            >
-              {range(0, height).map(x => {
-                return <Tile key={x} x={x} y={y} />;
-              })}
-            </div>
-          );
-        })}
+        <Toolbar />
       </div>
-    </>
+      {/*
+       * may want to scroll within PIXI
+       * https://medium.com/game-development-stuff/how-to-block-the-page-scroll-while-scrolling-inside-a-pixi-js-canvas-8981306583e6
+       */}
+      <div
+        css={css`
+          overflow-x: auto;
+          overflow-y: auto;
+          grid-area: main;
+        `}
+      >
+        <Stage key={version} />
+      </div>
+      <div
+        css={css`
+          grid-area: sidebar;
+          width: 300px;
+        `}
+      >
+        <Sidebar />
+      </div>
+    </div>
   );
 };
 
-const Index = connect(
-  (state: State) => {
-    return {
-      width: state.tiles.width,
-      height: state.tiles.height,
-    };
-  },
-  {},
-)(IndexBase);
-
+const Index = connect((state: State) => {
+  return {
+    version: state.tiles.version,
+  };
+})(IndexBase);
 export default Index;

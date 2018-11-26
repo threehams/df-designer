@@ -1,3 +1,4 @@
 export * from "./Button";
-export * from "./Tile";
+export * from "./Sidebar";
 export * from "./Toolbar";
+export * from "./ButtonGroup";

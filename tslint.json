@@ -1,16 +1,26 @@
 {
-  "extends": ["tslint:latest", "tslint-react"],
+  "extends": ["tslint-react"],
   "rules": {
     "no-switch-case-fall-through": { "severity": "error" },
     "jsx-key": { "severity": "error" },
-    "interface-name": false,
     "jsx-no-multiline": false,
     "jsx-no-multiline-js": false,
-    "arrow-parens": false,
-    "object-literal-sort-keys": false,
     "jsx-no-lambda": false,
     "jsx-alignment": false,
     "jsx-wrap-multiline": false,
-    "trailing-comma": false
+    "jsx-self-close": false,
+    "trailing-comma": false,
+    "interface-name": false,
+    "arrow-parens": false,
+    "object-literal-sort-keys": false,
+    "eofline": false,
+    "semicolon": false,
+    "no-submodule-imports": false,
+    "radix": false,
+    "comment-format": false,
+    "max-line-length": false,
+    "no-console": true,
+    "forin": { "severity": "error" },
+    "no-shadowed-variable": { "severity": "error" }
   }
 }

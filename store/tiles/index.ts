@@ -1,3 +1,4 @@
-export * from "./actions";
+import * as tilesActions from "./actions";
+export { tilesActions };
 export * from "./types";
 export * from "./reducer";
