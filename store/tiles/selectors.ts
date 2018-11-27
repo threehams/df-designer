@@ -2,6 +2,11 @@ import { State } from "../types";
 import { createSelector } from "reselect";
 import { selectCommandMap, selectPhases } from "../tool/reducer";
 import { coordinatesFromId } from "../../lib/coordinatesFromId";
+import { Phase } from "../tool/types";
+import { keys } from "../../lib/keys";
+
+type Grids = { [key in Phase]: string[][] };
+type GridsResult = { [key in Phase]: string };
 
 export const selectExported = createSelector(
   selectCommandMap,
@@ -27,11 +32,17 @@ export const selectExported = createSelector(
     if (dimensions.minX === Infinity || dimensions.minY === Infinity) {
       return null;
     }
-    const grid = Array.from(
-      Array(dimensions.maxY - dimensions.minY).keys(),
-    ).map(() => {
-      return Array(dimensions.maxX - dimensions.minX).fill("`");
-    });
+    const grids = phases.reduce(
+      (result, phase) => {
+        result[phase.phase] = Array.from(
+          Array(dimensions.maxY - dimensions.minY).keys(),
+        ).map(() => {
+          return Array(dimensions.maxX - dimensions.minX).fill("`");
+        });
+        return result;
+      },
+      {} as Grids,
+    );
     for (const phase of phases) {
       for (const [id, commands] of Object.entries(tiles)) {
         const { x, y } = coordinatesFromId(id);
@@ -39,11 +50,20 @@ export const selectExported = createSelector(
           comm => commandMap[comm].phase === phase.phase,
         );
         if (command) {
-          grid[y - dimensions.minY][x - dimensions.minX] =
+          grids[phase.phase][y - dimensions.minY][x - dimensions.minX] =
             commandMap[command].shortcut;
         }
       }
     }
-    return grid.map(x => x.join(",")).join("\n");
+    return keys(grids).reduce(
+      (result, phase) => {
+        result[phase] = [[`#${phase}`]]
+          .concat(grids[phase])
+          .map(x => x.join(","))
+          .join("\n");
+        return result;
+      },
+      {} as GridsResult,
+    );
   },
 );

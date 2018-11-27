@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { State } from "../store";
 import { tilesActions, selectExported } from "../store/tiles";
-import { toolActions, selectTool, Tool } from "../store/tool";
+import { toolActions, selectTool, Tool, Phase } from "../store/tool";
 import { Button, ButtonGroup } from "./";
 
 jsx; // tslint:disable-line
@@ -16,7 +16,7 @@ interface Props {
   resetBoard: typeof tilesActions.resetBoard;
   toggleExport: typeof toolActions.toggleExport;
   tool: Tool;
-  exported: string | null;
+  exported: { [Key in Phase]: string } | null;
 }
 
 const ToolbarBase: React.SFC<Props> = ({
@@ -61,7 +61,10 @@ const ToolbarBase: React.SFC<Props> = ({
       <ButtonGroup>
         <Button onClick={toggleExport}>Export</Button>
       </ButtonGroup>
-      {exported && <textarea value={exported} onChange={() => {}} />}
+      {exported &&
+        Object.entries(exported).map(([phase, result]) => (
+          <textarea key={phase} value={result} onChange={() => {}} />
+        ))}
     </header>
   );
 };

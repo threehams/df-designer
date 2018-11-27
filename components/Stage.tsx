@@ -4,13 +4,7 @@ import { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
 import { tilesActions } from "../store/tiles";
-import {
-  selectCommandMap,
-  CommandMap,
-  Command,
-  Tool,
-  selectTool,
-} from "../store/tool";
+import { selectCommandMap, CommandMap, Command } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import seedRandom from "seedrandom";
 import { keys } from "../lib/keys";
