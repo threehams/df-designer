@@ -116,7 +116,25 @@ export type Command =
   | "coinsStockpile"
   | "finishedGoodsStockpile"
   | "weaponsStockpile"
-  | "armorStockpile";
+  | "armorStockpile"
+  // quickfort stockpiles
+  | "seedsStockpile"
+  | "noseedsStockpile"
+  | "boozeStockpile"
+  | "edibleFoodStockpile"
+  | "plantsStockpile"
+  | "corpsesStockpile"
+  | "bonesStockpile"
+  | "rawhidesStockpile"
+  | "tannedhidesStockpile"
+  | "metalStockpile"
+  | "nometalStockpile"
+  | "bauxiteStockpile"
+  | "nobauxiteStockpile"
+  | "artifactsStockpile"
+  | "noartifactsStockpile"
+  | "junkgoodsStockpile";
+
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
 type TilesetName = keyof typeof tilesetNames;
 export type CommandMap = { [Key in Command]: CommandConfig };

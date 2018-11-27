@@ -14,11 +14,11 @@ export const phases: { [Key in Phase]: PhaseConfig } = {
     phase: "build",
   },
   place: {
-    name: "Place",
+    name: "Stockpiles",
     phase: "place",
   },
   query: {
-    name: "Query",
+    name: "Adjust",
     phase: "query",
   },
 };
