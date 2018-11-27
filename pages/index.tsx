@@ -61,6 +61,7 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
         css={css`
           grid-area: sidebar;
           width: 300px;
+          overflow-y: auto;
         `}
       >
         <Sidebar />
