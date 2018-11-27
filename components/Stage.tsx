@@ -4,7 +4,13 @@ import { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
 import { tilesActions } from "../store/tiles";
-import { selectCommandMap, CommandMap, Command } from "../store/tool";
+import {
+  selectCommandMap,
+  CommandMap,
+  Command,
+  Tool,
+  selectTool,
+} from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import seedRandom from "seedrandom";
 import { keys } from "../lib/keys";
@@ -20,6 +26,7 @@ interface Props {
   clickTile: typeof tilesActions.clickTile;
   endClickTile: typeof tilesActions.endClickTile;
   commandMap: CommandMap;
+  selectionStart: { x: number; y: number } | null;
 }
 
 const StageBase: React.SFC<Props> = ({
@@ -28,34 +35,21 @@ const StageBase: React.SFC<Props> = ({
   clickTile,
   endClickTile,
   commandMap,
+  selectionStart,
 }) => {
   const stageElement = useRef<HTMLDivElement>(null);
   const app = useRef<PIXI.Application | null>(null);
+  const background = useRef<PIXI.Sprite | null>(null);
   const cursor = useRef<PIXI.Sprite>(createCursor());
   const sprites = useRef<SpriteMap>({});
   const walls = useRef<WallMap>({});
   useEffect(() => {
     app.current = new PIXI.Application({ width: 2048, height: 2048 });
     stageElement.current!.appendChild(app.current.view);
-    const background = new PIXI.Sprite();
-    background.interactive = true;
-    background.on("pointerdown", (event: PIXI.interaction.InteractionEvent) => {
-      const { x, y } = tilePosition(event.data.global);
-      clickTile(x, y);
-    });
-    background.on("pointermove", (event: PIXI.interaction.InteractionEvent) => {
-      const { x, y } = tilePosition(event.data.global);
-      moveCursor(x, y, cursor.current);
-      if (event.data.buttons === 1) {
-        clickTile(x, y);
-      }
-    });
-    background.on("pointerup", (event: PIXI.interaction.InteractionEvent) => {
-      const { x, y } = tilePosition(event.data.global);
-      endClickTile(x, y);
-    });
-    background.hitArea = new PIXI.Rectangle(0, 0, 2048, 2048);
-    app.current.stage.addChild(background);
+    background.current = new PIXI.Sprite();
+    background.current.interactive = true;
+    background.current.hitArea = new PIXI.Rectangle(0, 0, 2048, 2048);
+    app.current.stage.addChild(background.current);
     app.current.stage.addChild(cursor.current);
 
     Object.entries(tiles).forEach(([key, commands]) => {
@@ -69,6 +63,53 @@ const StageBase: React.SFC<Props> = ({
       }
     };
   }, []);
+
+  useEffect(
+    () => {
+      background.current!.on(
+        "pointerdown",
+        (event: PIXI.interaction.InteractionEvent) => {
+          const { x, y } = tilePosition(event.data.global);
+          clickTile(x, y);
+        },
+      );
+      background.current!.on(
+        "pointermove",
+        (event: PIXI.interaction.InteractionEvent) => {
+          const { x, y } = tilePosition(event.data.global);
+          if (!selectionStart) {
+            moveCursor(x, y, cursor.current);
+          }
+          if (event.data.buttons === 1) {
+            clickTile(x, y);
+            if (selectionStart) {
+              expandCursor(
+                x,
+                y,
+                selectionStart.x,
+                selectionStart.y,
+                cursor.current,
+              );
+            }
+          }
+        },
+      );
+      background.current!.on(
+        "pointerup",
+        (event: PIXI.interaction.InteractionEvent) => {
+          const { x, y } = tilePosition(event.data.global);
+          moveCursor(x, y, cursor.current);
+          endClickTile(x, y);
+        },
+      );
+
+      return () => {
+        background.current!.removeAllListeners();
+      };
+    },
+    [selectionStart],
+  );
+
   useEffect(
     () => {
       for (const patch of patches) {
@@ -193,9 +234,33 @@ const updateWall = (
 };
 
 const moveCursor = (x: number, y: number, cursor: PIXI.Sprite) => {
-  cursor.visible = true;
   cursor.x = x * 20;
   cursor.y = y * 20;
+  cursor.height = 20;
+  cursor.width = 20;
+  cursor.visible = true;
+};
+
+const expandCursor = (
+  x: number,
+  y: number,
+  selectionX: number,
+  selectionY: number,
+  cursor: PIXI.Sprite,
+) => {
+  const tileX = x * 20;
+  const tileY = y * 20;
+  const selectionTileX = selectionX * 20;
+  const selectionTileY = selectionY * 20;
+  cursor.width = Math.abs(tileX - selectionTileX) + 20;
+  cursor.height = Math.abs(tileY - selectionTileY) + 20;
+  if (selectionTileX >= tileX) {
+    cursor.x = tileX;
+  }
+  if (selectionTileY >= tileY) {
+    cursor.y = tileY;
+  }
+  cursor.visible = true;
 };
 
 const createCursor = () => {
@@ -284,6 +349,7 @@ const Stage = connect(
       tiles: state.tiles.data,
       patches: state.tiles.patches,
       commandMap: selectCommandMap(),
+      selectionStart: state.tool.selectionStart,
     };
   },
   {
