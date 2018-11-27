@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start -p $PORT",
+    "start": "next start -p 8000",
     "test": "echo \"Error: no test specified\" && exit 1",
     "export": "next export",
     "postinstall": "next build"
