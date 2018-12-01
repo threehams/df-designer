@@ -135,6 +135,7 @@ export type Command =
   | "noartifactsStockpile"
   | "junkgoodsStockpile";
 
+export type Io = "export" | "import";
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
 type TilesetName = keyof typeof tilesetNames;
 export type CommandMap = { [Key in Command]: CommandConfig };
@@ -148,6 +149,7 @@ export interface ToolState {
   } | null;
   readonly phase: Phase;
   readonly command: Command;
+  readonly io: Io | null;
 }
 
 export interface CommandConfig {

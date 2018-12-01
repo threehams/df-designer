@@ -1,3 +1,7 @@
+/*
+ * HERE THERE BE DRAGONS
+ */
+
 import { Patch } from "immer";
 import * as PIXI from "pixi.js";
 import { useEffect, useRef } from "react";
@@ -63,8 +67,10 @@ const StageBase: React.SFC<Props> = ({
       background.current!.on(
         "pointerdown",
         (event: PIXI.interaction.InteractionEvent) => {
-          const { x, y } = tilePosition(event.data.global);
-          clickTile(x, y);
+          if (event.data.buttons === 1) {
+            const { x, y } = tilePosition(event.data.global);
+            clickTile(x, y);
+          }
         },
       );
       background.current!.on(

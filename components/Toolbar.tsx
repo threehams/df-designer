@@ -14,9 +14,7 @@ interface Props {
   redo: typeof tilesActions.redo;
   setTool: typeof toolActions.setTool;
   resetBoard: typeof tilesActions.resetBoard;
-  toggleExport: typeof toolActions.toggleExport;
   tool: Tool;
-  exported: { [Key in Phase]: string } | null;
 }
 
 const ToolbarBase: React.SFC<Props> = ({
@@ -25,8 +23,6 @@ const ToolbarBase: React.SFC<Props> = ({
   resetBoard,
   setTool,
   tool,
-  toggleExport,
-  exported,
 }) => {
   return (
     <header
@@ -52,19 +48,12 @@ const ToolbarBase: React.SFC<Props> = ({
           onClick={() => setTool("rectangle")}
           active={tool === "rectangle"}
         >
-          Select
+          Rectangle
         </Button>
         <Button onClick={() => setTool("erase")} active={tool === "erase"}>
           Erase
         </Button>
       </ButtonGroup>
-      <ButtonGroup>
-        <Button onClick={toggleExport}>Export</Button>
-      </ButtonGroup>
-      {exported &&
-        Object.entries(exported).map(([phase, result]) => (
-          <textarea key={phase} value={result} onChange={() => {}} />
-        ))}
     </header>
   );
 };
@@ -81,6 +70,5 @@ export const Toolbar = connect(
     redo: tilesActions.redo,
     setTool: toolActions.setTool,
     resetBoard: tilesActions.resetBoard,
-    toggleExport: toolActions.toggleExport,
   },
 )(ToolbarBase);

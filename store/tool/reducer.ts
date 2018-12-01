@@ -3,7 +3,7 @@ import { ActionType, getType } from "typesafe-actions";
 import { State } from "../types";
 import * as actions from "./actions";
 import * as tilesActions from "../tiles/actions";
-import { ToolState, Phase } from "./types";
+import { ToolState, Phase, CommandConfig } from "./types";
 import { toolActions } from ".";
 import { commands } from "./commands";
 import { phases } from "./phases";
@@ -16,6 +16,7 @@ const INITIAL_STATE: ToolState = {
   selectionStart: null,
   phase: "dig",
   command: "mine",
+  io: null,
 };
 
 export const toolReducer = (
@@ -31,8 +32,8 @@ export const toolReducer = (
         }
         return;
       }
-      case getType(actions.toggleExport): {
-        draft.export = !state.export;
+      case getType(actions.setIo): {
+        draft.io = action.payload.io;
         return;
       }
       case getType(actions.startSelection): {

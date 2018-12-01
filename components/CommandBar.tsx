@@ -14,7 +14,7 @@ import {
   Command,
   PhaseConfig,
 } from "../store/tool";
-import { Button, ButtonGroup } from "./";
+import { Button, ButtonGroup } from ".";
 
 jsx; // tslint:disable-line
 
@@ -27,7 +27,7 @@ interface Props {
   phases: PhaseConfig[];
 }
 
-const SidebarBase: React.SFC<Props> = ({
+const CommandBarBase: React.SFC<Props> = ({
   phase,
   setPhase,
   command,
@@ -71,7 +71,7 @@ const SidebarBase: React.SFC<Props> = ({
   );
 };
 
-export const Sidebar = connect(
+export const CommandBar = connect(
   (state: State) => {
     const phase = selectPhase(state);
     return {
@@ -85,4 +85,4 @@ export const Sidebar = connect(
     setPhase: toolActions.setPhase,
     setCommand: toolActions.setCommand,
   },
-)(SidebarBase);
+)(CommandBarBase);

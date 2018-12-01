@@ -3,7 +3,7 @@ import { Global, jsx, css } from "@emotion/core";
 import dynamic from "next/dynamic";
 
 import { connect } from "react-redux";
-import { Toolbar, Sidebar } from "../components/";
+import { Toolbar, CommandBar, ExportBar } from "../components/";
 import { State } from "../store";
 
 jsx; // tslint:disable-line
@@ -19,8 +19,8 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
       css={css`
         display: grid;
         grid-template-areas:
-          "header header"
-          "sidebar main";
+          "header header header"
+          "leftbar main rightbar";
         height: 100vh;
       `}
     >
@@ -59,12 +59,21 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
       </div>
       <div
         css={css`
-          grid-area: sidebar;
+          grid-area: leftbar;
           width: 300px;
           overflow-y: auto;
         `}
       >
-        <Sidebar />
+        <CommandBar />
+      </div>
+      <div
+        css={css`
+          grid-area: rightbar;
+          width: 300px;
+          overflow-y: auto;
+        `}
+      >
+        <ExportBar />
       </div>
     </div>
   );
