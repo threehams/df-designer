@@ -21,7 +21,6 @@ type TilesMap = State["tiles"]["data"];
 
 interface Props {
   tiles: TilesMap;
-  patches: Patch[];
   clickTile: typeof tilesActions.clickTile;
   endClickTile: typeof tilesActions.endClickTile;
   commandMap: CommandMap;
@@ -30,7 +29,6 @@ interface Props {
 
 const StageBase: React.SFC<Props> = ({
   tiles,
-  patches,
   clickTile,
   endClickTile,
   commandMap,
@@ -51,17 +49,29 @@ const StageBase: React.SFC<Props> = ({
     app.current.stage.addChild(background.current);
     app.current.stage.addChild(cursor.current);
 
-    Object.entries(tiles).forEach(([key, commands]) => {
-      addSprite(key, commands, app.current!, sprites.current, commandMap);
-      const { x, y } = coordinatesFromId(key);
-      updateWalls(x, y, app.current!, tiles, walls.current, commandMap);
-    });
     return () => {
       if (app.current) {
         app.current.destroy();
       }
     };
   }, []);
+  useEffect(
+    () => {
+      Object.values(sprites.current).forEach(spriteMap => {
+        for (const sprite of Object.values(spriteMap)) {
+          if (sprite) {
+            sprite.destroy();
+          }
+        }
+      });
+      Object.entries(tiles).forEach(([key, commands]) => {
+        addSprite(key, commands, app.current!, sprites.current, commandMap);
+        const { x, y } = coordinatesFromId(key);
+        updateWalls(x, y, app.current!, tiles, walls.current, commandMap);
+      });
+    },
+    [tiles],
+  );
 
   useEffect(
     () => {
@@ -109,36 +119,6 @@ const StageBase: React.SFC<Props> = ({
       };
     },
     [selectionStart],
-  );
-
-  useEffect(
-    () => {
-      for (const patch of patches) {
-        const key = patch.path[0].toString();
-        if (patch.op === "add") {
-          addSprite(
-            key,
-            patch.value,
-            app.current!,
-            sprites.current,
-            commandMap,
-          );
-        } else if (patch.op === "remove") {
-          removeSprite(key, sprites.current);
-        } else if (patch.op === "replace") {
-          updateSprite(
-            key,
-            patch.value,
-            app.current!,
-            sprites.current,
-            commandMap,
-          );
-        }
-        const { x, y } = coordinatesFromId(key);
-        updateWalls(x, y, app.current!, tiles, walls.current, commandMap);
-      }
-    },
-    [patches],
   );
 
   return <div ref={stageElement} />;
@@ -348,7 +328,6 @@ const Stage = connect(
   (state: State) => {
     return {
       tiles: state.tiles.data,
-      patches: state.tiles.patches,
       commandMap: selectCommandMap(),
       selectionStart: state.tool.selectionStart,
     };

@@ -13,7 +13,7 @@ import {
   PhaseConfig,
 } from "../store/tool";
 import { Button, ButtonGroup } from ".";
-import { selectExported, tilesActions } from "../store/tiles";
+import { selectExported } from "../store/tiles";
 
 jsx; // tslint:disable-line
 
