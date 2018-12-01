@@ -88,6 +88,8 @@ export const selectPhase = (state: State) => {
   return state.tool.phase;
 };
 
+const phaseValues = Object.values(phases);
+
 export const selectPhases = () => {
-  return Object.values(phases);
+  return phaseValues;
 };

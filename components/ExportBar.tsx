@@ -109,9 +109,10 @@ export const ExportBarBase: React.SFC<Props> = ({
 
 export const ExportBar = connect(
   (state: State) => {
+    const io = state.tool.io;
     return {
-      io: state.tool.io,
-      exported: selectExported(state),
+      io,
+      exported: io === "export" ? selectExported(state) : null,
       phases: selectPhases(),
     };
   },
