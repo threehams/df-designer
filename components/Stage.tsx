@@ -15,6 +15,7 @@ import { keys } from "../lib/keys";
 import { coordinatesFromId, idFromCoordinates } from "../lib/coordinatesFromId";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+PIXI.utils.skipHello();
 
 type TilesMap = State["tiles"]["data"];
 
