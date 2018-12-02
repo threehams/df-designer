@@ -43,11 +43,11 @@ const CommandBarBase: React.SFC<Props> = ({
         flex-flow: column nowrap;
       `}
     >
-      <ButtonGroup block={true}>
+      <ButtonGroup block>
         {phases.map(ph => (
           <Button
             key={ph.phase}
-            block={true}
+            block
             onClick={() => setPhase(ph.phase)}
             active={phase === ph.phase}
           >
@@ -55,11 +55,11 @@ const CommandBarBase: React.SFC<Props> = ({
           </Button>
         ))}
       </ButtonGroup>
-      <ButtonGroup block={true}>
+      <ButtonGroup block>
         {commands.map(comm => (
           <Button
             key={comm.command}
-            block={true}
+            block
             onClick={() => setCommand(comm.command)}
             active={command === comm.command}
           >

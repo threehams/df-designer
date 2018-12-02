@@ -1,10 +1,6 @@
-/*
- * HERE THERE BE DRAGONS
- */
-
-import { Patch } from "immer";
 import * as PIXI from "pixi.js";
-import { useEffect, useRef } from "react";
+import { Stage, Container, Sprite } from "@inlet/react-pixi";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
 import { tilesActions } from "../store/tiles";
@@ -19,119 +15,8 @@ PIXI.utils.skipHello();
 
 type TilesMap = State["tiles"]["data"];
 
-interface Props {
-  tiles: TilesMap;
-  clickTile: typeof tilesActions.clickTile;
-  endClickTile: typeof tilesActions.endClickTile;
-  commandMap: CommandMap;
-  selectionStart: { x: number; y: number } | null;
-}
-
-const StageBase: React.SFC<Props> = ({
-  tiles,
-  clickTile,
-  endClickTile,
-  commandMap,
-  selectionStart,
-}) => {
-  const stageElement = useRef<HTMLDivElement>(null);
-  const app = useRef<PIXI.Application | null>(null);
-  const background = useRef<PIXI.Sprite | null>(null);
-  const cursor = useRef<PIXI.Sprite>(createCursor());
-  const sprites = useRef<SpriteMap>({});
-  const walls = useRef<WallMap>({});
-  useEffect(() => {
-    app.current = new PIXI.Application({ width: 2048, height: 2048 });
-    stageElement.current!.appendChild(app.current.view);
-    background.current = new PIXI.Sprite();
-    background.current.interactive = true;
-    background.current.hitArea = new PIXI.Rectangle(0, 0, 2048, 2048);
-    app.current.stage.addChild(background.current);
-    app.current.stage.addChild(cursor.current);
-
-    return () => {
-      if (app.current) {
-        app.current.destroy();
-      }
-    };
-  }, []);
-  useEffect(
-    () => {
-      Object.values(sprites.current).forEach(spriteMap => {
-        for (const sprite of Object.values(spriteMap)) {
-          if (sprite) {
-            sprite.destroy();
-          }
-        }
-      });
-      Object.entries(tiles).forEach(([key, commands]) => {
-        addSprite(key, commands, app.current!, sprites.current, commandMap);
-        const { x, y } = coordinatesFromId(key);
-        updateWalls(x, y, app.current!, tiles, walls.current, commandMap);
-      });
-    },
-    [tiles],
-  );
-
-  useEffect(
-    () => {
-      background.current!.on(
-        "pointerdown",
-        (event: PIXI.interaction.InteractionEvent) => {
-          if (event.data.buttons === 1) {
-            const { x, y } = tilePosition(event.data.global);
-            clickTile(x, y);
-          }
-        },
-      );
-      background.current!.on(
-        "pointermove",
-        (event: PIXI.interaction.InteractionEvent) => {
-          const { x, y } = tilePosition(event.data.global);
-          if (!selectionStart) {
-            moveCursor(x, y, cursor.current);
-          }
-          if (event.data.buttons === 1) {
-            clickTile(x, y);
-            if (selectionStart) {
-              expandCursor(
-                x,
-                y,
-                selectionStart.x,
-                selectionStart.y,
-                cursor.current,
-              );
-            }
-          }
-        },
-      );
-      background.current!.on(
-        "pointerup",
-        (event: PIXI.interaction.InteractionEvent) => {
-          const { x, y } = tilePosition(event.data.global);
-          moveCursor(x, y, cursor.current);
-          endClickTile(x, y);
-        },
-      );
-
-      return () => {
-        background.current!.removeAllListeners();
-      };
-    },
-    [selectionStart],
-  );
-
-  return <div ref={stageElement} />;
-};
-
-interface SpriteMap {
-  [key: string]: { [Key in Command]?: PIXI.Sprite };
-}
-interface WallMap {
-  [key: string]: PIXI.Sprite;
-}
-type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
+type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const textures = keys(tilesetNames).reduce(
   (result, name) => {
     const num = tilesetNames[name];
@@ -146,6 +31,107 @@ const textures = keys(tilesetNames).reduce(
   {} as TilesetMap,
 );
 
+interface Props {
+  tiles: TilesMap;
+  clickTile: typeof tilesActions.clickTile;
+  endClickTile: typeof tilesActions.endClickTile;
+  commandMap: CommandMap;
+  selectionStart: { x: number; y: number } | null;
+}
+
+interface Coordinates {
+  x: number;
+  y: number;
+}
+
+const ArtboardBase: React.SFC<Props> = ({
+  tiles,
+  clickTile,
+  endClickTile,
+  commandMap,
+  selectionStart,
+}) => {
+  const [cursorPosition, setCursorPosition] = useState<Coordinates | null>(
+    null,
+  );
+
+  return (
+    <Stage width={2048} height={2048}>
+      <Container>
+        <Sprite
+          width={2048}
+          height={2048}
+          texture={PIXI.Texture.EMPTY}
+          interactive
+          pointerdown={event => {
+            if (event.data.buttons === 1) {
+              const { x, y } = tilePosition(event.data.global);
+              clickTile(x, y);
+            }
+          }}
+          pointermove={event => {
+            const { x, y } = tilePosition(event.data.global);
+            if (
+              !cursorPosition ||
+              x !== cursorPosition.x ||
+              y !== cursorPosition.y
+            ) {
+              setCursorPosition({ x, y });
+            }
+            if (event.data.buttons === 1) {
+              clickTile(x, y);
+            }
+          }}
+          pointerup={event => {
+            const { x, y } = tilePosition(event.data.global);
+            // moveCursor(x, y, cursor.current);
+            endClickTile(x, y);
+          }}
+        />
+        {Object.entries(tiles).map(([id, commands]) => {
+          const { x, y } = coordinatesFromId(id);
+          return commands.map(command => {
+            return (
+              <Sprite
+                key={`${id}${command}`}
+                width={20}
+                height={20}
+                x={x * 20}
+                y={y * 20}
+                texture={textures[commandMap[command].textures[0]]}
+              />
+            );
+          });
+        })}
+        {cursorPosition && <Cursor x={cursorPosition.x} y={cursorPosition.y} />}
+      </Container>
+    </Stage>
+  );
+};
+
+interface CursorProps {
+  x: number;
+  y: number;
+}
+const Cursor: React.SFC<CursorProps> = ({ x, y }) => {
+  return (
+    <Sprite
+      texture={PIXI.Texture.WHITE}
+      height={20}
+      width={20}
+      alpha={0.5}
+      x={x * 20}
+      y={y * 20}
+    />
+  );
+};
+
+interface SpriteMap {
+  [key: string]: { [Key in Command]?: PIXI.Sprite };
+}
+interface WallMap {
+  [key: string]: PIXI.Sprite;
+}
 // matrix or something, never had to deal with this
 const neighborIds = (x: number, y: number) => {
   return [
@@ -244,15 +230,6 @@ const expandCursor = (
   cursor.visible = true;
 };
 
-const createCursor = () => {
-  const cursor = new PIXI.Sprite(PIXI.Texture.WHITE);
-  cursor.height = 20;
-  cursor.width = 20;
-  cursor.visible = false;
-  cursor.alpha = 0.5;
-  return cursor;
-};
-
 const tilePosition = ({ x, y }: { x: number; y: number }) => {
   return {
     x: Math.floor(x / 20),
@@ -291,40 +268,7 @@ const addSprite = (
   }
 };
 
-const updateSprite = (
-  key: string,
-  commands: Command[],
-  app: PIXI.Application,
-  sprites: SpriteMap,
-  commandMap: CommandMap,
-) => {
-  const existing = keys(sprites[key]);
-  for (const command of commands) {
-    if (existing.includes(command)) {
-      continue;
-    }
-    sprites[key][command] = newTile(key, app, commandMap[command].textures);
-  }
-  existing
-    .filter(command => !commands.includes(command))
-    .forEach(command => {
-      sprites[key][command]!.destroy();
-      delete sprites[key][command];
-    });
-};
-
-const removeSprite = (key: string, sprites: SpriteMap) => {
-  if (sprites[key]) {
-    Object.values(sprites[key]).forEach(sprite => {
-      if (sprite) {
-        sprite.destroy();
-      }
-    });
-    delete sprites[key];
-  }
-};
-
-const Stage = connect(
+const Artboard = connect(
   (state: State) => {
     return {
       tiles: state.tiles.data,
@@ -336,6 +280,6 @@ const Stage = connect(
     clickTile: tilesActions.clickTile,
     endClickTile: tilesActions.endClickTile,
   },
-)(StageBase);
+)(ArtboardBase);
 
-export default Stage;
+export default Artboard;

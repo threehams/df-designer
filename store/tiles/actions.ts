@@ -37,7 +37,7 @@ export const redo = createAction("app/tiles/REDO");
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
-    if (x < 0 || y < 0) {
+    if (x < 1 || y < 1) {
       return;
     }
     const state = getState();

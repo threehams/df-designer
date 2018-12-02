@@ -48,18 +48,10 @@ export const ExportBarBase: React.SFC<Props> = ({
           align-items: center;
         `}
       >
-        <Button
-          block={true}
-          onClick={() => setIo("import")}
-          active={io === "import"}
-        >
+        <Button block onClick={() => setIo("import")} active={io === "import"}>
           Import
         </Button>
-        <Button
-          block={true}
-          onClick={() => setIo("export")}
-          active={io === "export"}
-        >
+        <Button block onClick={() => setIo("export")} active={io === "export"}>
           Export
         </Button>
       </ButtonGroup>

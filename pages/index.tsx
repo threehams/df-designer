@@ -9,7 +9,7 @@ import { State } from "../store";
 jsx; // tslint:disable-line
 
 // @ts-ignore incorrect library type definition on next/dynamic
-const Stage = dynamic(() => import("../components/Stage"), {
+const Artboard = dynamic(() => import("../components/Artboard"), {
   ssr: false,
 });
 
@@ -28,7 +28,6 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
         styles={`
           body {
             margin: 0;
-            height: 100vh;
             font-family: 'Open Sans', sans-serif;
           }
           canvas {
@@ -55,7 +54,7 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
           grid-area: main;
         `}
       >
-        <Stage key={version} />
+        <Artboard key={version} />
       </div>
       <div
         css={css`
