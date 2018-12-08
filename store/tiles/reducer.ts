@@ -2,7 +2,7 @@ import produce, { applyPatches, Patch } from "immer";
 import { ActionType, getType } from "typesafe-actions";
 import { State } from "../types";
 import * as actions from "./actions";
-import { Tile, TilesState } from "./types";
+import { TileCommands, TilesState } from "./types";
 import { range } from "../../lib/range";
 import { Command, selectCommandMap } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
@@ -123,7 +123,7 @@ const addCommand = (command: Command, current: Command[] | null) => {
 export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
-): Tile | null => {
+): TileCommands | null => {
   const id = idFromCoordinates(x, y);
   return state.tiles.data[id];
 };

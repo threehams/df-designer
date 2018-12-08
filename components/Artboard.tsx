@@ -3,18 +3,16 @@ import { Stage, Container, Sprite } from "@inlet/react-pixi";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
-import { tilesActions } from "../store/tiles";
-import { selectCommandMap, CommandMap, Command } from "../store/tool";
+import { tilesActions, selectTiles, Tile, selectWalls } from "../store/tiles";
+import { selectCommandMap, CommandMap } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
-import seedRandom from "seedrandom";
 import { keys } from "../lib/keys";
-import { coordinatesFromId, idFromCoordinates } from "../lib/coordinatesFromId";
+import { coordinatesFromId } from "../lib/coordinatesFromId";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
 
-type TilesMap = State["tiles"]["data"];
-
+const TILE_SIZE = 20;
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
 type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const textures = keys(tilesetNames).reduce(
@@ -32,26 +30,28 @@ const textures = keys(tilesetNames).reduce(
 );
 
 interface Props {
-  tiles: TilesMap;
   clickTile: typeof tilesActions.clickTile;
-  endClickTile: typeof tilesActions.endClickTile;
   commandMap: CommandMap;
+  endClickTile: typeof tilesActions.endClickTile;
   selectionStart: { x: number; y: number } | null;
+  tiles: Tile[];
+  walls: Set<string>;
 }
 
 interface Coordinates {
-  startX: number;
-  startY: number;
   endX?: number;
   endY?: number;
+  startX: number;
+  startY: number;
 }
 
 const ArtboardBase: React.SFC<Props> = ({
-  tiles,
   clickTile,
-  endClickTile,
   commandMap,
+  endClickTile,
   selectionStart,
+  tiles,
+  walls,
 }) => {
   const [cursorPosition, setCursorPosition] = useState<Coordinates>({
     startX: 0,
@@ -62,9 +62,7 @@ const ArtboardBase: React.SFC<Props> = ({
     <Stage width={2048} height={2048}>
       <Container>
         <Sprite
-          width={2048}
           height={2048}
-          texture={PIXI.Texture.EMPTY}
           interactive
           pointerdown={event => {
             if (event.data.buttons === 1) {
@@ -84,10 +82,10 @@ const ArtboardBase: React.SFC<Props> = ({
             if (event.data.buttons === 1) {
               if (selectionStart) {
                 setCursorPosition({
-                  startX: selectionStart.x,
-                  startY: selectionStart.y,
-                  endX: x,
-                  endY: y,
+                  startX: Math.min(selectionStart.x, x),
+                  startY: Math.min(selectionStart.y, y),
+                  endX: Math.max(selectionStart.x, x),
+                  endY: Math.max(selectionStart.y, y),
                 });
               } else {
                 clickTile(x, y);
@@ -96,24 +94,38 @@ const ArtboardBase: React.SFC<Props> = ({
           }}
           pointerup={event => {
             const { x, y } = tilePosition(event.data.global);
-            // moveCursor(x, y, cursor.current);
             endClickTile(x, y);
           }}
+          texture={PIXI.Texture.EMPTY}
+          width={2048}
         />
-        {Object.entries(tiles).map(([id, commands]) => {
-          const { x, y } = coordinatesFromId(id);
-          return commands.map(command => {
+        {tiles.map(tile => {
+          const { x, y } = coordinatesFromId(tile.id);
+          return tile.commands.map(command => {
             return (
               <Sprite
-                key={`${id}${command}`}
-                width={20}
-                height={20}
-                x={x * 20}
-                y={y * 20}
+                key={`${tile.id}${command}`}
+                width={TILE_SIZE}
+                height={TILE_SIZE}
+                x={x * TILE_SIZE}
+                y={y * TILE_SIZE}
                 texture={textures[commandMap[command].textures[0]]}
               />
             );
           });
+        })}
+        {Array.from(walls.values()).map(id => {
+          const { x, y } = coordinatesFromId(id);
+          return (
+            <Sprite
+              key={id}
+              width={TILE_SIZE}
+              height={TILE_SIZE}
+              x={x * TILE_SIZE}
+              y={y * TILE_SIZE}
+              texture={textures.rockWall2}
+            />
+          );
         })}
         <Cursor {...cursorPosition} />
       </Container>
@@ -123,125 +135,37 @@ const ArtboardBase: React.SFC<Props> = ({
 
 const tilePosition = ({ x, y }: { x: number; y: number }) => {
   return {
-    x: Math.floor(x / 20),
-    y: Math.floor(y / 20),
+    x: Math.floor(x / TILE_SIZE),
+    y: Math.floor(y / TILE_SIZE),
   };
 };
 
 interface CursorProps {
-  startX: number;
-  startY: number;
   endX?: number;
   endY?: number;
+  startX: number;
+  startY: number;
 }
 const Cursor: React.SFC<CursorProps> = ({ startX, startY, endX, endY }) => {
   return (
     <Sprite
-      texture={PIXI.Texture.WHITE}
-      height={endY ? (endY - startY + 1) * 20 : 20}
-      width={endX ? (endX - startX + 1) * 20 : 20}
       alpha={0.5}
-      x={startX * 20}
-      y={startY * 20}
+      height={endY ? (endY - startY + 1) * TILE_SIZE : TILE_SIZE}
+      texture={PIXI.Texture.WHITE}
+      width={endX ? (endX - startX + 1) * TILE_SIZE : TILE_SIZE}
+      x={startX * TILE_SIZE}
+      y={startY * TILE_SIZE}
     />
   );
-};
-
-interface WallMap {
-  [key: string]: PIXI.Sprite;
-}
-// matrix or something, never had to deal with this
-const neighborIds = (x: number, y: number) => {
-  return [
-    { x: x - 1, y: y + 1 },
-    { x, y: y + 1 },
-    { x: x + 1, y: y + 1 },
-    { x: x - 1, y },
-    { x, y },
-    { x: x + 1, y },
-    { x: x - 1, y: y - 1 },
-    { x, y: y - 1 },
-    { x: x + 1, y: y - 1 },
-  ];
-};
-
-// very naive but may be fast enough for now
-const updateWalls = (
-  centerX: number,
-  centerY: number,
-  app: PIXI.Application,
-  tiles: TilesMap,
-  walls: WallMap,
-  commandMap: CommandMap,
-) => {
-  for (const { x, y } of neighborIds(centerX, centerY)) {
-    updateWall(x, y, tiles, app, walls, commandMap);
-  }
-};
-
-const exposed = (commands: Command[] | null, commandMap: CommandMap) => {
-  if (!commands) {
-    return false;
-  }
-  return commands.filter(command => commandMap[command].phase === "dig").length;
-};
-
-const updateWall = (
-  centerX: number,
-  centerY: number,
-  tiles: TilesMap,
-  app: PIXI.Application,
-  walls: WallMap,
-  commandMap: CommandMap,
-) => {
-  const centerId = idFromCoordinates(centerX, centerY);
-  if (exposed(tiles[centerId], commandMap)) {
-    if (walls[centerId]) {
-      walls[centerId].destroy();
-      delete walls[centerId];
-    }
-    return;
-  }
-  let textureId = 0;
-  for (const [index, { x, y }] of neighborIds(centerX, centerY).entries()) {
-    const id = idFromCoordinates(x, y);
-    // bitmask
-    if (exposed(tiles[id], commandMap)) {
-      textureId += index + 1;
-    }
-  }
-  if (textureId && !walls[centerId]) {
-    walls[centerId] = newTile(centerId, app, ["rockWall2"]);
-  } else if (!textureId && walls[centerId]) {
-    walls[centerId].destroy();
-    delete walls[centerId];
-  }
-};
-
-const newTile = (
-  key: string,
-  app: PIXI.Application,
-  textureSet: (keyof typeof tilesetNames)[],
-) => {
-  const textureName =
-    textureSet[Math.floor(seedRandom(key)() * textureSet.length)];
-  const texture = textures[textureName];
-  const { x, y } = coordinatesFromId(key);
-  const sprite = new PIXI.Sprite(texture);
-  sprite.width = 20;
-  sprite.height = 20;
-  sprite.x = x * 20;
-  sprite.y = y * 20;
-  app.stage.addChild(sprite);
-  return sprite;
 };
 
 const Artboard = connect(
   (state: State) => {
     return {
-      tiles: state.tiles.data,
       commandMap: selectCommandMap(),
       selectionStart: state.tool.selectionStart,
+      tiles: selectTiles(state),
+      walls: selectWalls(state),
     };
   },
   {
