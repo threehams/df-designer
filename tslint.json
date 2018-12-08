@@ -22,6 +22,7 @@
     "no-console": true,
     "forin": { "severity": "error" },
     "no-shadowed-variable": { "severity": "error" },
-    "jsx-boolean-value": false
+    "jsx-boolean-value": false,
+    "no-empty": true
   }
 }

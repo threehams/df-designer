@@ -40,8 +40,10 @@ interface Props {
 }
 
 interface Coordinates {
-  x: number;
-  y: number;
+  startX: number;
+  startY: number;
+  endX?: number;
+  endY?: number;
 }
 
 const ArtboardBase: React.SFC<Props> = ({
@@ -51,9 +53,10 @@ const ArtboardBase: React.SFC<Props> = ({
   commandMap,
   selectionStart,
 }) => {
-  const [cursorPosition, setCursorPosition] = useState<Coordinates | null>(
-    null,
-  );
+  const [cursorPosition, setCursorPosition] = useState<Coordinates>({
+    startX: 0,
+    startY: 0,
+  });
 
   return (
     <Stage width={2048} height={2048}>
@@ -73,13 +76,22 @@ const ArtboardBase: React.SFC<Props> = ({
             const { x, y } = tilePosition(event.data.global);
             if (
               !cursorPosition ||
-              x !== cursorPosition.x ||
-              y !== cursorPosition.y
+              x !== cursorPosition.startX ||
+              y !== cursorPosition.startY
             ) {
-              setCursorPosition({ x, y });
+              setCursorPosition({ startX: x, startY: y });
             }
             if (event.data.buttons === 1) {
-              clickTile(x, y);
+              if (selectionStart) {
+                setCursorPosition({
+                  startX: selectionStart.x,
+                  startY: selectionStart.y,
+                  endX: x,
+                  endY: y,
+                });
+              } else {
+                clickTile(x, y);
+              }
             }
           }}
           pointerup={event => {
@@ -103,32 +115,38 @@ const ArtboardBase: React.SFC<Props> = ({
             );
           });
         })}
-        {cursorPosition && <Cursor x={cursorPosition.x} y={cursorPosition.y} />}
+        <Cursor {...cursorPosition} />
       </Container>
     </Stage>
   );
 };
 
+const tilePosition = ({ x, y }: { x: number; y: number }) => {
+  return {
+    x: Math.floor(x / 20),
+    y: Math.floor(y / 20),
+  };
+};
+
 interface CursorProps {
-  x: number;
-  y: number;
+  startX: number;
+  startY: number;
+  endX?: number;
+  endY?: number;
 }
-const Cursor: React.SFC<CursorProps> = ({ x, y }) => {
+const Cursor: React.SFC<CursorProps> = ({ startX, startY, endX, endY }) => {
   return (
     <Sprite
       texture={PIXI.Texture.WHITE}
-      height={20}
-      width={20}
+      height={endY ? (endY - startY + 1) * 20 : 20}
+      width={endX ? (endX - startX + 1) * 20 : 20}
       alpha={0.5}
-      x={x * 20}
-      y={y * 20}
+      x={startX * 20}
+      y={startY * 20}
     />
   );
 };
 
-interface SpriteMap {
-  [key: string]: { [Key in Command]?: PIXI.Sprite };
-}
 interface WallMap {
   [key: string]: PIXI.Sprite;
 }
@@ -200,43 +218,6 @@ const updateWall = (
   }
 };
 
-const moveCursor = (x: number, y: number, cursor: PIXI.Sprite) => {
-  cursor.x = x * 20;
-  cursor.y = y * 20;
-  cursor.height = 20;
-  cursor.width = 20;
-  cursor.visible = true;
-};
-
-const expandCursor = (
-  x: number,
-  y: number,
-  selectionX: number,
-  selectionY: number,
-  cursor: PIXI.Sprite,
-) => {
-  const tileX = x * 20;
-  const tileY = y * 20;
-  const selectionTileX = selectionX * 20;
-  const selectionTileY = selectionY * 20;
-  cursor.width = Math.abs(tileX - selectionTileX) + 20;
-  cursor.height = Math.abs(tileY - selectionTileY) + 20;
-  if (selectionTileX >= tileX) {
-    cursor.x = tileX;
-  }
-  if (selectionTileY >= tileY) {
-    cursor.y = tileY;
-  }
-  cursor.visible = true;
-};
-
-const tilePosition = ({ x, y }: { x: number; y: number }) => {
-  return {
-    x: Math.floor(x / 20),
-    y: Math.floor(y / 20),
-  };
-};
-
 const newTile = (
   key: string,
   app: PIXI.Application,
@@ -253,19 +234,6 @@ const newTile = (
   sprite.y = y * 20;
   app.stage.addChild(sprite);
   return sprite;
-};
-
-const addSprite = (
-  key: string,
-  commands: Command[],
-  app: PIXI.Application,
-  sprites: SpriteMap,
-  commandMap: CommandMap,
-) => {
-  sprites[key] = {};
-  for (const command of commands) {
-    sprites[key][command] = newTile(key, app, commandMap[command].textures);
-  }
 };
 
 const Artboard = connect(

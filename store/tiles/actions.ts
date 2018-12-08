@@ -51,7 +51,7 @@ export const clickTile = (x: number, y: number) => {
     if (tool === "paint") {
       if (
         shouldUpdate(
-          (tileCommand || []).map(c => commandMap[c]),
+          (tileCommand || []).map(comm => commandMap[comm]),
           commandMap[command],
         )
       ) {
