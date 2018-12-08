@@ -72,15 +72,6 @@ export const selectExported = createSelector(
   },
 );
 
-export const selectTiles = createSelector(
-  (state: State) => state.tiles.data,
-  tiles => {
-    return Object.entries(tiles).map(([key, commands]) => {
-      return { id: key, commands };
-    });
-  },
-);
-
 export const selectWalls = createSelector(
   (state: State) => state.tiles.data,
   selectCommandMap,

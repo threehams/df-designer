@@ -3,8 +3,8 @@ import { Stage, Container, Sprite } from "@inlet/react-pixi";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
-import { tilesActions, selectTiles, Tile, selectWalls } from "../store/tiles";
-import { selectCommandMap, CommandMap } from "../store/tool";
+import { tilesActions, selectWalls } from "../store/tiles";
+import { selectCommandMap, CommandMap, Command } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
@@ -34,7 +34,9 @@ interface Props {
   commandMap: CommandMap;
   endClickTile: typeof tilesActions.endClickTile;
   selectionStart: { x: number; y: number } | null;
-  tiles: Tile[];
+  tiles: {
+    [key: string]: Command[];
+  };
   walls: Set<string>;
 }
 
@@ -99,12 +101,12 @@ const ArtboardBase: React.SFC<Props> = ({
           texture={PIXI.Texture.EMPTY}
           width={2048}
         />
-        {tiles.map(tile => {
-          const { x, y } = coordinatesFromId(tile.id);
-          return tile.commands.map(command => {
+        {Object.entries(tiles).map(([id, commands]) => {
+          const { x, y } = coordinatesFromId(id);
+          return commands.map(command => {
             return (
               <Sprite
-                key={`${tile.id}${command}`}
+                key={`${id}${command}`}
                 width={TILE_SIZE}
                 height={TILE_SIZE}
                 x={x * TILE_SIZE}
@@ -164,7 +166,7 @@ const Artboard = connect(
     return {
       commandMap: selectCommandMap(),
       selectionStart: state.tool.selectionStart,
-      tiles: selectTiles(state),
+      tiles: state.tiles.data,
       walls: selectWalls(state),
     };
   },
