@@ -41,7 +41,7 @@ export const tilesReducer = (
     };
   }
   let patches: Patch[];
-  return produce(state, () => {
+  return produce(state, outerDraft => {
     const newData = produce(
       state.data,
       draft => {
@@ -83,11 +83,8 @@ export const tilesReducer = (
         applyPatches(state, newPatches);
       },
     );
-    return {
-      ...state,
-      data: newData,
-      patches,
-    };
+    outerDraft.data = newData;
+    outerDraft.patches = patches;
   });
 };
 
