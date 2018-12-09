@@ -14,7 +14,7 @@ import {
   Command,
   PhaseConfig,
 } from "../store/tool";
-import { Button, ButtonGroup } from "./";
+import { Button, ButtonGroup } from ".";
 
 jsx; // tslint:disable-line
 
@@ -27,13 +27,12 @@ interface Props {
   phases: PhaseConfig[];
 }
 
-const SidebarBase: React.SFC<Props> = ({
+const CommandBarBase: React.SFC<Props> = ({
   phase,
   setPhase,
   command,
   setCommand,
   commands,
-  phases,
 }) => {
   return (
     <aside
@@ -43,23 +42,30 @@ const SidebarBase: React.SFC<Props> = ({
         flex-flow: column nowrap;
       `}
     >
-      <ButtonGroup block={true}>
-        {phases.map(ph => (
-          <Button
-            key={ph.phase}
-            block={true}
-            onClick={() => setPhase(ph.phase)}
-            active={phase === ph.phase}
-          >
-            {ph.name}
-          </Button>
-        ))}
+      <ButtonGroup block>
+        <Button block onClick={() => setPhase("dig")} active={phase === "dig"}>
+          Dig
+        </Button>
+        <Button
+          block
+          onClick={() => setPhase("build")}
+          active={phase === "build"}
+        >
+          Build
+        </Button>
+        <Button
+          block
+          onClick={() => setPhase("place")}
+          active={phase === "place"}
+        >
+          Place Stockpiles
+        </Button>
       </ButtonGroup>
-      <ButtonGroup block={true}>
+      <ButtonGroup block>
         {commands.map(comm => (
           <Button
             key={comm.command}
-            block={true}
+            block
             onClick={() => setCommand(comm.command)}
             active={command === comm.command}
           >
@@ -71,7 +77,7 @@ const SidebarBase: React.SFC<Props> = ({
   );
 };
 
-export const Sidebar = connect(
+export const CommandBar = connect(
   (state: State) => {
     const phase = selectPhase(state);
     return {
@@ -85,4 +91,4 @@ export const Sidebar = connect(
     setPhase: toolActions.setPhase,
     setCommand: toolActions.setCommand,
   },
-)(SidebarBase);
+)(CommandBarBase);

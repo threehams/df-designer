@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { State } from "../store";
 import { tilesActions, selectExported } from "../store/tiles";
-import { toolActions, selectTool, Tool } from "../store/tool";
+import { toolActions, selectTool, Tool, Phase } from "../store/tool";
 import { Button, ButtonGroup } from "./";
 
 jsx; // tslint:disable-line
@@ -14,9 +14,7 @@ interface Props {
   redo: typeof tilesActions.redo;
   setTool: typeof toolActions.setTool;
   resetBoard: typeof tilesActions.resetBoard;
-  toggleExport: typeof toolActions.toggleExport;
   tool: Tool;
-  exported: string | null;
 }
 
 const ToolbarBase: React.SFC<Props> = ({
@@ -25,8 +23,6 @@ const ToolbarBase: React.SFC<Props> = ({
   resetBoard,
   setTool,
   tool,
-  toggleExport,
-  exported,
 }) => {
   return (
     <header
@@ -45,6 +41,9 @@ const ToolbarBase: React.SFC<Props> = ({
         </ButtonGroup>
       )}
       <ButtonGroup>
+        <Button onClick={() => setTool("select")} active={tool === "select"}>
+          Select
+        </Button>
         <Button onClick={() => setTool("paint")} active={tool === "paint"}>
           Paint
         </Button>
@@ -52,16 +51,12 @@ const ToolbarBase: React.SFC<Props> = ({
           onClick={() => setTool("rectangle")}
           active={tool === "rectangle"}
         >
-          Select
+          Paint Rectangle
         </Button>
         <Button onClick={() => setTool("erase")} active={tool === "erase"}>
           Erase
         </Button>
       </ButtonGroup>
-      <ButtonGroup>
-        <Button onClick={toggleExport}>Export</Button>
-      </ButtonGroup>
-      {exported && <textarea value={exported} onChange={() => {}} />}
     </header>
   );
 };
@@ -78,6 +73,5 @@ export const Toolbar = connect(
     redo: tilesActions.redo,
     setTool: toolActions.setTool,
     resetBoard: tilesActions.resetBoard,
-    toggleExport: toolActions.toggleExport,
   },
 )(ToolbarBase);

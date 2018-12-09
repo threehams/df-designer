@@ -1,4 +1,8 @@
-const { PHASE_PRODUCTION_SERVER } = require("next-server/constants");
+try {
+  ({ PHASE_PRODUCTION_SERVER } = require("next-server/constants"));
+} catch (error) {
+  ({ PHASE_PRODUCTION_SERVER } = require("next/constants"));
+}
 module.exports = (phase, { defaultConfig }) => {
   if (phase === PHASE_PRODUCTION_SERVER) {
     return {

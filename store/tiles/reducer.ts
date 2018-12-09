@@ -2,7 +2,7 @@ import produce, { applyPatches, Patch } from "immer";
 import { ActionType, getType } from "typesafe-actions";
 import { State } from "../types";
 import * as actions from "./actions";
-import { Tile, TilesState } from "./types";
+import { TileCommands, TilesState } from "./types";
 import { range } from "../../lib/range";
 import { Command, selectCommandMap } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
@@ -41,7 +41,7 @@ export const tilesReducer = (
     };
   }
   let patches: Patch[];
-  return produce(state, () => {
+  return produce(state, outerDraft => {
     const newData = produce(
       state.data,
       draft => {
@@ -83,11 +83,8 @@ export const tilesReducer = (
         applyPatches(state, newPatches);
       },
     );
-    return {
-      ...state,
-      data: newData,
-      patches,
-    };
+    outerDraft.data = newData;
+    outerDraft.patches = patches;
   });
 };
 
@@ -126,7 +123,7 @@ const addCommand = (command: Command, current: Command[] | null) => {
 export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
-): Tile | null => {
+): TileCommands | null => {
   const id = idFromCoordinates(x, y);
   return state.tiles.data[id];
 };
