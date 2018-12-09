@@ -20,3 +20,9 @@ export const startSelection = createAction(
     return (x: number, y: number) => resolve({ x, y });
   },
 );
+export const setSelectedItem = createAction(
+  "app/tool/SET_SELECTED_ITEM",
+  resolve => {
+    return (x: number, y: number) => resolve({ x, y });
+  },
+);

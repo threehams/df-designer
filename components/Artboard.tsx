@@ -12,7 +12,7 @@ import { coordinatesFromId } from "../lib/coordinatesFromId";
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
 
-const TILE_SIZE = 20;
+const TILE_SIZE = 16;
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
 type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const textures = keys(tilesetNames).reduce(

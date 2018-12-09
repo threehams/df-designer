@@ -5,6 +5,7 @@ import { selectTool, selectCommand, selectCommandMap } from "../tool";
 import { selectTile } from "./reducer";
 import { Command, CommandConfig } from "../tool/types";
 import { toolActions } from "../tool";
+import { idFromCoordinates } from "../../lib/coordinatesFromId";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -40,6 +41,7 @@ export const clickTile = (x: number, y: number) => {
     if (x < 1 || y < 1) {
       return;
     }
+    const id = idFromCoordinates(x, y);
     const state = getState();
     const tool = selectTool(state);
     const command = selectCommand(state);
@@ -60,6 +62,9 @@ export const clickTile = (x: number, y: number) => {
     }
     if (tileCommand && tool === "erase") {
       return dispatch(removeTile(x, y, command));
+    }
+    if (tool === "select" && state.tiles.data[id]) {
+      dispatch(toolActions.setSelectedItem(x, y));
     }
   };
 };

@@ -79,6 +79,9 @@ export const commands: CommandMap = {
     shortcut: "b",
     phase: "build",
     textures: ["bed"],
+    adjustments: [
+      { name: "Make Bedroom", shortcut: "r", resize: true, initialSize: 3 },
+    ],
   },
   seat: {
     name: "Seat",
@@ -184,6 +187,9 @@ export const commands: CommandMap = {
     shortcut: "t",
     phase: "build",
     textures: ["table"],
+    adjustments: [
+      { name: "Make Dining Room", shortcut: "r", resize: true, initialSize: 3 },
+    ],
   },
   pavedRoad: {
     name: "Paved Road",

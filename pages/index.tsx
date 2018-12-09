@@ -3,8 +3,9 @@ import { Global, jsx, css } from "@emotion/core";
 import dynamic from "next/dynamic";
 
 import { connect } from "react-redux";
-import { Toolbar, CommandBar, ExportBar } from "../components/";
+import { Toolbar, CommandBar, ExportBar, SelectBar } from "../components/";
 import { State } from "../store";
+import { selectTool, Tool } from "../store/tool";
 
 jsx; // tslint:disable-line
 
@@ -13,7 +14,11 @@ const Artboard = dynamic(() => import("../components/Artboard"), {
   ssr: false,
 });
 
-const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
+interface Props {
+  tool: Tool;
+}
+const IndexBase: React.SFC<Props> = ({ tool }) => {
+  const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
     <div
       css={css`
@@ -54,7 +59,7 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
           grid-area: main;
         `}
       >
-        <Artboard key={version} />
+        <Artboard />
       </div>
       <div
         css={css`
@@ -63,7 +68,7 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
           overflow-y: auto;
         `}
       >
-        <CommandBar />
+        <MainSidebar />
       </div>
       <div
         css={css`
@@ -80,7 +85,7 @@ const IndexBase: React.SFC<{ version: number }> = ({ version }) => {
 
 const Index = connect((state: State) => {
   return {
-    version: state.tiles.version,
+    tool: selectTool(state),
   };
 })(IndexBase);
 export default Index;

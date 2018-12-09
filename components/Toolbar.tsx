@@ -41,6 +41,9 @@ const ToolbarBase: React.SFC<Props> = ({
         </ButtonGroup>
       )}
       <ButtonGroup>
+        <Button onClick={() => setTool("select")} active={tool === "select"}>
+          Select
+        </Button>
         <Button onClick={() => setTool("paint")} active={tool === "paint"}>
           Paint
         </Button>
@@ -48,7 +51,7 @@ const ToolbarBase: React.SFC<Props> = ({
           onClick={() => setTool("rectangle")}
           active={tool === "rectangle"}
         >
-          Rectangle
+          Paint Rectangle
         </Button>
         <Button onClick={() => setTool("erase")} active={tool === "erase"}>
           Erase

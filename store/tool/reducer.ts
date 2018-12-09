@@ -17,6 +17,7 @@ const INITIAL_STATE: ToolState = {
   phase: "dig",
   command: "mine",
   io: null,
+  selectedItem: null,
 };
 
 export const toolReducer = (
@@ -60,6 +61,9 @@ export const toolReducer = (
           draft.last = "erase";
           draft.current = "paint";
         }
+        return;
+      case getType(toolActions.setSelectedItem):
+        draft.selectedItem = { x: action.payload.x, y: action.payload.y };
         return;
     }
   });

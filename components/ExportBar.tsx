@@ -69,7 +69,9 @@ export const ExportBarBase: React.SFC<Props> = ({
               rows={20}
               key={phase}
               value={result}
-              onChange={() => {}}
+              onChange={() => {
+                // readonly input
+              }}
             />
           </React.Fragment>
         ))}

@@ -33,7 +33,6 @@ const CommandBarBase: React.SFC<Props> = ({
   command,
   setCommand,
   commands,
-  phases,
 }) => {
   return (
     <aside
@@ -44,16 +43,23 @@ const CommandBarBase: React.SFC<Props> = ({
       `}
     >
       <ButtonGroup block>
-        {phases.map(ph => (
-          <Button
-            key={ph.phase}
-            block
-            onClick={() => setPhase(ph.phase)}
-            active={phase === ph.phase}
-          >
-            {ph.name}
-          </Button>
-        ))}
+        <Button block onClick={() => setPhase("dig")} active={phase === "dig"}>
+          Dig
+        </Button>
+        <Button
+          block
+          onClick={() => setPhase("build")}
+          active={phase === "build"}
+        >
+          Build
+        </Button>
+        <Button
+          block
+          onClick={() => setPhase("place")}
+          active={phase === "place"}
+        >
+          Place Stockpiles
+        </Button>
       </ButtonGroup>
       <ButtonGroup block>
         {commands.map(comm => (

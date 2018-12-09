@@ -1,5 +1,5 @@
 import { tilesetNames } from "../../lib/tilesetNames";
-export type Tool = "paint" | "erase" | "rectangle";
+export type Tool = "select" | "paint" | "erase" | "rectangle";
 export type Command =
   | "armorStand"
   | "bed"
@@ -135,6 +135,10 @@ export type Command =
   | "noartifactsStockpile"
   | "junkgoodsStockpile";
 
+interface Coordinates {
+  x: number;
+  y: number;
+}
 export type Io = "export" | "import";
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
 type TilesetName = keyof typeof tilesetNames;
@@ -143,13 +147,19 @@ export interface ToolState {
   readonly current: Tool;
   readonly last: Tool | null;
   readonly export: boolean;
-  readonly selectionStart: {
-    x: number;
-    y: number;
-  } | null;
+  readonly selectionStart: Coordinates | null;
   readonly phase: Phase;
   readonly command: Command;
   readonly io: Io | null;
+  readonly selectedItem: Coordinates | null;
+}
+
+interface Adjustment {
+  name: string;
+  shortcut: string;
+  resize?: boolean;
+  initialSize?: number;
+  requires?: string[];
 }
 
 export interface CommandConfig {
@@ -162,6 +172,7 @@ export interface CommandConfig {
   requiredTool?: Tool | null;
   textures: TilesetName[];
   width?: number;
+  adjustments?: Adjustment[];
 }
 
 export interface PhaseConfig {
