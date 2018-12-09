@@ -3,15 +3,16 @@ import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
 import { State } from "../store";
-import { selectCurrentCommand, Command } from "../store/tool";
+import { Command, selectCommandMap } from "../store/tool";
+import { idFromCoordinates } from "../lib/coordinatesFromId";
 
 jsx; // tslint:disable-line
 
 interface Props {
-  item: Command;
+  command: Command | null;
 }
 
-const SelectBarBase: React.SFC<Props> = ({ item }) => {
+const SelectBarBase: React.SFC<Props> = ({ command }) => {
   return (
     <aside
       css={css`
@@ -20,15 +21,43 @@ const SelectBarBase: React.SFC<Props> = ({ item }) => {
         flex-flow: column nowrap;
       `}
     >
-      <div />
+      {!command && <div>No item selected.</div>}
+      {command && (
+        <div>
+          <div>{command.name}</div>
+          {command.adjustments &&
+            command.adjustments.map(adjustment => {
+              return (
+                <div key={command.command}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={adjustment.name}
+                      checked={!!command}
+                    />{" "}
+                    {adjustment.name}
+                  </label>
+                </div>
+              );
+            })}
+        </div>
+      )}
     </aside>
   );
 };
 
 export const SelectBar = connect(
   (state: State) => {
-    const command = selectCurrentCommand(state);
-    return {};
+    if (!state.tool.selectedItem) {
+      return { command: null };
+    }
+    const commandMap = selectCommandMap();
+    const { x, y } = state.tool.selectedItem;
+    const commands = state.tiles.data[idFromCoordinates(x, y)];
+    const command = commands.find(comm => commandMap[comm].phase !== "dig");
+    return {
+      command: command ? commandMap[command] : null,
+    };
   },
   {},
 )(SelectBarBase);
