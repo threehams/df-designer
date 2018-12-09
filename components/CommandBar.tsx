@@ -6,12 +6,11 @@ import { State } from "../store";
 import {
   toolActions,
   selectPhase,
-  selectCommand,
+  selectCurrentCommand,
   selectPhases,
   selectCommands,
-  CommandConfig,
-  Phase,
   Command,
+  Phase,
   PhaseConfig,
 } from "../store/tool";
 import { Button, ButtonGroup } from ".";
@@ -21,9 +20,9 @@ jsx; // tslint:disable-line
 interface Props {
   phase: Phase;
   setPhase: typeof toolActions.setPhase;
-  command: Command | null;
+  command: Command;
   setCommand: typeof toolActions.setCommand;
-  commands: CommandConfig[];
+  commands: Command[];
   phases: PhaseConfig[];
 }
 
@@ -67,7 +66,7 @@ const CommandBarBase: React.SFC<Props> = ({
             key={comm.command}
             block
             onClick={() => setCommand(comm.command)}
-            active={command === comm.command}
+            active={command.command === comm.command}
           >
             {comm.name}
           </Button>
@@ -82,7 +81,7 @@ export const CommandBar = connect(
     const phase = selectPhase(state);
     return {
       phase,
-      command: selectCommand(state),
+      command: selectCurrentCommand(state),
       phases: selectPhases(),
       commands: selectCommands(state, { phase }),
     };

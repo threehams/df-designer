@@ -1,6 +1,6 @@
 import { tilesetNames } from "../../lib/tilesetNames";
 export type Tool = "select" | "paint" | "erase" | "rectangle";
-export type Command =
+export type CommandKey =
   | "armorStand"
   | "bed"
   | "channel"
@@ -142,14 +142,14 @@ interface Coordinates {
 export type Io = "export" | "import";
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
 type TilesetName = keyof typeof tilesetNames;
-export type CommandMap = { [Key in Command]: CommandConfig };
+export type CommandMap = { [Key in CommandKey]: Command };
 export interface ToolState {
   readonly current: Tool;
   readonly last: Tool | null;
   readonly export: boolean;
   readonly selectionStart: Coordinates | null;
   readonly phase: Phase;
-  readonly command: Command;
+  readonly command: CommandKey;
   readonly io: Io | null;
   readonly selectedItem: Coordinates | null;
 }
@@ -162,9 +162,9 @@ interface Adjustment {
   requires?: string[];
 }
 
-export interface CommandConfig {
+export interface Command {
   bitmask?: boolean;
-  command: Command;
+  command: CommandKey;
   height?: number;
   shortcut: string;
   name: string;

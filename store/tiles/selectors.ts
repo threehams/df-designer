@@ -5,13 +5,18 @@ import {
   coordinatesFromId,
   idFromCoordinates,
 } from "../../lib/coordinatesFromId";
-import { Phase, Command, CommandMap } from "../tool/types";
+import { Phase, CommandKey, CommandMap } from "../tool/types";
 import { keys } from "../../lib/keys";
 import produce from "immer";
 
-type Grids = { [key in Phase]: string[][] };
+type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };
-
+type Dimensions = {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+};
 export const selectExported = createSelector(
   selectCommandMap,
   selectPhases,
@@ -38,11 +43,7 @@ export const selectExported = createSelector(
     }
     const grids = phases.reduce(
       (result, phase) => {
-        result[phase.phase] = Array.from(
-          Array(dimensions.maxY - dimensions.minY).keys(),
-        ).map(() => {
-          return Array(dimensions.maxX - dimensions.minX).fill("`");
-        });
+        result[phase.phase] = null;
         return result;
       },
       {} as Grids,
@@ -54,23 +55,34 @@ export const selectExported = createSelector(
           comm => commandMap[comm].phase === phase.phase,
         );
         if (command) {
-          grids[phase.phase][y - dimensions.minY][x - dimensions.minX] =
+          if (!grids[phase.phase]) {
+            grids[phase.phase] = createGrid(dimensions);
+          }
+          grids[phase.phase]![y - dimensions.minY][x - dimensions.minX] =
             commandMap[command].shortcut;
         }
       }
     }
     return keys(grids).reduce(
       (result, phase) => {
-        result[phase] = [[`#${phase}`]]
-          .concat(grids[phase])
-          .map(x => x.join(","))
-          .join("\n");
+        if (grids[phase]) {
+          result[phase] = [[`#${phase}`]]
+            .concat(grids[phase]!)
+            .map(x => x.join(","))
+            .join("\n");
+        }
         return result;
       },
       {} as GridsResult,
     );
   },
 );
+
+const createGrid = (dimensions: Dimensions) => {
+  return Array.from(Array(dimensions.maxY - dimensions.minY).keys()).map(() => {
+    return Array(dimensions.maxX - dimensions.minX).fill("`");
+  });
+};
 
 export const selectWalls = createSelector(
   (state: State) => state.tiles.data,
@@ -108,7 +120,7 @@ const neighborIds = (id: string) => {
   ];
 };
 
-const exposed = (commands: Command[] | null, commandMap: CommandMap) => {
+const exposed = (commands: CommandKey[] | null, commandMap: CommandMap) => {
   if (!commands) {
     return false;
   }

@@ -24,6 +24,13 @@ interface Props {
   phases: PhaseConfig[];
 }
 
+const download = (filename: string, text: string) => {
+  const element = document.createElement("a");
+  element.href = "data:text/plain;charset=utf-8," + encodeURIComponent(text);
+  element.download = filename;
+  element.click();
+};
+
 export const ExportBarBase: React.SFC<Props> = ({
   exported,
   io,
@@ -55,26 +62,39 @@ export const ExportBarBase: React.SFC<Props> = ({
           Export
         </Button>
       </ButtonGroup>
-      {io === "export" &&
-        exported &&
-        Object.entries(exported).map(([phase, result]) => (
-          <React.Fragment key={phase}>
-            <label>{phase}</label>
+      {io === "export" && exported && (
+        <React.Fragment>
+          {Object.entries(exported).map(([phase, csv]) => (
+            <React.Fragment key={phase}>
+              <label>{phase}</label>
 
-            <textarea
-              css={css`
-                display: block;
-                width: 100%;
-              `}
-              rows={20}
-              key={phase}
-              value={result}
-              onChange={() => {
-                // readonly input
-              }}
-            />
-          </React.Fragment>
-        ))}
+              <textarea
+                css={css`
+                  display: block;
+                  width: 100%;
+                `}
+                rows={20}
+                key={phase}
+                value={csv}
+                onChange={() => {
+                  // readonly input
+                }}
+              />
+            </React.Fragment>
+          ))}
+          <Button
+            color="primary"
+            onClick={() => {
+              Object.entries(exported).forEach(([phase, csv]) => {
+                download(`blueprint-${phase}`, csv);
+              });
+            }}
+          >
+            Download All
+          </Button>
+        </React.Fragment>
+      )}
+
       {io === "import" &&
         phases.map(phase => {
           return (

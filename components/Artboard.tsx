@@ -4,10 +4,11 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
 import { tilesActions, selectWalls } from "../store/tiles";
-import { selectCommandMap, CommandMap, Command } from "../store/tool";
+import { selectCommandMap, CommandMap, CommandKey } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
+import { Cursor } from "./Cursor";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
@@ -35,7 +36,7 @@ interface Props {
   endClickTile: typeof tilesActions.endClickTile;
   selectionStart: { x: number; y: number } | null;
   tiles: {
-    [key: string]: Command[];
+    [key: string]: CommandKey[];
   };
   walls: Set<string>;
 }
@@ -140,25 +141,6 @@ const tilePosition = ({ x, y }: { x: number; y: number }) => {
     x: Math.floor(x / TILE_SIZE),
     y: Math.floor(y / TILE_SIZE),
   };
-};
-
-interface CursorProps {
-  endX?: number;
-  endY?: number;
-  startX: number;
-  startY: number;
-}
-const Cursor: React.SFC<CursorProps> = ({ startX, startY, endX, endY }) => {
-  return (
-    <Sprite
-      alpha={0.5}
-      height={endY ? (endY - startY + 1) * TILE_SIZE : TILE_SIZE}
-      texture={PIXI.Texture.WHITE}
-      width={endX ? (endX - startX + 1) * TILE_SIZE : TILE_SIZE}
-      x={startX * TILE_SIZE}
-      y={startY * TILE_SIZE}
-    />
-  );
 };
 
 const Artboard = connect(

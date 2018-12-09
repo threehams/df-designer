@@ -1,9 +1,9 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import { State } from "../types";
-import { selectTool, selectCommand, selectCommandMap } from "../tool";
+import { selectTool, selectCurrentCommand, selectCommandMap } from "../tool";
 import { selectTile } from "./reducer";
-import { Command, CommandConfig } from "../tool/types";
+import { Command } from "../tool/types";
 import { toolActions } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
 
@@ -44,7 +44,7 @@ export const clickTile = (x: number, y: number) => {
     const id = idFromCoordinates(x, y);
     const state = getState();
     const tool = selectTool(state);
-    const command = selectCommand(state);
+    const command = selectCurrentCommand(state);
     const tileCommand = selectTile(state, { x, y });
     const commandMap = selectCommandMap();
     if (tool === "rectangle" && !state.tool.selectionStart) {
@@ -52,10 +52,7 @@ export const clickTile = (x: number, y: number) => {
     }
     if (tool === "paint") {
       if (
-        shouldUpdate(
-          (tileCommand || []).map(comm => commandMap[comm]),
-          commandMap[command],
-        )
+        shouldUpdate((tileCommand || []).map(comm => commandMap[comm]), command)
       ) {
         return dispatch(updateTile(x, y, command));
       }
@@ -72,7 +69,7 @@ export const endClickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
-    const command = selectCommand(state);
+    const command = selectCurrentCommand(state);
     if (tool !== "rectangle" || !state.tool.selectionStart) {
       return;
     }
@@ -92,10 +89,7 @@ export const endClickTile = (x: number, y: number) => {
   };
 };
 
-const shouldUpdate = (
-  tileCommands: CommandConfig[],
-  command: CommandConfig,
-) => {
+const shouldUpdate = (tileCommands: Command[], command: Command) => {
   if (tileCommands.includes(command)) {
     return false;
   }

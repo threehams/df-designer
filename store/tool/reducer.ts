@@ -3,7 +3,7 @@ import { ActionType, getType } from "typesafe-actions";
 import { State } from "../types";
 import * as actions from "./actions";
 import * as tilesActions from "../tiles/actions";
-import { ToolState, Phase, CommandConfig } from "./types";
+import { ToolState, Phase, Command } from "./types";
 import { toolActions } from ".";
 import { commands } from "./commands";
 import { phases } from "./phases";
@@ -73,8 +73,9 @@ export const selectTool = (state: State) => {
   return state.tool.current;
 };
 
-export const selectCommand = (state: State) => {
-  return state.tool.command;
+export const selectCurrentCommand = (state: State) => {
+  const commandMap = selectCommandMap();
+  return commandMap[state.tool.command];
 };
 
 export const selectCommands = createSelector(

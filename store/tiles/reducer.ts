@@ -4,7 +4,7 @@ import { State } from "../types";
 import * as actions from "./actions";
 import { TileCommands, TilesState } from "./types";
 import { range } from "../../lib/range";
-import { Command, selectCommandMap } from "../tool";
+import { CommandKey, Command, selectCommandMap } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
 
 const INITIAL_STATE: TilesState = {
@@ -88,12 +88,12 @@ export const tilesReducer = (
   });
 };
 
-const removeCommand = (command: Command, current: Command[] | null) => {
+const removeCommand = (command: Command, current: CommandKey[] | null) => {
   if (!current) {
     return [];
   }
   const commandMap = selectCommandMap();
-  const newPhase = commandMap[command].phase;
+  const newPhase = command.phase;
   return current.filter(currentCommand => {
     if (newPhase === "dig") {
       return false;
@@ -103,21 +103,21 @@ const removeCommand = (command: Command, current: Command[] | null) => {
 };
 
 // Replace a command from the same phase, while keeping the rest.
-const addCommand = (command: Command, current: Command[] | null) => {
+const addCommand = (command: Command, current: CommandKey[] | null) => {
   if (!current) {
-    return [command];
+    return [command.command];
   }
   const commandMap = selectCommandMap();
-  const newPhase = commandMap[command].phase;
+  const newPhase = command.phase;
   for (const [index, currentCommand] of current.entries()) {
     const currentPhase = commandMap[currentCommand].phase;
     if (newPhase === currentPhase) {
       const newCommands = current.slice();
-      newCommands[index] = command;
+      newCommands[index] = command.command;
       return newCommands;
     }
   }
-  return [...current, command];
+  return [...current, command.command];
 };
 
 export const selectTile = (

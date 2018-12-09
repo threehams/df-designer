@@ -1,7 +1,7 @@
 import { Patch } from "immer";
-import { Command } from "../tool";
+import { CommandKey } from "../tool";
 
-export type TileCommands = Command[];
+export type TileCommands = CommandKey[];
 export interface TilesState {
   readonly data: { [key: string]: TileCommands };
   readonly patches: Patch[];

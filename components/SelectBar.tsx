@@ -3,20 +3,12 @@ import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
 import { State } from "../store";
-import {
-  toolActions,
-  selectPhase,
-  selectCommand,
-  selectPhases,
-  selectCommands,
-  CommandConfig,
-  selectCommandMap,
-} from "../store/tool";
+import { selectCurrentCommand, Command } from "../store/tool";
 
 jsx; // tslint:disable-line
 
 interface Props {
-  item: CommandConfig;
+  item: Command;
 }
 
 const SelectBarBase: React.SFC<Props> = ({ item }) => {
@@ -35,8 +27,7 @@ const SelectBarBase: React.SFC<Props> = ({ item }) => {
 
 export const SelectBar = connect(
   (state: State) => {
-    const commandMap = selectCommandMap();
-    const command = selectCommand(state);
+    const command = selectCurrentCommand(state);
     return {};
   },
   {},
