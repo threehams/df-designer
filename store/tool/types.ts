@@ -141,6 +141,7 @@ interface Coordinates {
 }
 export type Io = "export" | "import";
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
+export type Type = "designation" | "item";
 type TilesetName = keyof typeof tilesetNames;
 export type CommandMap = { [Key in CommandKey]: Command };
 export interface ToolState {
@@ -168,6 +169,7 @@ export interface Command {
   height?: number;
   shortcut: string;
   name: string;
+  type: Type;
   phase: Phase;
   requiredTool?: Tool | null;
   textures: TilesetName[];

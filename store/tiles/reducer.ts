@@ -1,10 +1,10 @@
-import produce, { applyPatches, Patch } from "immer";
+import produce, { applyPatches, Patch, DraftObject } from "immer";
 import { ActionType, getType } from "typesafe-actions";
 import { State } from "../types";
 import * as actions from "./actions";
-import { TileCommands, TilesState } from "./types";
+import { Tile, TilesState } from "./types";
 import { range } from "../../lib/range";
-import { CommandKey, Command, selectCommandMap } from "../tool";
+import { Command, selectCommandMap } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
 
 const INITIAL_STATE: TilesState = {
@@ -65,12 +65,7 @@ export const tilesReducer = (
           case getType(actions.removeTile): {
             const { x, y, command } = action.payload;
             const id = idFromCoordinates(x, y);
-            const newCommands = removeCommand(command, draft[id]);
-            if (newCommands.length) {
-              draft[id] = newCommands;
-            } else {
-              delete draft[id];
-            }
+            draft[id] = removeCommand(command, draft[id]);
             return;
           }
         }
@@ -88,42 +83,45 @@ export const tilesReducer = (
   });
 };
 
-const removeCommand = (command: Command, current: CommandKey[] | null) => {
+const removeCommand = (
+  command: Command,
+  current: DraftObject<Tile> | null,
+): Tile | null => {
   if (!current) {
-    return [];
+    return null;
   }
-  const commandMap = selectCommandMap();
-  const newPhase = command.phase;
-  return current.filter(currentCommand => {
-    if (newPhase === "dig") {
-      return false;
-    }
-    return commandMap[currentCommand].phase !== newPhase;
-  });
+  if (command.type === "designation") {
+    return {
+      designation: null,
+      item: null,
+      adjustments: null,
+    };
+  }
+  current[command.type] = null;
+  return current;
 };
 
 // Replace a command from the same phase, while keeping the rest.
-const addCommand = (command: Command, current: CommandKey[] | null) => {
+const addCommand = (
+  command: Command,
+  current: DraftObject<Tile> | null,
+): Tile => {
   if (!current) {
-    return [command.command];
+    return {
+      designation: null,
+      item: null,
+      adjustments: null,
+      [command.type]: command.command,
+    };
   }
-  const commandMap = selectCommandMap();
-  const newPhase = command.phase;
-  for (const [index, currentCommand] of current.entries()) {
-    const currentPhase = commandMap[currentCommand].phase;
-    if (newPhase === currentPhase) {
-      const newCommands = current.slice();
-      newCommands[index] = command.command;
-      return newCommands;
-    }
-  }
-  return [...current, command.command];
+  current[command.type] = command.command;
+  return current;
 };
 
 export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
-): TileCommands | null => {
+): Tile | null => {
   const id = idFromCoordinates(x, y);
   return state.tiles.data[id];
 };

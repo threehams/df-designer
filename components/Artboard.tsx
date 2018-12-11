@@ -35,9 +35,7 @@ interface Props {
   commandMap: CommandMap;
   endClickTile: typeof tilesActions.endClickTile;
   selectionStart: { x: number; y: number } | null;
-  tiles: {
-    [key: string]: CommandKey[];
-  };
+  tiles: State["tiles"]["data"];
   walls: Set<string>;
 }
 
