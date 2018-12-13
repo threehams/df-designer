@@ -8,6 +8,7 @@ import {
 import { Phase, CommandKey, CommandMap } from "../tool/types";
 import { keys } from "../../lib/keys";
 import produce from "immer";
+import { Tile } from "./types";
 
 type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };
@@ -22,6 +23,7 @@ export const selectExported = createSelector(
   selectPhases,
   (state: State) => state.tiles.data,
   (commandMap, phases, tiles) => {
+    return {};
     const dimensions = Object.entries(tiles).reduce(
       (result, [id]) => {
         const { x, y } = coordinatesFromId(id);
@@ -90,8 +92,8 @@ export const selectWalls = createSelector(
   (tiles, commandMap) => {
     const walls = new Set();
     produce(tiles, draft => {
-      Object.entries(tiles).forEach(([tileId, tileCommands]) => {
-        if (exposed(tileCommands, commandMap)) {
+      Object.entries(tiles).forEach(([tileId, tile]) => {
+        if (exposed(tile, commandMap)) {
           for (const id of neighborIds(tileId)) {
             if (!draft[id]) {
               walls.add(id);
@@ -120,9 +122,9 @@ const neighborIds = (id: string) => {
   ];
 };
 
-const exposed = (commands: CommandKey[] | null, commandMap: CommandMap) => {
-  if (!commands) {
+const exposed = (tile: Tile | null, commandMap: CommandMap) => {
+  if (!tile) {
     return false;
   }
-  return commands.filter(command => commandMap[command].phase === "dig").length;
+  return !!tile.designation;
 };
