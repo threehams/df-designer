@@ -9,8 +9,9 @@ import { selectTool, Tool } from "../store/tool";
 
 jsx; // tslint:disable-line
 
-// @ts-ignore incorrect library type definition on next/dynamic
-const Artboard = dynamic(() => import("../components/Artboard"), {
+// @ts-ignore I have no idea how to make these two libraries agree
+// react-redux and react-loadable
+const Artboard = dynamic(import("../components/Artboard"), {
   ssr: false,
 });
 
