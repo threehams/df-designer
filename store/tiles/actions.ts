@@ -6,6 +6,7 @@ import { selectTile } from "./reducer";
 import { Command } from "../tool/types";
 import { toolActions } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
+import { Tile } from "./types";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -45,19 +46,17 @@ export const clickTile = (x: number, y: number) => {
     const state = getState();
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
-    const tileCommand = selectTile(state, { x, y });
+    const tile = selectTile(state, { x, y });
     const commandMap = selectCommandMap();
     if (tool === "rectangle" && !state.tool.selectionStart) {
       return dispatch(toolActions.startSelection(x, y));
     }
     if (tool === "paint") {
-      if (
-        shouldUpdate((tileCommand || []).map(comm => commandMap[comm]), command)
-      ) {
+      if (shouldUpdate(tile, command)) {
         return dispatch(updateTile(x, y, command));
       }
     }
-    if (tileCommand && tool === "erase") {
+    if (tile && tool === "erase") {
       return dispatch(removeTile(x, y, command));
     }
     if (tool === "select" && state.tiles.data[id]) {
@@ -89,15 +88,18 @@ export const endClickTile = (x: number, y: number) => {
   };
 };
 
-const shouldUpdate = (tileCommands: Command[], command: Command) => {
-  if (tileCommands.includes(command)) {
+const shouldUpdate = (tile: Tile | null, command: Command) => {
+  if (!tile) {
+    return true;
+  }
+  // don't bother dispatching the action. necessary since this fires once
+  // per frame
+  if (tile[command.type] === command.command) {
     return false;
   }
-  if (
-    (command.phase !== "dig" &&
-      !tileCommands.filter(c => c.phase === "dig").length) ||
-    tileCommands.filter(c => c.phase !== "dig").length
-  ) {
+  // need to dig before placing
+  // TODO only "dig" is likely valid here, but check
+  if (command.type === "item" && !tile.designation) {
     return false;
   }
   return true;

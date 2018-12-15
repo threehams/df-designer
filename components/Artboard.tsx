@@ -3,7 +3,7 @@ import { Stage, Container, Sprite } from "@inlet/react-pixi";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
-import { tilesActions, selectWalls } from "../store/tiles";
+import { tilesActions, selectWalls, Tile } from "../store/tiles";
 import { selectCommandMap, CommandMap, CommandKey } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
@@ -35,9 +35,7 @@ interface Props {
   commandMap: CommandMap;
   endClickTile: typeof tilesActions.endClickTile;
   selectionStart: { x: number; y: number } | null;
-  tiles: {
-    [key: string]: CommandKey[];
-  };
+  tiles: State["tiles"]["data"];
   walls: Set<string>;
 }
 
@@ -102,9 +100,17 @@ const ArtboardBase: React.SFC<Props> = ({
           texture={PIXI.Texture.EMPTY}
           width={2048}
         />
-        {Object.entries(tiles).map(([id, commands]) => {
+        {Object.entries(tiles).map(([id, tile]) => {
+          if (!tile) {
+            return null;
+          }
           const { x, y } = coordinatesFromId(id);
-          return commands.map(command => {
+          const types: ["designation", "item"] = ["designation", "item"];
+          return types.map(type => {
+            const command = tile[type];
+            if (!command) {
+              return null;
+            }
             return (
               <Sprite
                 key={`${id}${command}`}

@@ -6,6 +6,7 @@ export const commands: CommandMap = {
     command: "mine",
     shortcut: "d",
     phase: "dig",
+    type: "designation",
     textures: ["floorRough1", "floorRough2", "floorRough3", "floorRough4"],
   },
   channel: {
@@ -13,6 +14,7 @@ export const commands: CommandMap = {
     command: "channel",
     shortcut: "h",
     phase: "dig",
+    type: "designation",
     textures: ["underscore"],
   },
   upStair: {
@@ -20,6 +22,7 @@ export const commands: CommandMap = {
     command: "upStair",
     shortcut: "u",
     phase: "dig",
+    type: "designation",
     textures: ["stairsUp"],
   },
   upDownStair: {
@@ -27,6 +30,7 @@ export const commands: CommandMap = {
     command: "upDownStair",
     shortcut: "i",
     phase: "dig",
+    type: "designation",
     textures: ["X"],
   },
   downStair: {
@@ -34,6 +38,7 @@ export const commands: CommandMap = {
     command: "downStair",
     shortcut: "j",
     phase: "dig",
+    type: "designation",
     textures: ["stairsDown"],
   },
   upRamp: {
@@ -41,6 +46,7 @@ export const commands: CommandMap = {
     command: "upRamp",
     shortcut: "u",
     phase: "dig",
+    type: "designation",
     textures: ["rampUp"],
   },
   fortification: {
@@ -49,12 +55,14 @@ export const commands: CommandMap = {
     textures: ["smoothWallCross"],
     shortcut: "F",
     phase: "designate",
+    type: "designation",
   },
   smooth: {
     name: "Smooth Stone",
     command: "smooth",
     shortcut: "s",
     phase: "designate",
+    type: "designation",
     textures: ["plus"],
     bitmask: true,
   },
@@ -63,6 +71,7 @@ export const commands: CommandMap = {
     command: "engrave",
     shortcut: "e",
     phase: "designate",
+    type: "designation",
     textures: ["smoothWallCross"],
     bitmask: true,
   },
@@ -71,6 +80,7 @@ export const commands: CommandMap = {
     command: "armorStand",
     shortcut: "a",
     phase: "build",
+    type: "item",
     textures: ["armorStand"],
   },
   bed: {
@@ -78,6 +88,7 @@ export const commands: CommandMap = {
     command: "bed",
     shortcut: "b",
     phase: "build",
+    type: "item",
     textures: ["bed"],
     adjustments: [
       { name: "Make Bedroom", shortcut: "r", resize: true, initialSize: 3 },
@@ -88,6 +99,7 @@ export const commands: CommandMap = {
     command: "seat",
     shortcut: "c",
     phase: "build",
+    type: "item",
     textures: ["chair"],
   },
   tomb: {
@@ -95,6 +107,7 @@ export const commands: CommandMap = {
     command: "tomb",
     shortcut: "n",
     phase: "build",
+    type: "item",
     textures: ["tomb"],
   },
   door: {
@@ -102,6 +115,7 @@ export const commands: CommandMap = {
     command: "door",
     shortcut: "d",
     phase: "build",
+    type: "item",
     textures: ["door"],
   },
   floodgate: {
@@ -109,6 +123,7 @@ export const commands: CommandMap = {
     command: "floodgate",
     shortcut: "x",
     phase: "build",
+    type: "item",
     textures: ["floodgate"],
   },
   floorHatch: {
@@ -116,6 +131,7 @@ export const commands: CommandMap = {
     command: "floorHatch",
     shortcut: "H",
     phase: "build",
+    type: "item",
     textures: ["hatch"],
   },
   floorGrate: {
@@ -123,6 +139,7 @@ export const commands: CommandMap = {
     command: "floorGrate",
     shortcut: "G",
     phase: "build",
+    type: "item",
     textures: ["grate"],
   },
   verticalBars: {
@@ -130,6 +147,7 @@ export const commands: CommandMap = {
     command: "verticalBars",
     shortcut: "B",
     phase: "build",
+    type: "item",
     textures: ["bar"],
   },
   wallGrate: {
@@ -137,6 +155,7 @@ export const commands: CommandMap = {
     command: "wallGrate",
     shortcut: "W",
     phase: "build",
+    type: "item",
     textures: ["floodgate"],
   },
   cabinet: {
@@ -144,6 +163,7 @@ export const commands: CommandMap = {
     command: "cabinet",
     shortcut: "f",
     phase: "build",
+    type: "item",
     textures: ["cabinet"],
   },
   container: {
@@ -151,6 +171,7 @@ export const commands: CommandMap = {
     command: "container",
     shortcut: "h",
     phase: "build",
+    type: "item",
     textures: ["coffer"],
   },
   kennel: {
@@ -158,6 +179,7 @@ export const commands: CommandMap = {
     command: "kennel",
     shortcut: "k",
     phase: "build",
+    type: "item",
     textures: ["earring"],
   },
   farmPlot: {
@@ -165,6 +187,7 @@ export const commands: CommandMap = {
     command: "farmPlot",
     shortcut: "p",
     phase: "build",
+    type: "item",
     textures: ["roadRough"],
   },
   weaponRack: {
@@ -172,6 +195,7 @@ export const commands: CommandMap = {
     command: "weaponRack",
     shortcut: "r",
     phase: "build",
+    type: "item",
     textures: ["weaponRack"],
   },
   statue: {
@@ -179,6 +203,7 @@ export const commands: CommandMap = {
     command: "statue",
     shortcut: "s",
     phase: "build",
+    type: "item",
     textures: ["statue"],
   },
   table: {
@@ -186,6 +211,7 @@ export const commands: CommandMap = {
     command: "table",
     shortcut: "t",
     phase: "build",
+    type: "item",
     textures: ["table"],
     adjustments: [
       { name: "Make Dining Room", shortcut: "r", resize: true, initialSize: 3 },
@@ -196,6 +222,7 @@ export const commands: CommandMap = {
     command: "pavedRoad",
     shortcut: "o",
     phase: "build",
+    type: "item",
     textures: ["plus"],
   },
   dirtRoad: {
@@ -203,6 +230,7 @@ export const commands: CommandMap = {
     command: "dirtRoad",
     shortcut: "O",
     phase: "build",
+    type: "item",
     textures: ["roadRough"],
   },
   bridge: {
@@ -210,6 +238,7 @@ export const commands: CommandMap = {
     command: "bridge",
     shortcut: "g",
     phase: "build",
+    type: "item",
     textures: ["plus"],
   },
   well: {
@@ -217,6 +246,7 @@ export const commands: CommandMap = {
     command: "well",
     shortcut: "l",
     phase: "build",
+    type: "item",
     textures: ["well"],
   },
   ballista: {
@@ -224,6 +254,7 @@ export const commands: CommandMap = {
     command: "ballista",
     shortcut: "ib",
     phase: "build",
+    type: "item",
     // this is going to be rough
     textures: ["bowyer"],
   },
@@ -232,6 +263,7 @@ export const commands: CommandMap = {
     command: "catapult",
     shortcut: "ic",
     phase: "build",
+    type: "item",
     // ditto
     textures: ["bowyer"],
   },
@@ -240,6 +272,7 @@ export const commands: CommandMap = {
     command: "leatherWorks",
     shortcut: "we",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -249,6 +282,7 @@ export const commands: CommandMap = {
     command: "quern",
     shortcut: "wq",
     phase: "build",
+    type: "item",
     textures: ["W"],
   },
   millstone: {
@@ -256,6 +290,7 @@ export const commands: CommandMap = {
     command: "millstone",
     shortcut: "wM",
     phase: "build",
+    type: "item",
     textures: ["W"],
   },
   loom: {
@@ -263,6 +298,7 @@ export const commands: CommandMap = {
     command: "loom",
     shortcut: "wo",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -272,6 +308,7 @@ export const commands: CommandMap = {
     command: "clothiersShop",
     shortcut: "wk",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -281,6 +318,7 @@ export const commands: CommandMap = {
     command: "bowyersWorkshop",
     shortcut: "wb",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -290,6 +328,7 @@ export const commands: CommandMap = {
     command: "carpentersWorkshop",
     shortcut: "wc",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -299,6 +338,7 @@ export const commands: CommandMap = {
     command: "metalsmithsForge",
     shortcut: "wf",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -308,6 +348,7 @@ export const commands: CommandMap = {
     command: "magmaForge",
     shortcut: "wv",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -317,6 +358,7 @@ export const commands: CommandMap = {
     command: "jewelersWorkshop",
     shortcut: "wj",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -326,6 +368,7 @@ export const commands: CommandMap = {
     command: "masonsWorkshop",
     shortcut: "wm",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -335,6 +378,7 @@ export const commands: CommandMap = {
     command: "butchersShop",
     shortcut: "wu",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -344,6 +388,7 @@ export const commands: CommandMap = {
     command: "tannersShop",
     shortcut: "wn",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -353,6 +398,7 @@ export const commands: CommandMap = {
     command: "craftsdwarfsWorkshop",
     shortcut: "wr",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -362,6 +408,7 @@ export const commands: CommandMap = {
     command: "siegeWorkshop",
     shortcut: "ws",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 5,
     height: 5,
@@ -371,6 +418,7 @@ export const commands: CommandMap = {
     command: "mechanicsWorkshop",
     shortcut: "wt",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -380,6 +428,7 @@ export const commands: CommandMap = {
     command: "still",
     shortcut: "wl",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -389,6 +438,7 @@ export const commands: CommandMap = {
     command: "farmersWorkshop",
     shortcut: "ww",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -398,6 +448,7 @@ export const commands: CommandMap = {
     command: "kitchen",
     shortcut: "wz",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -407,6 +458,7 @@ export const commands: CommandMap = {
     command: "fishery",
     shortcut: "wh",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -416,6 +468,7 @@ export const commands: CommandMap = {
     command: "ashery",
     shortcut: "wy",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -425,6 +478,7 @@ export const commands: CommandMap = {
     command: "dyersShop",
     shortcut: "wd",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -434,6 +488,7 @@ export const commands: CommandMap = {
     command: "soapMakersWorkshop",
     shortcut: "wS",
     phase: "build",
+    type: "item",
     textures: ["W"],
     width: 3,
     height: 3,
@@ -443,6 +498,7 @@ export const commands: CommandMap = {
     command: "woodFurnace",
     shortcut: "ew",
     phase: "build",
+    type: "item",
     textures: ["e"],
     width: 3,
     height: 3,
@@ -452,6 +508,7 @@ export const commands: CommandMap = {
     command: "smelter",
     shortcut: "es",
     phase: "build",
+    type: "item",
     textures: ["e"],
     width: 3,
     height: 3,
@@ -461,6 +518,7 @@ export const commands: CommandMap = {
     command: "glassFurnace",
     shortcut: "eg",
     phase: "build",
+    type: "item",
     textures: ["e"],
     width: 3,
     height: 3,
@@ -470,6 +528,7 @@ export const commands: CommandMap = {
     command: "kiln",
     shortcut: "ek",
     phase: "build",
+    type: "item",
     textures: ["e"],
     width: 3,
     height: 3,
@@ -479,6 +538,7 @@ export const commands: CommandMap = {
     command: "magmaSmelter",
     shortcut: "el",
     phase: "build",
+    type: "item",
     textures: ["e"],
     width: 3,
     height: 3,
@@ -488,6 +548,7 @@ export const commands: CommandMap = {
     command: "magmaGlassFurnace",
     shortcut: "ea",
     phase: "build",
+    type: "item",
     textures: ["e"],
     width: 3,
     height: 3,
@@ -497,6 +558,7 @@ export const commands: CommandMap = {
     command: "magmaKiln",
     shortcut: "en",
     phase: "build",
+    type: "item",
     textures: ["e"],
     width: 3,
     height: 3,
@@ -506,6 +568,7 @@ export const commands: CommandMap = {
     command: "glassWindow",
     shortcut: "",
     phase: "build",
+    type: "item",
     textures: ["y"],
   },
   gemWindow: {
@@ -513,6 +576,7 @@ export const commands: CommandMap = {
     command: "gemWindow",
     shortcut: "",
     phase: "build",
+    type: "item",
     textures: ["Y"],
   },
   constructWall: {
@@ -520,6 +584,7 @@ export const commands: CommandMap = {
     command: "constructWall",
     shortcut: "Cw",
     phase: "build",
+    type: "item",
     textures: ["O"],
   },
   constructFloor: {
@@ -527,6 +592,7 @@ export const commands: CommandMap = {
     command: "constructFloor",
     shortcut: "Cf",
     phase: "build",
+    type: "item",
     textures: ["plus"],
   },
   constructRamp: {
@@ -534,6 +600,7 @@ export const commands: CommandMap = {
     command: "constructRamp",
     shortcut: "Cr",
     phase: "build",
+    type: "item",
     textures: ["rampUp"],
   },
   constructUpStair: {
@@ -541,6 +608,7 @@ export const commands: CommandMap = {
     command: "constructUpStair",
     shortcut: "Cu",
     phase: "build",
+    type: "item",
     textures: ["stairsUp"],
   },
   constructDownStair: {
@@ -548,6 +616,7 @@ export const commands: CommandMap = {
     command: "constructDownStair",
     shortcut: "Cj",
     phase: "build",
+    type: "item",
     textures: ["stairsDown"],
   },
   constructUpDownStair: {
@@ -555,6 +624,7 @@ export const commands: CommandMap = {
     command: "constructUpDownStair",
     shortcut: "Cx",
     phase: "build",
+    type: "item",
     textures: ["X"],
   },
   constructFortification: {
@@ -562,6 +632,7 @@ export const commands: CommandMap = {
     command: "constructFortification",
     shortcut: "CF",
     phase: "build",
+    type: "item",
     textures: ["smoothWallCross"],
   },
   tradeDepot: {
@@ -569,6 +640,7 @@ export const commands: CommandMap = {
     command: "tradeDepot",
     shortcut: "D",
     phase: "build",
+    type: "item",
     textures: ["D"],
     width: 5,
     height: 5,
@@ -578,6 +650,7 @@ export const commands: CommandMap = {
     command: "stoneFallTrap",
     shortcut: "Ts",
     phase: "build",
+    type: "item",
     textures: ["caret"],
   },
   weaponTrap: {
@@ -585,6 +658,7 @@ export const commands: CommandMap = {
     command: "weaponTrap",
     shortcut: "Tw",
     phase: "build",
+    type: "item",
     textures: ["caret"],
   },
   lever: {
@@ -592,6 +666,7 @@ export const commands: CommandMap = {
     command: "lever",
     shortcut: "Tl",
     phase: "build",
+    type: "item",
     textures: ["leverOff"],
   },
   pressurePlate: {
@@ -599,6 +674,7 @@ export const commands: CommandMap = {
     command: "pressurePlate",
     shortcut: "Tp",
     phase: "build",
+    type: "item",
     textures: ["caret"],
   },
   cageTrap: {
@@ -606,6 +682,7 @@ export const commands: CommandMap = {
     command: "cageTrap",
     shortcut: "Tc",
     phase: "build",
+    type: "item",
     textures: ["caret"],
   },
   uprightSpearSpike: {
@@ -613,6 +690,7 @@ export const commands: CommandMap = {
     command: "uprightSpearSpike",
     shortcut: "TS",
     phase: "build",
+    type: "item",
     textures: ["riverVertical"],
   },
   screwPump: {
@@ -620,6 +698,7 @@ export const commands: CommandMap = {
     command: "screwPump",
     shortcut: "Ms",
     phase: "build",
+    type: "item",
     textures: ["S"],
   },
   waterWheel: {
@@ -627,6 +706,7 @@ export const commands: CommandMap = {
     command: "waterWheel",
     shortcut: "Mw",
     phase: "build",
+    type: "item",
     textures: ["w"],
   },
   windmill: {
@@ -634,6 +714,7 @@ export const commands: CommandMap = {
     command: "windmill",
     shortcut: "Mm",
     phase: "build",
+    type: "item",
     textures: ["W"],
   },
   gearAssembly: {
@@ -641,6 +722,7 @@ export const commands: CommandMap = {
     command: "gearAssembly",
     shortcut: "Mg",
     phase: "build",
+    type: "item",
     textures: ["splat"],
   },
   horizontalAxle: {
@@ -648,6 +730,7 @@ export const commands: CommandMap = {
     command: "horizontalAxle",
     shortcut: "Mh",
     phase: "build",
+    type: "item",
     textures: ["riverVertical"],
   },
   verticalAxle: {
@@ -655,6 +738,7 @@ export const commands: CommandMap = {
     command: "verticalAxle",
     shortcut: "Mv",
     phase: "build",
+    type: "item",
     textures: ["o"],
   },
   support: {
@@ -662,6 +746,7 @@ export const commands: CommandMap = {
     command: "support",
     shortcut: "S",
     phase: "build",
+    type: "item",
     textures: ["I"],
   },
   animalTrap: {
@@ -669,6 +754,7 @@ export const commands: CommandMap = {
     command: "animalTrap",
     shortcut: "m",
     phase: "build",
+    type: "item",
     textures: ["animalTrap"],
   },
   restraint: {
@@ -676,6 +762,7 @@ export const commands: CommandMap = {
     command: "restraint",
     shortcut: "v",
     phase: "build",
+    type: "item",
     textures: ["restraint"],
   },
   cage: {
@@ -683,6 +770,7 @@ export const commands: CommandMap = {
     command: "cage",
     shortcut: "j",
     phase: "build",
+    type: "item",
     textures: ["cage"],
   },
   archeryTarget: {
@@ -690,6 +778,7 @@ export const commands: CommandMap = {
     command: "archeryTarget",
     shortcut: "A",
     phase: "build",
+    type: "item",
     textures: ["X"],
   },
   tractionBench: {
@@ -697,6 +786,7 @@ export const commands: CommandMap = {
     command: "tractionBench",
     shortcut: "R",
     phase: "build",
+    type: "item",
     textures: ["T"],
   },
   animalStockpile: {
@@ -704,6 +794,7 @@ export const commands: CommandMap = {
     command: "animalStockpile",
     shortcut: "a",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   foodStockpile: {
@@ -711,6 +802,7 @@ export const commands: CommandMap = {
     command: "foodStockpile",
     shortcut: "f",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   furnitureStorageStockpile: {
@@ -718,6 +810,7 @@ export const commands: CommandMap = {
     command: "furnitureStorageStockpile",
     shortcut: "u",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   graveyardStockpile: {
@@ -725,6 +818,7 @@ export const commands: CommandMap = {
     command: "graveyardStockpile",
     shortcut: "y",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   refuseStockpile: {
@@ -732,6 +826,7 @@ export const commands: CommandMap = {
     command: "refuseStockpile",
     shortcut: "r",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   stoneStockpile: {
@@ -739,6 +834,7 @@ export const commands: CommandMap = {
     command: "stoneStockpile",
     shortcut: "s",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   woodStockpile: {
@@ -746,6 +842,7 @@ export const commands: CommandMap = {
     command: "woodStockpile",
     shortcut: "w",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   gemStockpile: {
@@ -753,6 +850,7 @@ export const commands: CommandMap = {
     command: "gemStockpile",
     shortcut: "e",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   barBlockStockpile: {
@@ -760,6 +858,7 @@ export const commands: CommandMap = {
     command: "barBlockStockpile",
     shortcut: "b",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   clothStockpile: {
@@ -767,6 +866,7 @@ export const commands: CommandMap = {
     command: "clothStockpile",
     shortcut: "h",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   leatherStockpile: {
@@ -774,6 +874,7 @@ export const commands: CommandMap = {
     command: "leatherStockpile",
     shortcut: "l",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   ammoStockpile: {
@@ -781,6 +882,7 @@ export const commands: CommandMap = {
     command: "ammoStockpile",
     shortcut: "z",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   coinsStockpile: {
@@ -788,6 +890,7 @@ export const commands: CommandMap = {
     command: "coinsStockpile",
     shortcut: "n",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   finishedGoodsStockpile: {
@@ -795,6 +898,7 @@ export const commands: CommandMap = {
     command: "finishedGoodsStockpile",
     shortcut: "g",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   weaponsStockpile: {
@@ -802,6 +906,7 @@ export const commands: CommandMap = {
     command: "weaponsStockpile",
     shortcut: "p",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   armorStockpile: {
@@ -809,6 +914,7 @@ export const commands: CommandMap = {
     command: "armorStockpile",
     shortcut: "d",
     phase: "place",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   // quickfort aliases
@@ -817,6 +923,7 @@ export const commands: CommandMap = {
     command: "seedsStockpile",
     shortcut: "seeds",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   noseedsStockpile: {
@@ -824,6 +931,7 @@ export const commands: CommandMap = {
     command: "noseedsStockpile",
     shortcut: "noseeds",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   boozeStockpile: {
@@ -831,6 +939,7 @@ export const commands: CommandMap = {
     command: "boozeStockpile",
     shortcut: "booze",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   edibleFoodStockpile: {
@@ -838,6 +947,7 @@ export const commands: CommandMap = {
     command: "edibleFoodStockpile",
     shortcut: "food",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   plantsStockpile: {
@@ -845,6 +955,7 @@ export const commands: CommandMap = {
     command: "plantsStockpile",
     shortcut: "plants",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   corpsesStockpile: {
@@ -852,6 +963,7 @@ export const commands: CommandMap = {
     command: "corpsesStockpile",
     shortcut: "corpses",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   bonesStockpile: {
@@ -859,6 +971,7 @@ export const commands: CommandMap = {
     command: "bonesStockpile",
     shortcut: "bones",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   rawhidesStockpile: {
@@ -866,6 +979,7 @@ export const commands: CommandMap = {
     command: "rawhidesStockpile",
     shortcut: "rawhides",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   tannedhidesStockpile: {
@@ -873,6 +987,7 @@ export const commands: CommandMap = {
     command: "tannedhidesStockpile",
     shortcut: "tannedhides",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   metalStockpile: {
@@ -880,6 +995,7 @@ export const commands: CommandMap = {
     command: "metalStockpile",
     shortcut: "metal",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   nometalStockpile: {
@@ -887,6 +1003,7 @@ export const commands: CommandMap = {
     command: "nometalStockpile",
     shortcut: "nometal",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   bauxiteStockpile: {
@@ -894,6 +1011,7 @@ export const commands: CommandMap = {
     command: "bauxiteStockpile",
     shortcut: "bauxite",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   nobauxiteStockpile: {
@@ -901,6 +1019,7 @@ export const commands: CommandMap = {
     command: "nobauxiteStockpile",
     shortcut: "nobauxite",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   artifactsStockpile: {
@@ -908,6 +1027,7 @@ export const commands: CommandMap = {
     command: "artifactsStockpile",
     shortcut: "artifacts",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   noartifactsStockpile: {
@@ -915,6 +1035,7 @@ export const commands: CommandMap = {
     command: "noartifactsStockpile",
     shortcut: "noartifacts",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
   junkgoodsStockpile: {
@@ -922,6 +1043,7 @@ export const commands: CommandMap = {
     command: "junkgoodsStockpile",
     shortcut: "junkgoods",
     phase: "query",
+    type: "item",
     textures: ["stockpileEmpty"],
   },
 };

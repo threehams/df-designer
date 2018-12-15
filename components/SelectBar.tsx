@@ -5,11 +5,13 @@ import { connect } from "react-redux";
 import { State } from "../store";
 import { Command, selectCommandMap } from "../store/tool";
 import { idFromCoordinates } from "../lib/coordinatesFromId";
+import { Tile } from "../store/tiles";
 
 jsx; // tslint:disable-line
 
 interface Props {
   command: Command | null;
+  tile: Tile | null;
 }
 
 const SelectBarBase: React.SFC<Props> = ({ command }) => {
@@ -49,14 +51,18 @@ const SelectBarBase: React.SFC<Props> = ({ command }) => {
 export const SelectBar = connect(
   (state: State) => {
     if (!state.tool.selectedItem) {
-      return { command: null };
+      return { tile: null, command: null };
+    }
+    const { x, y } = state.tool.selectedItem;
+    const tile = state.tiles.data[idFromCoordinates(x, y)];
+    if (!tile || !tile.item) {
+      return { tile, command: null };
     }
     const commandMap = selectCommandMap();
-    const { x, y } = state.tool.selectedItem;
-    const commands = state.tiles.data[idFromCoordinates(x, y)];
-    const command = commands.find(comm => commandMap[comm].phase !== "dig");
+
     return {
-      command: command ? commandMap[command] : null,
+      tile,
+      command: commandMap[tile.item],
     };
   },
   {},

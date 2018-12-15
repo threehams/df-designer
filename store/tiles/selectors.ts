@@ -8,6 +8,7 @@ import {
 import { Phase, CommandKey, CommandMap } from "../tool/types";
 import { keys } from "../../lib/keys";
 import produce from "immer";
+import { Tile } from "./types";
 
 type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };
@@ -48,20 +49,25 @@ export const selectExported = createSelector(
       },
       {} as Grids,
     );
-    for (const phase of phases) {
-      for (const [id, commands] of Object.entries(tiles)) {
-        const { x, y } = coordinatesFromId(id);
-        const command = commands.find(
-          comm => commandMap[comm].phase === phase.phase,
-        );
-        if (command) {
-          if (!grids[phase.phase]) {
-            grids[phase.phase] = createGrid(dimensions);
-          }
-          grids[phase.phase]![y - dimensions.minY][x - dimensions.minX] =
-            commandMap[command].shortcut;
-        }
+    for (const [id, tile] of Object.entries(tiles)) {
+      if (!tile) {
+        continue;
       }
+      const { x, y } = coordinatesFromId(id);
+      const exportCommand = (commandKey: CommandKey | null) => {
+        if (!commandKey) {
+          return;
+        }
+        const command = commandMap[commandKey];
+        const phase = command.phase;
+        if (!grids[phase]) {
+          grids[phase] = createGrid(dimensions);
+        }
+        grids[phase]![y - dimensions.minY][x - dimensions.minX] =
+          commandMap[commandKey].shortcut;
+      };
+      exportCommand(tile.designation);
+      exportCommand(tile.item);
     }
     return keys(grids).reduce(
       (result, phase) => {
@@ -90,8 +96,8 @@ export const selectWalls = createSelector(
   (tiles, commandMap) => {
     const walls = new Set();
     produce(tiles, draft => {
-      Object.entries(tiles).forEach(([tileId, tileCommands]) => {
-        if (exposed(tileCommands, commandMap)) {
+      Object.entries(tiles).forEach(([tileId, tile]) => {
+        if (exposed(tile, commandMap)) {
           for (const id of neighborIds(tileId)) {
             if (!draft[id]) {
               walls.add(id);
@@ -120,9 +126,9 @@ const neighborIds = (id: string) => {
   ];
 };
 
-const exposed = (commands: CommandKey[] | null, commandMap: CommandMap) => {
-  if (!commands) {
+const exposed = (tile: Tile | null, commandMap: CommandMap) => {
+  if (!tile) {
     return false;
   }
-  return commands.filter(command => commandMap[command].phase === "dig").length;
+  return !!tile.designation;
 };
