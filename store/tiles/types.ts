@@ -4,11 +4,7 @@ import { CommandKey } from "../tool";
 export interface Tile {
   readonly designation: CommandKey | null;
   readonly item: CommandKey | null;
-  readonly adjustments: AdjustmentData[] | null;
-}
-interface AdjustmentData {
-  name: string;
-  value: any; // things get rough here
+  readonly adjustments: { [key: string]: boolean | number };
 }
 export interface TilesState {
   readonly data: {

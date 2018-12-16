@@ -5,7 +5,7 @@ import {
   coordinatesFromId,
   idFromCoordinates,
 } from "../../lib/coordinatesFromId";
-import { Phase, CommandKey, CommandMap } from "../tool/types";
+import { Phase, CommandKey, CommandMap, Adjustment } from "../tool/types";
 import { keys } from "../../lib/keys";
 import produce from "immer";
 import { Tile } from "./types";
@@ -66,8 +66,45 @@ export const selectExported = createSelector(
         grids[phase]![y - dimensions.minY][x - dimensions.minX] =
           commandMap[commandKey].shortcut;
       };
+
+      const exportAdjustments = (
+        commandKey: CommandKey | null,
+        adjustments: { [key: string]: number | boolean },
+      ) => {
+        if (!commandKey) {
+          return;
+        }
+        const command = commandMap[commandKey];
+        if (!command.adjustments) {
+          return;
+        }
+        if (!grids.query) {
+          grids.query = createGrid(dimensions);
+        }
+        grids.query[y - dimensions.minY][x - dimensions.minX] =
+          command
+            .adjustments!.map(adjustment => {
+              if (
+                adjustment.type === "toggle" &&
+                adjustments[adjustment.name]
+              ) {
+                return adjustment.shortcut;
+              }
+              if (adjustment.type === "resize") {
+                const delta =
+                  ((adjustments[adjustment.name] as number) ||
+                    adjustment.initialValue) - adjustment.initialValue;
+                if (delta < 0) {
+                  return adjustment.decrement.repeat(Math.abs(delta));
+                }
+                return adjustment.increment.repeat(delta);
+              }
+            })
+            .join("") || "`";
+      };
       exportCommand(tile.designation);
       exportCommand(tile.item);
+      exportAdjustments(tile.item!, tile.adjustments);
     }
     return keys(grids).reduce(
       (result, phase) => {
@@ -84,7 +121,7 @@ export const selectExported = createSelector(
   },
 );
 
-const createGrid = (dimensions: Dimensions) => {
+const createGrid = (dimensions: Dimensions): string[][] => {
   return Array.from(Array(dimensions.maxY - dimensions.minY).keys()).map(() => {
     return Array(dimensions.maxX - dimensions.minX).fill("`");
   });

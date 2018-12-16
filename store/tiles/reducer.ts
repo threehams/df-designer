@@ -68,6 +68,11 @@ export const tilesReducer = (
             draft[id] = removeCommand(command, draft[id]);
             return;
           }
+          case getType(actions.setAdjustment): {
+            const { id, name, value } = action.payload;
+            draft[id]!.adjustments[name] = value;
+            return;
+          }
         }
       },
       (newPatches, inversePatches) => {
@@ -75,7 +80,7 @@ export const tilesReducer = (
         if (inversePatches.length) {
           history.transaction.push(...inversePatches);
         }
-        applyPatches(state, newPatches);
+        applyPatches(state.data, newPatches);
       },
     );
     outerDraft.data = newData;
@@ -94,7 +99,7 @@ const removeCommand = (
     return {
       designation: null,
       item: null,
-      adjustments: null,
+      adjustments: {},
     };
   }
   current[command.type] = null;
@@ -110,7 +115,7 @@ const addCommand = (
     return {
       designation: null,
       item: null,
-      adjustments: null,
+      adjustments: {},
       [command.type]: command.command,
     };
   }

@@ -3,18 +3,33 @@ import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
 import { State } from "../store";
-import { Command, selectCommandMap } from "../store/tool";
+import { Command, selectCommandMap, Adjustment } from "../store/tool";
 import { idFromCoordinates } from "../lib/coordinatesFromId";
-import { Tile } from "../store/tiles";
+import { Tile, tilesActions } from "../store/tiles";
+import { Button } from "./Button";
 
 jsx; // tslint:disable-line
 
 interface Props {
   command: Command | null;
   tile: Tile | null;
+  tileId: string | null;
+  setAdjustment: typeof tilesActions.setAdjustment;
 }
 
-const SelectBarBase: React.SFC<Props> = ({ command }) => {
+const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
+  if (!tile) {
+    return false;
+  }
+  return tile.adjustments[adjustment.name];
+};
+
+const SelectBarBase: React.SFC<Props> = ({
+  command,
+  setAdjustment,
+  tile,
+  tileId,
+}) => {
   return (
     <aside
       css={css`
@@ -29,17 +44,52 @@ const SelectBarBase: React.SFC<Props> = ({ command }) => {
           <div>{command.name}</div>
           {command.adjustments &&
             command.adjustments.map(adjustment => {
-              return (
-                <div key={command.command}>
-                  <label>
+              const value =
+                tileValue(tile, adjustment) || adjustment.initialValue;
+              if (adjustment.type === "toggle") {
+                return (
+                  <label key={adjustment.name}>
                     <input
                       type="checkbox"
                       value={adjustment.name}
-                      checked={!!command}
+                      checked={typeof value === "boolean" ? value : false}
+                      onChange={() => {
+                        if (tileId) {
+                          return setAdjustment(tileId, adjustment.name, !value);
+                        }
+                      }}
                     />{" "}
                     {adjustment.name}
                   </label>
-                </div>
+                );
+              }
+              return (
+                <>
+                  <Button
+                    key={adjustment.name}
+                    onClick={() => {
+                      setAdjustment(
+                        tileId!,
+                        adjustment.name,
+                        Math.min(value - 1, 1),
+                      );
+                    }}
+                  >
+                    -
+                  </Button>{" "}
+                  {value}{" "}
+                  <Button
+                    onClick={() => {
+                      setAdjustment(
+                        tileId!,
+                        adjustment.name,
+                        Math.max(value + 1, 12),
+                      );
+                    }}
+                  >
+                    +
+                  </Button>
+                </>
               );
             })}
         </div>
@@ -51,19 +101,21 @@ const SelectBarBase: React.SFC<Props> = ({ command }) => {
 export const SelectBar = connect(
   (state: State) => {
     if (!state.tool.selectedItem) {
-      return { tile: null, command: null };
+      return { tile: null, tileId: null, command: null };
     }
     const { x, y } = state.tool.selectedItem;
-    const tile = state.tiles.data[idFromCoordinates(x, y)];
+    const tileId = idFromCoordinates(x, y);
+    const tile = state.tiles.data[tileId];
     if (!tile || !tile.item) {
-      return { tile, command: null };
+      return { tile, tileId, command: null };
     }
     const commandMap = selectCommandMap();
 
     return {
       tile,
+      tileId,
       command: commandMap[tile.item],
     };
   },
-  {},
+  { setAdjustment: tilesActions.setAdjustment },
 )(SelectBarBase);

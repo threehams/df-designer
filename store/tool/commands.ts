@@ -91,7 +91,19 @@ export const commands: CommandMap = {
     type: "item",
     textures: ["bed"],
     adjustments: [
-      { name: "Make Bedroom", shortcut: "r", resize: true, initialSize: 3 },
+      {
+        type: "toggle",
+        name: "Make Dining Room",
+        shortcut: "r",
+        initialValue: false,
+      },
+      {
+        type: "resize",
+        name: "Resize",
+        decrement: "-",
+        increment: "+",
+        initialValue: 3,
+      },
     ],
   },
   seat: {
@@ -214,7 +226,19 @@ export const commands: CommandMap = {
     type: "item",
     textures: ["table"],
     adjustments: [
-      { name: "Make Dining Room", shortcut: "r", resize: true, initialSize: 3 },
+      {
+        type: "toggle",
+        name: "Make Dining Room",
+        shortcut: "r",
+        initialValue: false,
+      },
+      {
+        type: "resize",
+        name: "Resize",
+        decrement: "-",
+        increment: "+",
+        initialValue: 3,
+      },
     ],
   },
   pavedRoad: {

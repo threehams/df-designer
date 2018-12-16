@@ -155,13 +155,20 @@ export interface ToolState {
   readonly selectedItem: Coordinates | null;
 }
 
-interface Adjustment {
+interface ResizeAdjustment {
+  type: "resize";
   name: string;
-  shortcut: string;
-  resize?: boolean;
-  initialSize?: number;
-  requires?: string[];
+  initialValue: number;
+  increment: string;
+  decrement: string;
 }
+interface ToggleAdjustment {
+  type: "toggle";
+  name: string;
+  initialValue: boolean;
+  shortcut: string;
+}
+export type Adjustment = ToggleAdjustment | ResizeAdjustment;
 
 export interface Command {
   bitmask?: boolean;

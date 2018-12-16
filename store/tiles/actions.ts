@@ -13,6 +13,14 @@ export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
     return resolve({ x, y, command });
   };
 });
+export const setAdjustment = createAction(
+  "app/tiles/SET_ADJUSTMENT",
+  resolve => {
+    return (id: string, name: string, value: any) => {
+      return resolve({ id, name, value });
+    };
+  },
+);
 export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
   return (
     startX: number,
