@@ -3,8 +3,8 @@ import { Stage, Container, Sprite } from "@inlet/react-pixi";
 import { useState } from "react";
 import { connect } from "react-redux";
 import { State } from "../store";
-import { tilesActions, selectWalls, Tile } from "../store/tiles";
-import { selectCommandMap, CommandMap, CommandKey } from "../store/tool";
+import { tilesActions, selectWalls } from "../store/tiles";
+import { selectCommandMap, CommandMap } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
@@ -31,9 +31,9 @@ const textures = keys(tilesetNames).reduce(
 );
 
 interface Props {
-  clickTile: typeof tilesActions.clickTile;
+  clickTile: (x: number, y: number) => any;
   commandMap: CommandMap;
-  endClickTile: typeof tilesActions.endClickTile;
+  endClickTile: (x: number, y: number) => any;
   selectionStart: { x: number; y: number } | null;
   tiles: State["tiles"]["data"];
   walls: Set<string>;

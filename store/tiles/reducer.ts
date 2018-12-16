@@ -49,7 +49,10 @@ export const tilesReducer = (
           case getType(actions.updateTile): {
             const { x, y, command } = action.payload;
             const id = idFromCoordinates(x, y);
-            draft[id] = addCommand(command, draft[id]);
+            const newTile = addCommand(command, draft[id]);
+            if (newTile) {
+              draft[id] = newTile;
+            }
             return;
           }
           case getType(actions.updateTiles): {
@@ -57,7 +60,10 @@ export const tilesReducer = (
             for (const x of range(startX, endX + 1)) {
               for (const y of range(startY, endY + 1)) {
                 const id = idFromCoordinates(x, y);
-                draft[id] = addCommand(command, draft[id]);
+                const newTile = addCommand(command, draft[id]);
+                if (newTile) {
+                  draft[id] = newTile;
+                }
               }
             }
             return;
@@ -65,12 +71,17 @@ export const tilesReducer = (
           case getType(actions.removeTile): {
             const { x, y, command } = action.payload;
             const id = idFromCoordinates(x, y);
-            draft[id] = removeCommand(command, draft[id]);
+            const newTile = removeCommand(command, draft[id]);
+            if (newTile) {
+              draft[id] = newTile;
+            } else {
+              delete draft[id];
+            }
             return;
           }
           case getType(actions.setAdjustment): {
             const { id, name, value } = action.payload;
-            draft[id]!.adjustments[name] = value;
+            draft[id].adjustments[name] = value;
             return;
           }
         }
@@ -92,15 +103,8 @@ const removeCommand = (
   command: Command,
   current: DraftObject<Tile> | null,
 ): Tile | null => {
-  if (!current) {
+  if (!current || command.type === "designation") {
     return null;
-  }
-  if (command.type === "designation") {
-    return {
-      designation: null,
-      item: null,
-      adjustments: {},
-    };
   }
   current[command.type] = null;
   return current;
@@ -110,7 +114,10 @@ const removeCommand = (
 const addCommand = (
   command: Command,
   current: DraftObject<Tile> | null,
-): Tile => {
+): Tile | null => {
+  if (command.type !== "designation" && (!current || !current.designation)) {
+    return null;
+  }
   if (!current) {
     return {
       designation: null,

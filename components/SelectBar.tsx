@@ -48,7 +48,12 @@ const SelectBarBase: React.SFC<Props> = ({
                 tileValue(tile, adjustment) || adjustment.initialValue;
               if (adjustment.type === "toggle") {
                 return (
-                  <label key={adjustment.name}>
+                  <label
+                    key={adjustment.name}
+                    css={css`
+                      display: block;
+                    `}
+                  >
                     <input
                       type="checkbox"
                       value={adjustment.name}
@@ -64,14 +69,13 @@ const SelectBarBase: React.SFC<Props> = ({
                 );
               }
               return (
-                <>
+                <div key={adjustment.name}>
                   <Button
-                    key={adjustment.name}
                     onClick={() => {
                       setAdjustment(
                         tileId!,
                         adjustment.name,
-                        Math.min(value - 1, 1),
+                        Math.max((value as number) - 1, 1),
                       );
                     }}
                   >
@@ -83,13 +87,13 @@ const SelectBarBase: React.SFC<Props> = ({
                       setAdjustment(
                         tileId!,
                         adjustment.name,
-                        Math.max(value + 1, 12),
+                        Math.min((value as number) + 1, 12),
                       );
                     }}
                   >
                     +
                   </Button>
-                </>
+                </div>
               );
             })}
         </div>

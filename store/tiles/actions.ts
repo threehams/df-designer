@@ -68,7 +68,7 @@ export const clickTile = (x: number, y: number) => {
       return dispatch(removeTile(x, y, command));
     }
     if (tool === "select" && state.tiles.data[id]) {
-      dispatch(toolActions.setSelectedItem(x, y));
+      return dispatch(toolActions.setSelectedItem(x, y));
     }
   };
 };

@@ -8,7 +8,7 @@ export interface Tile {
 }
 export interface TilesState {
   readonly data: {
-    readonly [key: string]: Tile | null;
+    readonly [key: string]: Tile;
   };
   readonly patches: Patch[];
   readonly version: number;

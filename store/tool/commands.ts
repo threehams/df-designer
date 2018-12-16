@@ -93,7 +93,7 @@ export const commands: CommandMap = {
     adjustments: [
       {
         type: "toggle",
-        name: "Make Dining Room",
+        name: "Make Bedroom",
         shortcut: "r",
         initialValue: false,
       },
