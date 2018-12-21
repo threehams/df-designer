@@ -11,5 +11,4 @@ export interface TilesState {
     readonly [key: string]: Tile;
   };
   readonly patches: Patch[];
-  readonly version: number;
 }

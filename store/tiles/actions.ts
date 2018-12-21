@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import { State } from "../types";
-import { selectTool, selectCurrentCommand, selectCommandMap } from "../tool";
+import { selectTool, selectCurrentCommand } from "../tool";
 import { selectTile } from "./reducer";
 import { Command } from "../tool/types";
 import { toolActions } from "../tool";
@@ -32,12 +32,6 @@ export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
     return resolve({ startX, startY, endX, endY, command });
   };
 });
-export const updateSelection = createAction(
-  "app/tiles/UPDATE_SELECTION",
-  resolve => {
-    return (x: number, y: number) => resolve();
-  },
-);
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
   return (x: number, y: number, command: Command) => resolve({ x, y, command });
 });
@@ -55,7 +49,6 @@ export const clickTile = (x: number, y: number) => {
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
     const tile = selectTile(state, { x, y });
-    const commandMap = selectCommandMap();
     if (tool === "rectangle" && !state.tool.selectionStart) {
       return dispatch(toolActions.startSelection(x, y));
     }

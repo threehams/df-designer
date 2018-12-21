@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { State } from "../store";
 import { tilesActions, selectExported } from "../store/tiles";
-import { toolActions, selectTool, Tool, Phase } from "../store/tool";
+import { toolActions, selectTool, Tool } from "../store/tool";
 import { Button, ButtonGroup } from "./";
 
 jsx; // tslint:disable-line

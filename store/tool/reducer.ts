@@ -3,7 +3,7 @@ import { ActionType, getType } from "typesafe-actions";
 import { State } from "../types";
 import * as actions from "./actions";
 import * as tilesActions from "../tiles/actions";
-import { ToolState, Phase, Command } from "./types";
+import { ToolState, Phase } from "./types";
 import { toolActions } from ".";
 import { commands } from "./commands";
 import { phases } from "./phases";

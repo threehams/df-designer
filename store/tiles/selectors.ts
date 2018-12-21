@@ -5,7 +5,7 @@ import {
   coordinatesFromId,
   idFromCoordinates,
 } from "../../lib/coordinatesFromId";
-import { Phase, CommandKey, CommandMap, Adjustment } from "../tool/types";
+import { Phase, CommandKey } from "../tool/types";
 import { keys } from "../../lib/keys";
 import produce from "immer";
 import { Tile } from "./types";
@@ -130,11 +130,11 @@ const createGrid = (dimensions: Dimensions): string[][] => {
 export const selectWalls = createSelector(
   (state: State) => state.tiles.data,
   selectCommandMap,
-  (tiles, commandMap) => {
+  tiles => {
     const walls = new Set();
     produce(tiles, draft => {
       Object.entries(tiles).forEach(([tileId, tile]) => {
-        if (exposed(tile, commandMap)) {
+        if (exposed(tile)) {
           for (const id of neighborIds(tileId)) {
             if (!draft[id]) {
               walls.add(id);
@@ -163,7 +163,7 @@ const neighborIds = (id: string) => {
   ];
 };
 
-const exposed = (tile: Tile | null, commandMap: CommandMap) => {
+const exposed = (tile: Tile | null) => {
   if (!tile) {
     return false;
   }

@@ -4,13 +4,35 @@ import { State } from "../types";
 import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
 import { range } from "../../lib/range";
-import { Command, selectCommandMap } from "../tool";
+import { Command } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
 
-const INITIAL_STATE: TilesState = {
+const DEFAULT_STATE: TilesState = {
   data: {},
   patches: [],
-  version: 0,
+};
+
+// be as defensive as possible here
+const initialState = (): TilesState => {
+  if (typeof localStorage === "undefined") {
+    return DEFAULT_STATE;
+  }
+  const json = localStorage.getItem("df-designer-state");
+  if (!json) {
+    return DEFAULT_STATE;
+  }
+  try {
+    const tiles = JSON.parse(json);
+    if (tiles) {
+      return produce(DEFAULT_STATE, draft => {
+        draft.data = tiles;
+      });
+    }
+  } catch (err) {
+    // tslint:disable-next-line no-console
+    console.log(err);
+  }
+  return DEFAULT_STATE;
 };
 
 interface History {
@@ -24,8 +46,8 @@ const history: History = {
   future: [],
 };
 
-export const tilesReducer = (
-  state = INITIAL_STATE,
+const baseTilesReducer = (
+  state: TilesState,
   action: ActionType<typeof actions>,
 ) => {
   if (action.type === getType(actions.undo)) {
@@ -35,10 +57,7 @@ export const tilesReducer = (
     return state;
   }
   if (action.type === getType(actions.resetBoard)) {
-    return {
-      ...INITIAL_STATE,
-      version: state.version + 1,
-    };
+    return DEFAULT_STATE;
   }
   let patches: Patch[];
   return produce(state, outerDraft => {
@@ -97,6 +116,17 @@ export const tilesReducer = (
     outerDraft.data = newData;
     outerDraft.patches = patches;
   });
+};
+
+export const tilesReducer = (
+  state = initialState(),
+  action: ActionType<typeof actions>,
+) => {
+  const newState = baseTilesReducer(state, action);
+  if (typeof localStorage !== "undefined") {
+    localStorage.setItem("df-designer-state", JSON.stringify(newState.data));
+  }
+  return newState;
 };
 
 const removeCommand = (
