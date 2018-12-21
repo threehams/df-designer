@@ -31,7 +31,7 @@ const download = (filename: string, text: string) => {
   element.click();
 };
 
-export const ExportBarBase: React.SFC<Props> = ({
+export const ExportBarBase: React.FunctionComponent<Props> = ({
   exported,
   io,
   setIo,

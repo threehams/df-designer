@@ -46,7 +46,7 @@ interface Coordinates {
   startY: number;
 }
 
-const ArtboardBase: React.SFC<Props> = ({
+const ArtboardBase: React.FunctionComponent<Props> = ({
   clickTile,
   commandMap,
   endClickTile,

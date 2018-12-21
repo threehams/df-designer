@@ -24,7 +24,7 @@ const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
   return tile.adjustments[adjustment.name];
 };
 
-const SelectBarBase: React.SFC<Props> = ({
+const SelectBarBase: React.FunctionComponent<Props> = ({
   command,
   setAdjustment,
   tile,

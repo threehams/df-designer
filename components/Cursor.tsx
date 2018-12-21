@@ -9,7 +9,7 @@ interface CursorProps {
   startX: number;
   startY: number;
 }
-export const Cursor: React.SFC<CursorProps> = ({
+export const Cursor: React.FunctionComponent<CursorProps> = ({
   startX,
   startY,
   endX,

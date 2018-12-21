@@ -26,7 +26,7 @@ interface Props {
   phases: PhaseConfig[];
 }
 
-const CommandBarBase: React.SFC<Props> = ({
+const CommandBarBase: React.FunctionComponent<Props> = ({
   phase,
   setPhase,
   command,

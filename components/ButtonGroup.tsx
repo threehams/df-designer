@@ -24,7 +24,7 @@ interface ButtonGroupProps {
   block?: boolean;
   className?: string;
 }
-export const ButtonGroup: React.SFC<ButtonGroupProps> = ({
+export const ButtonGroup: React.FunctionComponent<ButtonGroupProps> = ({
   block,
   children,
   className,

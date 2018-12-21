@@ -18,7 +18,7 @@ const Artboard = dynamic(import("../components/Artboard"), {
 interface Props {
   tool: Tool;
 }
-const IndexBase: React.SFC<Props> = ({ tool }) => {
+const IndexBase: React.FunctionComponent<Props> = ({ tool }) => {
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
     <div

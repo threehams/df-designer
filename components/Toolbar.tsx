@@ -17,7 +17,7 @@ interface Props {
   tool: Tool;
 }
 
-const ToolbarBase: React.SFC<Props> = ({
+const ToolbarBase: React.FunctionComponent<Props> = ({
   undo,
   redo,
   resetBoard,

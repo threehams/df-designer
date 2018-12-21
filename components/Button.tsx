@@ -33,7 +33,7 @@ const secondaryActiveStyle = css`
   color: white;
 `;
 
-export const Button: React.SFC<Props> = ({
+export const Button: React.FunctionComponent<Props> = ({
   active,
   block,
   className,
