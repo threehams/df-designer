@@ -48,59 +48,43 @@ const history: History = {
   future: [],
 };
 
+const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
+  const from = direction === "undo" ? "past" : "future";
+  const to = direction === "undo" ? "future" : "past";
+  const transaction = state[from][state[from].length - 1];
+  let redo: Patch[] = [];
+  if (!transaction) {
+    return state;
+  }
+  const newState = produce(state, draft => {
+    draft[from].pop();
+    applyPatches(state, transaction);
+  });
+  const newTiles = produce(
+    state.data,
+    draft => {
+      return applyPatches(draft, transaction);
+    },
+    (_, inversePatches) => {
+      redo = inversePatches;
+    },
+  );
+  return {
+    ...newState,
+    [to]: state[to].concat([redo]),
+    data: newTiles,
+  };
+};
+
 const baseTilesReducer = (
   state: TilesState,
   action: ActionType<typeof actions>,
 ) => {
   if (action.type === getType(actions.undo)) {
-    const transaction = state.past[state.past.length - 1];
-    let redo: Patch[] = [];
-    if (!transaction) {
-      return state;
-    }
-    const newState = produce(state, draft => {
-      draft.past.pop();
-      applyPatches(state, transaction);
-    });
-    const newTiles = produce(
-      state.data,
-      draft => {
-        return applyPatches(draft, transaction);
-      },
-      (_, inversePatches) => {
-        redo = inversePatches;
-      },
-    );
-    return {
-      ...newState,
-      future: state.future.concat([redo]),
-      data: newTiles,
-    };
+    return changeHistory(state, "undo");
   }
   if (action.type === getType(actions.redo)) {
-    const transaction = state.future[state.future.length - 1];
-    let undo: Patch[] = [];
-    if (!transaction) {
-      return state;
-    }
-    const newState = produce(state, draft => {
-      draft.future.pop();
-      applyPatches(state, transaction);
-    });
-    const newTiles = produce(
-      state.data,
-      draft => {
-        return applyPatches(draft, transaction);
-      },
-      (_, inversePatches) => {
-        undo = inversePatches;
-      },
-    );
-    return {
-      ...newState,
-      past: state.past.concat([undo]),
-      data: newTiles,
-    };
+    return changeHistory(state, "redo");
   }
   // this is wrong, don't reset undo history, allow reset to be undone
   if (action.type === getType(actions.resetBoard)) {
