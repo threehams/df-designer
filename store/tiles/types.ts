@@ -10,5 +10,7 @@ export interface TilesState {
   readonly data: {
     readonly [key: string]: Tile;
   };
-  readonly patches: Patch[];
+  readonly transaction: Patch[];
+  readonly past: Patch[][];
+  readonly future: Patch[][];
 }

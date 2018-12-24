@@ -9,7 +9,9 @@ import { idFromCoordinates } from "../../lib/coordinatesFromId";
 
 const DEFAULT_STATE: TilesState = {
   data: {},
-  patches: [],
+  transaction: [],
+  past: [],
+  future: [],
 };
 
 // be as defensive as possible here
@@ -51,15 +53,27 @@ const baseTilesReducer = (
   action: ActionType<typeof actions>,
 ) => {
   if (action.type === getType(actions.undo)) {
-    return state;
+    const transaction = state.past[state.past.length - 1];
+    if (!transaction) {
+      return state;
+    }
+    const newState = produce(state, outerDraft => {
+      outerDraft.past.pop();
+      applyPatches(state, transaction);
+    });
+    return {
+      ...newState,
+      data: applyPatches(state.data, transaction),
+    };
   }
   if (action.type === getType(actions.redo)) {
     return state;
   }
+  // this is wrong, don't reset undo history, allow reset to be undone
   if (action.type === getType(actions.resetBoard)) {
     return DEFAULT_STATE;
   }
-  let patches: Patch[];
+  let transactionSteps: Patch[];
   return produce(state, outerDraft => {
     const newData = produce(
       state.data,
@@ -105,16 +119,25 @@ const baseTilesReducer = (
           }
         }
       },
-      (newPatches, inversePatches) => {
-        patches = newPatches;
-        if (inversePatches.length) {
+      (patches, inversePatches) => {
+        transactionSteps = inversePatches;
+        if (transactionSteps.length) {
           history.transaction.push(...inversePatches);
         }
-        applyPatches(state.data, newPatches);
       },
     );
     outerDraft.data = newData;
-    outerDraft.patches = patches;
+    if (transactionSteps && transactionSteps.length) {
+      // possible improvement: https://medium.com/@dedels/using-immer-to-compress-immer-patches-f382835b6c69
+      outerDraft.transaction = [...outerDraft.transaction, ...transactionSteps];
+    }
+    if (
+      action.type === getType(actions.updateTiles) ||
+      action.type === getType(actions.endUpdate)
+    ) {
+      outerDraft.past.push(outerDraft.transaction);
+      outerDraft.transaction = [];
+    }
   });
 };
 

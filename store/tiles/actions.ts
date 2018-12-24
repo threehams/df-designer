@@ -38,6 +38,7 @@ export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
 export const resetBoard = createAction("app/tiles/RESET_BOARD");
 export const undo = createAction("app/tiles/UNDO");
 export const redo = createAction("app/tiles/REDO");
+export const endUpdate = createAction("app/tiles/END_UPDATE");
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
@@ -71,7 +72,7 @@ export const endClickTile = (x: number, y: number) => {
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
     if (tool !== "rectangle" || !state.tool.selectionStart) {
-      return;
+      return dispatch(endUpdate());
     }
     const { x: startX, y: startY } = state.tool.selectionStart;
     if (x < 0 || y < 0) {

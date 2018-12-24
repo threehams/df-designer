@@ -34,12 +34,10 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
       <ButtonGroup>
         <Button onClick={resetBoard}>Reset</Button>
       </ButtonGroup>
-      {false && (
-        <ButtonGroup>
-          <Button onClick={undo}>Undo</Button>
-          <Button onClick={redo}>Redo</Button>
-        </ButtonGroup>
-      )}
+      <ButtonGroup>
+        <Button onClick={undo}>Undo</Button>
+        <Button onClick={redo}>Redo</Button>
+      </ButtonGroup>
       <ButtonGroup>
         <Button onClick={() => setTool("select")} active={tool === "select"}>
           Select
