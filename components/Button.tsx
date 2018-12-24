@@ -10,6 +10,7 @@ interface Props {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
   color?: "primary" | "secondary";
+  disabled?: boolean;
 }
 
 const style = css`

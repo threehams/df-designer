@@ -54,20 +54,53 @@ const baseTilesReducer = (
 ) => {
   if (action.type === getType(actions.undo)) {
     const transaction = state.past[state.past.length - 1];
+    let redo: Patch[] = [];
     if (!transaction) {
       return state;
     }
-    const newState = produce(state, outerDraft => {
-      outerDraft.past.pop();
+    const newState = produce(state, draft => {
+      draft.past.pop();
       applyPatches(state, transaction);
     });
+    const newTiles = produce(
+      state.data,
+      draft => {
+        return applyPatches(draft, transaction);
+      },
+      (_, inversePatches) => {
+        redo = inversePatches;
+      },
+    );
     return {
       ...newState,
-      data: applyPatches(state.data, transaction),
+      future: state.future.concat([redo]),
+      data: newTiles,
     };
   }
   if (action.type === getType(actions.redo)) {
-    return state;
+    const transaction = state.future[state.future.length - 1];
+    let undo: Patch[] = [];
+    if (!transaction) {
+      return state;
+    }
+    const newState = produce(state, draft => {
+      draft.future.pop();
+      applyPatches(state, transaction);
+    });
+    const newTiles = produce(
+      state.data,
+      draft => {
+        return applyPatches(draft, transaction);
+      },
+      (_, inversePatches) => {
+        undo = inversePatches;
+      },
+    );
+    return {
+      ...newState,
+      past: state.past.concat([undo]),
+      data: newTiles,
+    };
   }
   // this is wrong, don't reset undo history, allow reset to be undone
   if (action.type === getType(actions.resetBoard)) {
@@ -119,7 +152,7 @@ const baseTilesReducer = (
           }
         }
       },
-      (patches, inversePatches) => {
+      (_, inversePatches) => {
         transactionSteps = inversePatches;
         if (transactionSteps.length) {
           history.transaction.push(...inversePatches);
@@ -130,13 +163,17 @@ const baseTilesReducer = (
     if (transactionSteps && transactionSteps.length) {
       // possible improvement: https://medium.com/@dedels/using-immer-to-compress-immer-patches-f382835b6c69
       outerDraft.transaction = [...outerDraft.transaction, ...transactionSteps];
+      // any transactions invalidate the future
+      outerDraft.future = [];
     }
     if (
       action.type === getType(actions.updateTiles) ||
       action.type === getType(actions.endUpdate)
     ) {
-      outerDraft.past.push(outerDraft.transaction);
-      outerDraft.transaction = [];
+      if (outerDraft.transaction.length) {
+        outerDraft.past.push(outerDraft.transaction);
+        outerDraft.transaction = [];
+      }
     }
   });
 };

@@ -15,6 +15,8 @@ interface Props {
   setTool: typeof toolActions.setTool;
   resetBoard: typeof tilesActions.resetBoard;
   tool: Tool;
+  undoSteps: number;
+  redoSteps: number;
 }
 
 const ToolbarBase: React.FunctionComponent<Props> = ({
@@ -23,6 +25,8 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
   resetBoard,
   setTool,
   tool,
+  undoSteps,
+  redoSteps,
 }) => {
   return (
     <header
@@ -35,8 +39,12 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
         <Button onClick={resetBoard}>Reset</Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button onClick={undo}>Undo</Button>
-        <Button onClick={redo}>Redo</Button>
+        <Button disabled={!undoSteps} onClick={undo}>
+          Undo
+        </Button>
+        <Button disabled={!redoSteps} onClick={redo}>
+          Redo
+        </Button>
       </ButtonGroup>
       <ButtonGroup>
         <Button onClick={() => setTool("select")} active={tool === "select"}>
@@ -64,6 +72,8 @@ export const Toolbar = connect(
     return {
       tool: selectTool(state),
       exported: state.tool.export ? selectExported(state) : null,
+      undoSteps: state.tiles.past.length,
+      redoSteps: state.tiles.future.length,
     };
   },
   {
