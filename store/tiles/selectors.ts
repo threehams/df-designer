@@ -143,23 +143,35 @@ export const selectWalls = createSelector(
         }
       });
     });
-    return walls;
+    return Array.from(walls.values()).map(wallId => {
+      return {
+        id: wallId,
+        bits: neighborIds(wallId)
+          .filter(id => id !== wallId)
+          .reduce((bits, id, index) => {
+            if (connectable(tiles[id])) {
+              return bits + 2 ** index;
+            }
+            return bits;
+          }, 0),
+      };
+    });
   },
 );
 
-// matrix or something, never had to deal with this
+// TODO loops are fun and all
 const neighborIds = (id: string) => {
   const { x, y } = coordinatesFromId(id);
   return [
-    idFromCoordinates(x - 1, y + 1),
-    idFromCoordinates(x, y + 1),
-    idFromCoordinates(x + 1, y + 1),
-    idFromCoordinates(x - 1, y),
-    idFromCoordinates(x, y),
-    idFromCoordinates(x + 1, y),
     idFromCoordinates(x - 1, y - 1),
     idFromCoordinates(x, y - 1),
     idFromCoordinates(x + 1, y - 1),
+    idFromCoordinates(x - 1, y),
+    idFromCoordinates(x, y),
+    idFromCoordinates(x + 1, y),
+    idFromCoordinates(x - 1, y + 1),
+    idFromCoordinates(x, y + 1),
+    idFromCoordinates(x + 1, y + 1),
   ];
 };
 
@@ -168,4 +180,11 @@ const exposed = (tile: Tile | null) => {
     return false;
   }
   return !!tile.designation;
+};
+
+const connectable = (tile: Tile | null) => {
+  if (!tile) {
+    return false;
+  }
+  return !!tile.designation && tile.item !== "door";
 };
