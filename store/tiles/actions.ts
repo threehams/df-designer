@@ -101,7 +101,7 @@ const shouldUpdate = (tile: Tile | null, command: Command) => {
   }
   // need to dig before placing
   // TODO only "dig" is likely valid here, but check
-  if (command.type === "item" && !tile.designation) {
+  if (command.type === "item" && tile.designation !== "mine") {
     return false;
   }
   return true;

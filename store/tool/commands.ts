@@ -211,7 +211,7 @@ export const commands: CommandMap = {
     textures: ["weaponRack"],
   },
   statue: {
-    name: "Status",
+    name: "Statue",
     command: "statue",
     shortcut: "s",
     phase: "build",
