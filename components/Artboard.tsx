@@ -30,7 +30,7 @@ const textures = keys(tilesetNames).reduce(
   {} as TilesetMap,
 );
 
-const wallMap = {
+const wallMap: { [key: string]: PIXI.Texture } = {
   0b00000001: textures.smoothWallSE,
   0b00000010: textures.smoothWallWE,
   0b00000011: textures.smoothWallWE,
@@ -390,7 +390,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
               height={TILE_SIZE}
               x={x * TILE_SIZE}
               y={y * TILE_SIZE}
-              texture={wallMap[wall.bits] || textures.rockWall2}
+              texture={wallMap[wall.bits] || textures.rockWall1}
             />
           );
         })}
