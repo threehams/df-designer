@@ -4,25 +4,25 @@ import { Sprite } from "@inlet/react-pixi";
 const TILE_SIZE = 16;
 
 interface CursorProps {
-  endX?: number;
-  endY?: number;
-  startX: number;
-  startY: number;
+  maxX?: number;
+  maxY?: number;
+  minX: number;
+  minY: number;
 }
 export const Cursor: React.FunctionComponent<CursorProps> = ({
-  startX,
-  startY,
-  endX,
-  endY,
+  minX,
+  minY,
+  maxX,
+  maxY,
 }) => {
   return (
     <Sprite
       alpha={0.5}
-      height={endY ? (endY - startY + 1) * TILE_SIZE : TILE_SIZE}
+      height={maxY ? (maxY - minY + 1) * TILE_SIZE : TILE_SIZE}
       texture={PIXI.Texture.WHITE}
-      width={endX ? (endX - startX + 1) * TILE_SIZE : TILE_SIZE}
-      x={startX * TILE_SIZE}
-      y={startY * TILE_SIZE}
+      width={maxX ? (maxX - minX + 1) * TILE_SIZE : TILE_SIZE}
+      x={minX * TILE_SIZE}
+      y={minY * TILE_SIZE}
     />
   );
 };

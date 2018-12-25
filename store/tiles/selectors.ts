@@ -7,22 +7,28 @@ import {
 } from "../../lib/coordinatesFromId";
 import { Phase, CommandKey } from "../tool/types";
 import { keys } from "../../lib/keys";
-import produce from "immer";
 import { Tile } from "./types";
+import { wallMap, tilesetNames } from "../../lib/tilesetNames";
 
 type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };
-type Dimensions = {
+export type Dimensions = {
   minX: number;
   maxX: number;
   minY: number;
   maxY: number;
 };
-export const selectExported = createSelector(
-  selectCommandMap,
-  selectPhases,
+export type TileSprite = {
+  id: string;
+  textureName: keyof typeof tilesetNames;
+};
+export type Chunk = Dimensions & {
+  tiles: TileSprite[];
+};
+
+const selectExtents = createSelector(
   (state: State) => state.tiles.data,
-  (commandMap, phases, tiles) => {
+  tiles => {
     const dimensions = Object.entries(tiles).reduce(
       (result, [id]) => {
         const { x, y } = coordinatesFromId(id);
@@ -40,6 +46,19 @@ export const selectExported = createSelector(
       },
     );
     if (dimensions.minX === Infinity || dimensions.minY === Infinity) {
+      return null;
+    }
+    return dimensions;
+  },
+);
+
+export const selectExported = createSelector(
+  selectCommandMap,
+  selectPhases,
+  selectExtents,
+  (state: State) => state.tiles.data,
+  (commandMap, phases, extents, tiles) => {
+    if (!extents) {
       return null;
     }
     const grids = phases.reduce(
@@ -61,9 +80,9 @@ export const selectExported = createSelector(
         const command = commandMap[commandKey];
         const phase = command.phase;
         if (!grids[phase]) {
-          grids[phase] = createGrid(dimensions);
+          grids[phase] = createGrid(extents);
         }
-        grids[phase]![y - dimensions.minY][x - dimensions.minX] =
+        grids[phase]![y - extents.minY][x - extents.minX] =
           commandMap[commandKey].shortcut;
       };
 
@@ -79,9 +98,9 @@ export const selectExported = createSelector(
           return;
         }
         if (!grids.query) {
-          grids.query = createGrid(dimensions);
+          grids.query = createGrid(extents);
         }
-        grids.query[y - dimensions.minY][x - dimensions.minX] =
+        grids.query[y - extents.minY][x - extents.minX] =
           command
             .adjustments!.map(adjustment => {
               if (
@@ -127,37 +146,95 @@ const createGrid = (dimensions: Dimensions): string[][] => {
   });
 };
 
-export const selectWalls = createSelector(
-  (state: State) => state.tiles.data,
-  selectCommandMap,
-  tiles => {
-    const walls = new Set();
-    produce(tiles, draft => {
-      Object.entries(tiles).forEach(([tileId, tile]) => {
-        if (exposed(tile)) {
-          for (const id of neighborIds(tileId)) {
-            if (!draft[id]) {
-              walls.add(id);
-            }
-          }
+export const selectChunks = (state: State) => {
+  const extents = selectExtents(state);
+  if (!extents) {
+    return [];
+  }
+  return [
+    {
+      ...extents,
+      tiles: selectTiles(state, extents),
+    },
+  ];
+};
+
+const selectTilesCache: { [key: string]: TileSprite[] } = {};
+const selectTiles = (state: State, props: Dimensions) => {
+  const key = `${props.minX},${props.minY},${props.maxX},${props.maxY}`;
+  let invalidate = false;
+  for (const id of state.tiles.updates) {
+    if (within(id, props)) {
+      invalidate = true;
+      break;
+    }
+  }
+  if (!invalidate && selectTilesCache[key]) {
+    return selectTilesCache[key];
+  }
+  const result = createTiles(state.tiles.data, props).concat(
+    createWalls(state.tiles.data, props),
+  );
+  selectTilesCache[key] = result;
+  return result;
+};
+
+const createTiles = (
+  tiles: State["tiles"]["data"],
+  props: Dimensions,
+): TileSprite[] => {
+  const commandMap = selectCommandMap();
+  return Object.values(tiles)
+    .filter(tile => within(tile.id, props))
+    .reduce((result: TileSprite[], tile) => {
+      if (tile.designation) {
+        result.push({
+          id: tile.id,
+          textureName: commandMap[tile.designation].textures[0],
+        });
+      }
+      if (tile.item) {
+        result.push({
+          id: tile.id,
+          textureName: commandMap[tile.item].textures[0],
+        });
+      }
+      return result;
+    }, []);
+};
+
+const createWalls = (
+  tiles: State["tiles"]["data"],
+  props: Dimensions,
+): TileSprite[] => {
+  const walls = new Set<string>();
+  Object.entries(tiles).forEach(([tileId, tile]) => {
+    if (exposed(tile)) {
+      for (const id of neighborIds(tileId)) {
+        if (!tiles[id]) {
+          walls.add(id);
         }
-      });
-    });
-    return Array.from(walls.values()).map(wallId => {
+      }
+    }
+  });
+  return Array.from(walls.values())
+    .filter(wallId => within(wallId, props))
+    .map(wallId => {
+      const wallNumber = neighborIds(wallId)
+        .filter(id => id !== wallId)
+        .reduce((bits, id, index) => {
+          if (connectable(tiles[id])) {
+            return bits + 2 ** index;
+          }
+          return bits;
+        }, 0);
+
       return {
         id: wallId,
-        bits: neighborIds(wallId)
-          .filter(id => id !== wallId)
-          .reduce((bits, id, index) => {
-            if (connectable(tiles[id])) {
-              return bits + 2 ** index;
-            }
-            return bits;
-          }, 0),
+        textureName: wallMap[wallNumber],
       };
     });
-  },
-);
+};
 
 // TODO loops are fun and all
 const neighborIds = (id: string) => {
@@ -188,3 +265,8 @@ const connectable = (tile: Tile | null) => {
   }
   return !!tile.designation && tile.item !== "door";
 };
+
+function within(id: string, { minX, maxX, minY, maxY }: Dimensions) {
+  const { x, y } = coordinatesFromId(id);
+  return minX - 1 <= x && x <= maxX + 1 && minY - 1 <= y && y <= maxY + 1;
+}

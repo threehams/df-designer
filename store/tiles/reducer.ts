@@ -12,6 +12,7 @@ const DEFAULT_STATE: TilesState = {
   transaction: [],
   past: [],
   future: [],
+  updates: [],
 };
 
 // be as defensive as possible here
@@ -92,14 +93,14 @@ const baseTilesReducer = (
   }
   let transactionSteps: Patch[];
   return produce(state, outerDraft => {
-    const newData = produce(
+    outerDraft.data = produce(
       state.data,
       draft => {
         switch (action.type) {
           case getType(actions.updateTile): {
             const { x, y, command } = action.payload;
             const id = idFromCoordinates(x, y);
-            const newTile = addCommand(command, draft[id]);
+            const newTile = addCommand(command, draft[id], id);
             if (newTile) {
               draft[id] = newTile;
             }
@@ -110,7 +111,7 @@ const baseTilesReducer = (
             for (const x of range(startX, endX + 1)) {
               for (const y of range(startY, endY + 1)) {
                 const id = idFromCoordinates(x, y);
-                const newTile = addCommand(command, draft[id]);
+                const newTile = addCommand(command, draft[id], id);
                 if (newTile) {
                   draft[id] = newTile;
                 }
@@ -136,14 +137,14 @@ const baseTilesReducer = (
           }
         }
       },
-      (_, inversePatches) => {
+      (patches, inversePatches) => {
+        outerDraft.updates = patches.map(patch => patch.path[0] as string);
         transactionSteps = inversePatches;
         if (transactionSteps.length) {
           history.transaction.push(...inversePatches);
         }
       },
     );
-    outerDraft.data = newData;
     if (transactionSteps && transactionSteps.length) {
       // possible improvement: https://medium.com/@dedels/using-immer-to-compress-immer-patches-f382835b6c69
       outerDraft.transaction = [...outerDraft.transaction, ...transactionSteps];
@@ -188,12 +189,14 @@ const removeCommand = (
 const addCommand = (
   command: Command,
   current: DraftObject<Tile> | null,
+  id: string,
 ): Tile | null => {
   if (command.type !== "designation" && (!current || !current.designation)) {
     return null;
   }
   if (!current) {
     return {
+      id,
       designation: null,
       item: null,
       adjustments: {},
