@@ -9,6 +9,7 @@ import { Phase, CommandKey } from "../tool/types";
 import { keys } from "../../lib/keys";
 import { Tile } from "./types";
 import { wallMap, tilesetNames } from "../../lib/tilesetNames";
+import { range } from "../../lib/range";
 
 type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };
@@ -146,15 +147,60 @@ const createGrid = (dimensions: Dimensions): string[][] => {
   });
 };
 
+const CHUNK_SIZE = 10;
 export const selectChunks = (state: State) => {
   const extents = selectExtents(state);
   if (!extents) {
     return [];
   }
+  // account for walls, and keep consistent 0,0 center
+  const allChunkExtents = {
+    minX: 0,
+    maxX: extents.maxX + 1,
+    minY: 0,
+    maxY: extents.maxY + 1,
+  };
+  return range(allChunkExtents.minX, allChunkExtents.maxX, CHUNK_SIZE).flatMap(
+    x =>
+      range(allChunkExtents.minY, allChunkExtents.maxY, CHUNK_SIZE).flatMap(
+        y => {
+          const chunkExtents = {
+            minX: x,
+            maxX: x + CHUNK_SIZE - 1,
+            minY: y,
+            maxY: y + CHUNK_SIZE - 1,
+          };
+          return {
+            ...chunkExtents,
+            tiles: selectTiles(state, chunkExtents),
+          };
+        },
+      ),
+  );
   return [
     {
-      ...extents,
-      tiles: selectTiles(state, extents),
+      minX: 0,
+      maxX: 10,
+      minY: 0,
+      maxY: 10,
+      tiles: selectTiles(state, {
+        minX: 0,
+        maxX: 10,
+        minY: 0,
+        maxY: 10,
+      }),
+    },
+    {
+      minX: 0,
+      maxX: 10,
+      minY: 11,
+      maxY: 20,
+      tiles: selectTiles(state, {
+        minX: 0,
+        maxX: 10,
+        minY: 11,
+        maxY: 20,
+      }),
     },
   ];
 };
@@ -164,7 +210,14 @@ const selectTiles = (state: State, props: Dimensions) => {
   const key = `${props.minX},${props.minY},${props.maxX},${props.maxY}`;
   let invalidate = false;
   for (const id of state.tiles.updates) {
-    if (within(id, props)) {
+    if (
+      within(id, {
+        minX: props.minX - 1,
+        minY: props.minY - 1,
+        maxX: props.maxX + 1,
+        maxY: props.maxY + 1,
+      })
+    ) {
       invalidate = true;
       break;
     }
@@ -268,5 +321,5 @@ const connectable = (tile: Tile | null) => {
 
 function within(id: string, { minX, maxX, minY, maxY }: Dimensions) {
   const { x, y } = coordinatesFromId(id);
-  return minX - 1 <= x && x <= maxX + 1 && minY - 1 <= y && y <= maxY + 1;
+  return minX <= x && x <= maxX && minY <= y && y <= maxY;
 }

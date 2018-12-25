@@ -74,6 +74,7 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
     ...newState,
     [to]: state[to].concat([redo]),
     data: newTiles,
+    updates: transaction.map(patch => patch.path[0]),
   };
 };
 
@@ -86,10 +87,6 @@ const baseTilesReducer = (
   }
   if (action.type === getType(actions.redo)) {
     return changeHistory(state, "redo");
-  }
-  // this is wrong, don't reset undo history, allow reset to be undone
-  if (action.type === getType(actions.resetBoard)) {
-    return DEFAULT_STATE;
   }
   let transactionSteps: Patch[];
   return produce(state, outerDraft => {
@@ -135,6 +132,12 @@ const baseTilesReducer = (
             draft[id].adjustments[name] = value;
             return;
           }
+          case getType(actions.resetBoard): {
+            for (const id of Object.keys(draft)) {
+              delete draft[id];
+            }
+            return;
+          }
         }
       },
       (patches, inversePatches) => {
@@ -153,7 +156,8 @@ const baseTilesReducer = (
     }
     if (
       action.type === getType(actions.updateTiles) ||
-      action.type === getType(actions.endUpdate)
+      action.type === getType(actions.endUpdate) ||
+      action.type === getType(actions.resetBoard)
     ) {
       if (outerDraft.transaction.length) {
         outerDraft.past.push(outerDraft.transaction);
