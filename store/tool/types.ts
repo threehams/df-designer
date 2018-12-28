@@ -135,19 +135,21 @@ export type CommandKey =
   | "noartifactsStockpile"
   | "junkgoodsStockpile";
 
-interface Coordinates {
+export interface Coordinates {
   x: number;
   y: number;
 }
+type TilesetName = keyof typeof tilesetNames;
+
 export type Io = "export" | "import";
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
 export type Type = "designation" | "item";
-type TilesetName = keyof typeof tilesetNames;
 export type CommandMap = { [Key in CommandKey]: Command };
 export interface ToolState {
   readonly current: Tool;
   readonly last: Tool | null;
   readonly export: boolean;
+  readonly selectionEnd: Coordinates | null;
   readonly selectionStart: Coordinates | null;
   readonly phase: Phase;
   readonly command: CommandKey;

@@ -3,7 +3,7 @@ import { createAction } from "typesafe-actions";
 import { State } from "../types";
 import { selectTool, selectCurrentCommand } from "../tool";
 import { selectTile } from "./reducer";
-import { Command } from "../tool/types";
+import { Command, Coordinates } from "../tool/types";
 import { toolActions } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
 import { Tile } from "./types";
@@ -50,22 +50,37 @@ export const clickTile = (x: number, y: number) => {
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
     const tile = selectTile(state, { x, y });
-    if (tool === "rectangle" && !state.tool.selectionStart) {
-      return dispatch(toolActions.startSelection(x, y));
-    }
-    if (tool === "paint") {
-      if (shouldUpdate(tile, command)) {
-        return dispatch(updateTile(x, y, command));
-      }
-    }
-    if (tile && tool === "erase") {
-      return dispatch(removeTile(x, y, command));
-    }
-    if (tool === "select" && state.tiles.data[id]) {
-      return dispatch(toolActions.setSelectedItem(x, y));
+    switch (tool) {
+      case "rectangle":
+        if (
+          state.tool.selectionStart &&
+          !coordinatesMatch(state.tool.selectionEnd, { x, y })
+        ) {
+          return dispatch(toolActions.updateSelection(x, y));
+        }
+        if (!state.tool.selectionStart) {
+          return dispatch(toolActions.startSelection(x, y));
+        }
+        break;
+      case "paint":
+        if (shouldUpdate(tile, command)) {
+          return dispatch(updateTile(x, y, command));
+        }
+        break;
+      case "erase":
+        if (tile) {
+          return dispatch(removeTile(x, y, command));
+        }
+        break;
+      case "select":
+        if (state.tiles.data[id]) {
+          return dispatch(toolActions.setSelectedItem(x, y));
+        }
+        break;
     }
   };
 };
+
 export const endClickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
@@ -88,6 +103,16 @@ export const endClickTile = (x: number, y: number) => {
       ),
     );
   };
+};
+
+const coordinatesMatch = (
+  previous: Coordinates | null,
+  current: Coordinates | null,
+) => {
+  if (!current || !previous) {
+    return false;
+  }
+  return previous.x === current.x && previous.y === current.y;
 };
 
 const shouldUpdate = (tile: Tile | null, command: Command) => {

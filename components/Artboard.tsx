@@ -35,6 +35,7 @@ interface Props {
   clickTile: (x: number, y: number) => any;
   endClickTile: (x: number, y: number) => any;
   selectionStart: { x: number; y: number } | null;
+  selectionEnd: { x: number; y: number } | null;
   chunks: Chunk[];
 }
 
@@ -48,6 +49,7 @@ interface Coordinates {
 const ArtboardBase: React.FunctionComponent<Props> = ({
   clickTile,
   endClickTile,
+  selectionEnd,
   selectionStart,
   chunks,
 }) => {
@@ -70,24 +72,11 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
           }}
           pointermove={event => {
             const { x, y } = tilePosition(event.data.global);
-            if (
-              !cursorPosition ||
-              x !== cursorPosition.minX ||
-              y !== cursorPosition.minY
-            ) {
+            if (x !== cursorPosition.minX || y !== cursorPosition.minY) {
               setCursorPosition({ minX: x, minY: y });
             }
             if (event.data.buttons === 1) {
-              if (selectionStart) {
-                setCursorPosition({
-                  minX: Math.min(selectionStart.x, x),
-                  minY: Math.min(selectionStart.y, y),
-                  maxX: Math.max(selectionStart.x, x),
-                  maxY: Math.max(selectionStart.y, y),
-                });
-              } else {
-                clickTile(x, y);
-              }
+              clickTile(x, y);
             }
           }}
           pointerup={event => {
@@ -102,6 +91,14 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
           return <ChunkTiles key={key} tiles={chunk.tiles} />;
         })}
         <Cursor {...cursorPosition} />
+        {selectionStart && selectionEnd && (
+          <Cursor
+            minX={Math.min(selectionStart.x, selectionEnd.x)}
+            minY={Math.min(selectionStart.y, selectionEnd.y)}
+            maxX={Math.max(selectionStart.x, selectionEnd.x)}
+            maxY={Math.max(selectionStart.y, selectionEnd.y)}
+          />
+        )}
       </Container>
     </Stage>
   );
@@ -142,8 +139,9 @@ const Artboard = connect(
   (state: State) => {
     return {
       commandMap: selectCommandMap(),
-      selectionStart: state.tool.selectionStart,
       chunks: selectChunks(state),
+      selectionEnd: state.tool.selectionEnd,
+      selectionStart: state.tool.selectionStart,
     };
   },
   {

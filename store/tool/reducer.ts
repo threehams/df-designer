@@ -14,6 +14,7 @@ const INITIAL_STATE: ToolState = {
   last: null,
   export: false,
   selectionStart: null,
+  selectionEnd: null,
   phase: "dig",
   command: "mine",
   io: null,
@@ -30,6 +31,10 @@ export const toolReducer = (
         if (action.payload.tool !== state.current) {
           draft.last = state.current;
           draft.current = action.payload.tool;
+          if (action.payload.tool !== "select") {
+            draft.selectionStart = null;
+            draft.selectionEnd = null;
+          }
         }
         return;
       }
@@ -39,11 +44,20 @@ export const toolReducer = (
       }
       case getType(actions.startSelection): {
         draft.selectionStart = { x: action.payload.x, y: action.payload.y };
+        draft.selectionEnd = { x: action.payload.x, y: action.payload.y };
+        return;
+      }
+      case getType(actions.updateSelection): {
+        draft.selectionEnd = {
+          x: action.payload.x,
+          y: action.payload.y,
+        };
         return;
       }
       case getType(actions.endSelection):
       case getType(tilesActions.updateTiles):
         draft.selectionStart = null;
+        draft.selectionEnd = null;
         return;
       case getType(toolActions.setPhase):
         if (draft.phase !== action.payload.phase) {
