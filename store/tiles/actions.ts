@@ -1,12 +1,15 @@
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import { State } from "../types";
-import { selectTool, selectCurrentCommand } from "../tool";
+import {
+  selectTool,
+  selectCurrentCommand,
+  toolActions,
+  Command,
+  Coordinates,
+} from "../tool";
 import { selectTile } from "./reducer";
-import { Command, Coordinates } from "../tool/types";
-import { toolActions } from "../tool";
 import { Tile } from "./types";
-import { startSelection } from "../tool/actions";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -51,6 +54,29 @@ export const resetBoard = createAction("app/tiles/RESET_BOARD");
 export const undo = createAction("app/tiles/UNDO");
 export const redo = createAction("app/tiles/REDO");
 export const endUpdate = createAction("app/tiles/END_UPDATE");
+export const flip = createAction("app/tiles/FLIP", resolve => {
+  return (
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    direction: "horizontal" | "vertical",
+  ) => resolve({ startX, startY, endX, endY, direction });
+});
+
+export const flipSelection = (direction: "horizontal" | "vertical") => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    const { selectionStart, selectionEnd } = getState().tool;
+    if (!selectionStart || !selectionEnd) {
+      return;
+    }
+    const startX = Math.min(selectionStart.x, selectionEnd.x);
+    const startY = Math.min(selectionStart.y, selectionEnd.y);
+    const endX = Math.max(selectionStart.x, selectionEnd.x);
+    const endY = Math.max(selectionStart.y, selectionEnd.y);
+    return dispatch(flip(startX, startY, endX, endY, direction));
+  };
+};
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {

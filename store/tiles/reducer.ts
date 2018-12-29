@@ -151,6 +151,28 @@ const baseTilesReducer = (
             draft[id].adjustments[name] = value;
             break;
           }
+          case getType(actions.flip): {
+            const { startX, startY, endX, endY, direction } = action.payload;
+            for (const x of range(startX, endX + 1)) {
+              for (const y of range(startY, endY + 1)) {
+                const sourceId = idFromCoordinates(x, y);
+                const destX =
+                  direction === "horizontal" ? endX - (x - startX) : x;
+                const destY =
+                  direction === "vertical" ? endY - (y - startY) : y;
+                const destinationId = idFromCoordinates(destX, destY);
+                if (state.data[sourceId]) {
+                  draft[destinationId] = {
+                    ...state.data[sourceId],
+                    id: destinationId,
+                  };
+                } else if (draft[destinationId]) {
+                  delete draft[destinationId];
+                }
+              }
+            }
+            break;
+          }
           case getType(actions.resetBoard): {
             for (const id of Object.keys(draft)) {
               delete draft[id];
@@ -177,7 +199,8 @@ const baseTilesReducer = (
       action.type === getType(actions.updateTiles) ||
       action.type === getType(actions.endUpdate) ||
       action.type === getType(actions.resetBoard) ||
-      action.type === getType(actions.cloneTiles)
+      action.type === getType(actions.cloneTiles) ||
+      action.type === getType(actions.flip)
     ) {
       if (outerDraft.transaction.length) {
         outerDraft.past.push(outerDraft.transaction);

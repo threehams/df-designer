@@ -3,9 +3,10 @@ import * as PIXI from "pixi.js";
 import { Stage, Container, Sprite } from "@inlet/react-pixi";
 import { useState } from "react";
 import { connect } from "react-redux";
+
 import { State } from "../store";
 import { tilesActions, TileSprite, selectChunks, Chunk } from "../store/tiles";
-import { selectCommandMap } from "../store/tool";
+import { selectCommandMap, selectSelectionOffset } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
@@ -32,11 +33,12 @@ const textures = keys(tilesetNames).reduce(
 );
 
 interface Props {
+  chunks: Chunk[];
   clickTile: (x: number, y: number) => any;
   endClickTile: (x: number, y: number) => any;
-  selectionStart: { x: number; y: number } | null;
   selectionEnd: { x: number; y: number } | null;
-  chunks: Chunk[];
+  selectionOffset: { x: number; y: number };
+  selectionStart: { x: number; y: number } | null;
 }
 
 interface Coordinates {
@@ -50,6 +52,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
   clickTile,
   endClickTile,
   selectionEnd,
+  selectionOffset,
   selectionStart,
   chunks,
 }) => {
@@ -97,6 +100,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
             minY={Math.min(selectionStart.y, selectionEnd.y)}
             maxX={Math.max(selectionStart.x, selectionEnd.x)}
             maxY={Math.max(selectionStart.y, selectionEnd.y)}
+            offset={selectionOffset}
           />
         )}
       </Container>
@@ -139,9 +143,10 @@ const tilePosition = ({ x, y }: { x: number; y: number }) => {
 const Artboard = connect(
   (state: State) => {
     return {
-      commandMap: selectCommandMap(),
       chunks: selectChunks(state),
+      commandMap: selectCommandMap(),
       selectionEnd: state.tool.selectionEnd,
+      selectionOffset: selectSelectionOffset(state),
       selectionStart: state.tool.selectionStart,
     };
   },

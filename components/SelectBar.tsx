@@ -3,28 +3,26 @@ import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
 import { State } from "../store";
-import { Command, selectCommandMap, Adjustment } from "../store/tool";
+import { Command, selectCommandMap } from "../store/tool";
 import { idFromCoordinates } from "../lib/coordinatesFromId";
 import { Tile, tilesActions } from "../store/tiles";
-import { Button } from "./Button";
+import { AdjustmentBar } from "./AdjustmentBar";
+import { MultiSelectBar } from "./MultiSelectBar";
 
 jsx; // tslint:disable-line
 
 interface Props {
   command: Command | null;
-  tile: Tile | null;
+  flipSelection: (direction: "horizontal" | "vertical") => any;
+  multiSelect: boolean;
   setAdjustment: typeof tilesActions.setAdjustment;
+  tile: Tile | null;
 }
-
-const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
-  if (!tile) {
-    return false;
-  }
-  return tile.adjustments[adjustment.name];
-};
 
 const SelectBarBase: React.FunctionComponent<Props> = ({
   command,
+  multiSelect,
+  flipSelection,
   setAdjustment,
   tile,
 }) => {
@@ -36,101 +34,64 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
         flex-flow: column nowrap;
       `}
     >
-      {!command && <div>No item selected.</div>}
+      {tile && !command && <div>No item selected.</div>}
       {command && tile && (
-        <div>
-          <div>{command.name}</div>
-          {command.adjustments &&
-            command.adjustments.map(adjustment => {
-              const value =
-                tileValue(tile, adjustment) || adjustment.initialValue;
-              if (adjustment.type === "toggle") {
-                return (
-                  <label
-                    key={adjustment.name}
-                    css={css`
-                      display: block;
-                    `}
-                  >
-                    <input
-                      type="checkbox"
-                      value={adjustment.name}
-                      checked={typeof value === "boolean" ? value : false}
-                      onChange={() => {
-                        return setAdjustment(tile.id, adjustment.name, !value);
-                      }}
-                    />{" "}
-                    {adjustment.name}
-                  </label>
-                );
-              }
-              return (
-                <div key={adjustment.name}>
-                  <Button
-                    onClick={() => {
-                      setAdjustment(
-                        tile.id,
-                        adjustment.name,
-                        Math.max((value as number) - 1, 1),
-                      );
-                    }}
-                  >
-                    -
-                  </Button>{" "}
-                  {value}{" "}
-                  <Button
-                    onClick={() => {
-                      setAdjustment(
-                        tile.id,
-                        adjustment.name,
-                        Math.min((value as number) + 1, 12),
-                      );
-                    }}
-                  >
-                    +
-                  </Button>
-                </div>
-              );
-            })}
-        </div>
+        <AdjustmentBar
+          command={command}
+          tile={tile}
+          setAdjustment={setAdjustment}
+        />
       )}
+      {multiSelect && <MultiSelectBar flipSelection={flipSelection} />}
     </aside>
   );
 };
 
 export const SelectBar = connect(
   (state: State) => {
-    const tile = selectSelectedTile(state);
-    if (!tile) {
-      return { tile: null, tileId: null, command: null };
-    }
-    if (!tile || !tile.item) {
-      return { tile, command: null };
-    }
-    const commandMap = selectCommandMap();
+    const { command, tile, multiSelect } = selectSelectedTile(state);
 
     return {
+      command,
+      multiSelect,
       tile,
-      command: commandMap[tile.item],
     };
   },
-  { setAdjustment: tilesActions.setAdjustment },
+  {
+    setAdjustment: tilesActions.setAdjustment,
+    flipSelection: tilesActions.flipSelection,
+  },
 )(SelectBarBase);
 
 // probably a sign that the ducks don't make a lot of sense yet
 const selectSelectedTile = (state: State) => {
   if (!state.tool.selectionStart || !state.tool.selectionEnd) {
-    return null;
+    return {
+      command: null,
+      multiSelect: false,
+      tile: null,
+    };
   }
+  const commandMap = selectCommandMap();
+
   if (
     state.tool.selectionEnd.x !== state.tool.selectionStart.x ||
     state.tool.selectionEnd.y !== state.tool.selectionStart.y
   ) {
-    return null;
+    return {
+      command: null,
+      multiSelect: true,
+      tile: null,
+    };
   }
   const id = idFromCoordinates(
     state.tool.selectionStart.x,
     state.tool.selectionStart.y,
   );
-  return state.tiles.data[id] || null;
+  const tile = state.tiles.data[id] || null;
+  return {
+    command: tile && tile.item ? commandMap[tile.item] : null,
+    tile: tile,
+    multiSelect: false,
+  };
 };

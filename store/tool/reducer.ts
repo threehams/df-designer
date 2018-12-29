@@ -137,3 +137,18 @@ const phaseValues = Object.values(phases);
 export const selectPhases = () => {
   return phaseValues;
 };
+
+export const selectSelectionOffset = createSelector(
+  (state: State) => state.tool.dragStart,
+  (state: State) => state.tool.dragEnd,
+  (state: State) => state.tool.dragging,
+  (dragStart, dragEnd, dragging) => {
+    if (!dragStart || !dragEnd || !dragging) {
+      return { x: 0, y: 0 };
+    }
+    return {
+      x: dragEnd.x - dragStart.x,
+      y: dragEnd.y - dragStart.y,
+    };
+  },
+);
