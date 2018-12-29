@@ -74,14 +74,14 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
     ...newState,
     [to]: state[to].concat([redo]),
     data: newTiles,
-    updates: transaction.map(patch => patch.path[0]),
+    updates: transaction.map(patch => patch.path[0] as string),
   };
 };
 
 const baseTilesReducer = (
   state: TilesState,
   action: ActionType<typeof actions>,
-) => {
+): TilesState => {
   if (action.type === getType(actions.undo)) {
     return changeHistory(state, "undo");
   }

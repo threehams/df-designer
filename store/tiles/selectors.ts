@@ -276,7 +276,7 @@ const createWalls = (
       const wallNumber = neighborIds(wallId)
         .filter(id => id !== wallId)
         .reduce((bits, id, index) => {
-          if (connectable(tiles[id])) {
+          if (exposed(tiles[id])) {
             return bits + 2 ** index;
           }
           return bits;
@@ -310,13 +310,6 @@ const exposed = (tile: Tile | null) => {
     return false;
   }
   return !!tile.designation;
-};
-
-const connectable = (tile: Tile | null) => {
-  if (!tile) {
-    return false;
-  }
-  return !!tile.designation && tile.item !== "door";
 };
 
 function within(id: string, { minX, maxX, minY, maxY }: Dimensions) {

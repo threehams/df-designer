@@ -120,7 +120,8 @@ const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
             height={TILE_SIZE}
             x={x * TILE_SIZE}
             y={y * TILE_SIZE}
-            texture={textures[tile.textureName]}
+            // show "X" in case of something going wrong
+            texture={textures[tile.textureName] || textures.X}
           />
         );
       })}
