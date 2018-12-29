@@ -117,6 +117,7 @@ export const SelectBar = connect(
   { setAdjustment: tilesActions.setAdjustment },
 )(SelectBarBase);
 
+// probably a sign that the ducks don't make a lot of sense yet
 const selectSelectedTile = (state: State) => {
   if (!state.tool.selectionStart || !state.tool.selectionEnd) {
     return null;
