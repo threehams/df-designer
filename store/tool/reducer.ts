@@ -18,7 +18,7 @@ const INITIAL_STATE: ToolState = {
   phase: "dig",
   command: "mine",
   io: null,
-  selectedItem: null,
+  selecting: false,
 };
 
 export const toolReducer = (
@@ -36,29 +36,33 @@ export const toolReducer = (
             draft.selectionEnd = null;
           }
         }
-        return;
+        break;
       }
       case getType(actions.setIo): {
         draft.io = action.payload.io;
-        return;
+        break;
       }
       case getType(actions.startSelection): {
         draft.selectionStart = { x: action.payload.x, y: action.payload.y };
         draft.selectionEnd = { x: action.payload.x, y: action.payload.y };
-        return;
+        draft.selecting = true;
+        break;
       }
       case getType(actions.updateSelection): {
         draft.selectionEnd = {
           x: action.payload.x,
           y: action.payload.y,
         };
-        return;
+        break;
       }
       case getType(actions.endSelection):
+        draft.selecting = false;
+        break;
       case getType(tilesActions.updateTiles):
+        draft.selecting = false;
         draft.selectionStart = null;
         draft.selectionEnd = null;
-        return;
+        break;
       case getType(toolActions.setPhase):
         if (draft.phase !== action.payload.phase) {
           draft.phase = action.payload.phase;
@@ -68,17 +72,14 @@ export const toolReducer = (
             { phase: action.payload.phase },
           )[0].command;
         }
-        return;
+        break;
       case getType(toolActions.setCommand):
         draft.command = action.payload.command;
         if (draft.current === "erase") {
           draft.last = "erase";
           draft.current = "paint";
         }
-        return;
-      case getType(toolActions.setSelectedItem):
-        draft.selectedItem = { x: action.payload.x, y: action.payload.y };
-        return;
+        break;
     }
   });
 };

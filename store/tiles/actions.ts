@@ -5,7 +5,6 @@ import { selectTool, selectCurrentCommand } from "../tool";
 import { selectTile } from "./reducer";
 import { Command, Coordinates } from "../tool/types";
 import { toolActions } from "../tool";
-import { idFromCoordinates } from "../../lib/coordinatesFromId";
 import { Tile } from "./types";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
@@ -45,20 +44,20 @@ export const clickTile = (x: number, y: number) => {
     if (x < 1 || y < 1) {
       return;
     }
-    const id = idFromCoordinates(x, y);
     const state = getState();
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
     const tile = selectTile(state, { x, y });
     switch (tool) {
       case "rectangle":
+      case "select":
         if (
-          state.tool.selectionStart &&
+          state.tool.selecting &&
           !coordinatesMatch(state.tool.selectionEnd, { x, y })
         ) {
           return dispatch(toolActions.updateSelection(x, y));
         }
-        if (!state.tool.selectionStart) {
+        if (!state.tool.selecting) {
           return dispatch(toolActions.startSelection(x, y));
         }
         break;
@@ -72,11 +71,6 @@ export const clickTile = (x: number, y: number) => {
           return dispatch(removeTile(x, y, command));
         }
         break;
-      case "select":
-        if (state.tiles.data[id]) {
-          return dispatch(toolActions.setSelectedItem(x, y));
-        }
-        break;
     }
   };
 };
@@ -86,22 +80,31 @@ export const endClickTile = (x: number, y: number) => {
     const state = getState();
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
-    if (tool !== "rectangle" || !state.tool.selectionStart) {
-      return dispatch(endUpdate());
+    switch (tool) {
+      case "rectangle": {
+        // it's possible if some click events get lost
+        if (!state.tool.selectionStart) {
+          return;
+        }
+        if (x < 0 || y < 0) {
+          return dispatch(toolActions.endSelection());
+        }
+        const { x: startX, y: startY } = state.tool.selectionStart;
+        return dispatch(
+          updateTiles(
+            Math.min(startX, x),
+            Math.min(startY, y),
+            Math.max(startX, x),
+            Math.max(startY, y),
+            command,
+          ),
+        );
+      }
+      case "select":
+        return dispatch(toolActions.endSelection());
+      default:
+        return dispatch(endUpdate());
     }
-    const { x: startX, y: startY } = state.tool.selectionStart;
-    if (x < 0 || y < 0) {
-      return dispatch(toolActions.endSelection());
-    }
-    dispatch(
-      updateTiles(
-        Math.min(startX, x),
-        Math.min(startY, y),
-        Math.max(startX, x),
-        Math.max(startY, y),
-        command,
-      ),
-    );
   };
 };
 

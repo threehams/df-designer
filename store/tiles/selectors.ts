@@ -177,32 +177,6 @@ export const selectChunks = (state: State) => {
         },
       ),
   );
-  return [
-    {
-      minX: 0,
-      maxX: 10,
-      minY: 0,
-      maxY: 10,
-      tiles: selectTiles(state, {
-        minX: 0,
-        maxX: 10,
-        minY: 0,
-        maxY: 10,
-      }),
-    },
-    {
-      minX: 0,
-      maxX: 10,
-      minY: 11,
-      maxY: 20,
-      tiles: selectTiles(state, {
-        minX: 0,
-        maxX: 10,
-        minY: 11,
-        maxY: 20,
-      }),
-    },
-  ];
 };
 
 const selectTilesCache: { [key: string]: TileSprite[] } = {};

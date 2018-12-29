@@ -13,7 +13,6 @@ jsx; // tslint:disable-line
 interface Props {
   command: Command | null;
   tile: Tile | null;
-  tileId: string | null;
   setAdjustment: typeof tilesActions.setAdjustment;
 }
 
@@ -28,7 +27,6 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
   command,
   setAdjustment,
   tile,
-  tileId,
 }) => {
   return (
     <aside
@@ -39,7 +37,7 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
       `}
     >
       {!command && <div>No item selected.</div>}
-      {command && (
+      {command && tile && (
         <div>
           <div>{command.name}</div>
           {command.adjustments &&
@@ -59,9 +57,7 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
                       value={adjustment.name}
                       checked={typeof value === "boolean" ? value : false}
                       onChange={() => {
-                        if (tileId) {
-                          return setAdjustment(tileId, adjustment.name, !value);
-                        }
+                        return setAdjustment(tile.id, adjustment.name, !value);
                       }}
                     />{" "}
                     {adjustment.name}
@@ -73,7 +69,7 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
                   <Button
                     onClick={() => {
                       setAdjustment(
-                        tileId!,
+                        tile.id,
                         adjustment.name,
                         Math.max((value as number) - 1, 1),
                       );
@@ -85,7 +81,7 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
                   <Button
                     onClick={() => {
                       setAdjustment(
-                        tileId!,
+                        tile.id,
                         adjustment.name,
                         Math.min((value as number) + 1, 12),
                       );
@@ -104,22 +100,36 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
 
 export const SelectBar = connect(
   (state: State) => {
-    if (!state.tool.selectedItem) {
+    const tile = selectSelectedTile(state);
+    if (!tile) {
       return { tile: null, tileId: null, command: null };
     }
-    const { x, y } = state.tool.selectedItem;
-    const tileId = idFromCoordinates(x, y);
-    const tile = state.tiles.data[tileId];
     if (!tile || !tile.item) {
-      return { tile, tileId, command: null };
+      return { tile, command: null };
     }
     const commandMap = selectCommandMap();
 
     return {
       tile,
-      tileId,
       command: commandMap[tile.item],
     };
   },
   { setAdjustment: tilesActions.setAdjustment },
 )(SelectBarBase);
+
+const selectSelectedTile = (state: State) => {
+  if (!state.tool.selectionStart || !state.tool.selectionEnd) {
+    return null;
+  }
+  if (
+    state.tool.selectionEnd.x !== state.tool.selectionStart.x ||
+    state.tool.selectionEnd.y !== state.tool.selectionStart.y
+  ) {
+    return null;
+  }
+  const id = idFromCoordinates(
+    state.tool.selectionStart.x,
+    state.tool.selectionStart.y,
+  );
+  return state.tiles.data[id] || null;
+};

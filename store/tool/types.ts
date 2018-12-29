@@ -154,7 +154,7 @@ export interface ToolState {
   readonly phase: Phase;
   readonly command: CommandKey;
   readonly io: Io | null;
-  readonly selectedItem: Coordinates | null;
+  readonly selecting: boolean;
 }
 
 interface ResizeAdjustment {
