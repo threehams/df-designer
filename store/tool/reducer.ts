@@ -10,15 +10,18 @@ import { phases } from "./phases";
 import { createSelector } from "reselect";
 
 const INITIAL_STATE: ToolState = {
-  current: "paint",
-  last: null,
-  export: false,
-  selectionStart: null,
-  selectionEnd: null,
-  phase: "dig",
   command: "mine",
+  current: "paint",
+  dragEnd: null,
+  dragging: false,
+  dragStart: null,
+  export: false,
   io: null,
+  last: null,
+  phase: "dig",
   selecting: false,
+  selectionEnd: null,
+  selectionStart: null,
 };
 
 export const toolReducer = (
@@ -63,6 +66,19 @@ export const toolReducer = (
         draft.selectionStart = null;
         draft.selectionEnd = null;
         break;
+      case getType(tilesActions.cloneTiles):
+        draft.dragging = false;
+        draft.selectionStart = {
+          x: action.payload.toX,
+          y: action.payload.toY,
+        };
+        draft.selectionEnd = {
+          x: action.payload.toX + (action.payload.endX - action.payload.startX),
+          y: action.payload.toY + (action.payload.endY - action.payload.startY),
+        };
+        draft.dragStart = null;
+        draft.dragEnd = null;
+        break;
       case getType(toolActions.setPhase):
         if (draft.phase !== action.payload.phase) {
           draft.phase = action.payload.phase;
@@ -79,6 +95,14 @@ export const toolReducer = (
           draft.last = "erase";
           draft.current = "paint";
         }
+        break;
+      case getType(toolActions.startDrag):
+        draft.dragStart = { x: action.payload.x, y: action.payload.y };
+        draft.dragEnd = { x: action.payload.x, y: action.payload.y };
+        draft.dragging = true;
+        break;
+      case getType(toolActions.updateDrag):
+        draft.dragEnd = { x: action.payload.x, y: action.payload.y };
         break;
     }
   });

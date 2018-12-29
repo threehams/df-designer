@@ -101,7 +101,7 @@ const baseTilesReducer = (
             if (newTile) {
               draft[id] = newTile;
             }
-            return;
+            break;
           }
           case getType(actions.updateTiles): {
             const { startX, startY, endX, endY, command } = action.payload;
@@ -114,7 +114,26 @@ const baseTilesReducer = (
                 }
               }
             }
-            return;
+            break;
+          }
+          case getType(actions.cloneTiles): {
+            const { startX, startY, endX, endY, toX, toY } = action.payload;
+            for (const x of range(startX, endX + 1)) {
+              for (const y of range(startY, endY + 1)) {
+                const sourceId = idFromCoordinates(x, y);
+                const destinationId = idFromCoordinates(
+                  toX + (x - startX),
+                  toY + (y - startY),
+                );
+                if (state.data[sourceId]) {
+                  draft[destinationId] = {
+                    ...state.data[sourceId],
+                    id: destinationId,
+                  };
+                }
+              }
+            }
+            break;
           }
           case getType(actions.removeTile): {
             const { x, y, command } = action.payload;
@@ -125,18 +144,18 @@ const baseTilesReducer = (
             } else {
               delete draft[id];
             }
-            return;
+            break;
           }
           case getType(actions.setAdjustment): {
             const { id, name, value } = action.payload;
             draft[id].adjustments[name] = value;
-            return;
+            break;
           }
           case getType(actions.resetBoard): {
             for (const id of Object.keys(draft)) {
               delete draft[id];
             }
-            return;
+            break;
           }
         }
       },

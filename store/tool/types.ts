@@ -146,15 +146,18 @@ export type Phase = "dig" | "designate" | "build" | "place" | "query";
 export type Type = "designation" | "item";
 export type CommandMap = { [Key in CommandKey]: Command };
 export interface ToolState {
+  readonly command: CommandKey;
   readonly current: Tool;
-  readonly last: Tool | null;
+  readonly dragEnd: Coordinates | null;
+  readonly dragging: boolean;
+  readonly dragStart: Coordinates | null;
   readonly export: boolean;
+  readonly io: Io | null;
+  readonly last: Tool | null;
+  readonly phase: Phase;
+  readonly selecting: boolean;
   readonly selectionEnd: Coordinates | null;
   readonly selectionStart: Coordinates | null;
-  readonly phase: Phase;
-  readonly command: CommandKey;
-  readonly io: Io | null;
-  readonly selecting: boolean;
 }
 
 interface ResizeAdjustment {
@@ -173,17 +176,17 @@ interface ToggleAdjustment {
 export type Adjustment = ToggleAdjustment | ResizeAdjustment;
 
 export interface Command {
+  adjustments?: Adjustment[];
   bitmask?: boolean;
   command: CommandKey;
   height?: number;
-  shortcut: string;
   name: string;
-  type: Type;
   phase: Phase;
   requiredTool?: Tool | null;
+  shortcut: string;
   textures: TilesetName[];
+  type: Type;
   width?: number;
-  adjustments?: Adjustment[];
 }
 
 export interface PhaseConfig {

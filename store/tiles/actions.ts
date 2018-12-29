@@ -6,6 +6,7 @@ import { selectTile } from "./reducer";
 import { Command, Coordinates } from "../tool/types";
 import { toolActions } from "../tool";
 import { Tile } from "./types";
+import { startSelection } from "../tool/actions";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -31,6 +32,18 @@ export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
     return resolve({ startX, startY, endX, endY, command });
   };
 });
+export const cloneTiles = createAction("app/tiles/CLONE_TILES", resolve => {
+  return (
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    toX: number,
+    toY: number,
+  ) => {
+    return resolve({ startX, startY, endX, endY, toX, toY });
+  };
+});
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
   return (x: number, y: number, command: Command) => resolve({ x, y, command });
 });
@@ -50,12 +63,36 @@ export const clickTile = (x: number, y: number) => {
     const tile = selectTile(state, { x, y });
     switch (tool) {
       case "rectangle":
-      case "select":
         if (
           state.tool.selecting &&
           !coordinatesMatch(state.tool.selectionEnd, { x, y })
         ) {
           return dispatch(toolActions.updateSelection(x, y));
+        }
+        if (!state.tool.selecting) {
+          return dispatch(toolActions.startSelection(x, y));
+        }
+        break;
+      case "select":
+        if (
+          (state.tool.selecting || state.tool.dragging) &&
+          coordinatesMatch(state.tool.selectionEnd, { x, y })
+        ) {
+          // don't bother dispatching action - prevents noise in devtools
+          return;
+        }
+
+        if (state.tool.selecting) {
+          return dispatch(toolActions.updateSelection(x, y));
+        }
+        if (state.tool.dragging) {
+          return dispatch(toolActions.updateDrag(x, y));
+        }
+        if (
+          !state.tool.dragging &&
+          within(state.tool.selectionStart, state.tool.selectionEnd, { x, y })
+        ) {
+          return dispatch(toolActions.startDrag(x, y));
         }
         if (!state.tool.selecting) {
           return dispatch(toolActions.startSelection(x, y));
@@ -73,6 +110,26 @@ export const clickTile = (x: number, y: number) => {
         break;
     }
   };
+};
+
+const within = (
+  start: Coordinates | null,
+  end: Coordinates | null,
+  current: Coordinates,
+) => {
+  if (!start || !end) {
+    return false;
+  }
+  const minX = Math.min(start.x, end.x);
+  const maxX = Math.max(start.x, end.x);
+  const minY = Math.min(start.y, end.y);
+  const maxY = Math.max(start.y, end.y);
+  return (
+    minX <= current.x &&
+    current.x <= maxX &&
+    minY <= current.y &&
+    current.y <= maxY
+  );
 };
 
 export const endClickTile = (x: number, y: number) => {
@@ -100,8 +157,25 @@ export const endClickTile = (x: number, y: number) => {
           ),
         );
       }
-      case "select":
-        return dispatch(toolActions.endSelection());
+      case "select": {
+        // get rid of all the nulls right away
+        if (!state.tool.dragging) {
+          return dispatch(toolActions.endSelection());
+        }
+        if (
+          !state.tool.selectionStart ||
+          !state.tool.selectionEnd ||
+          !state.tool.dragStart ||
+          !state.tool.dragEnd
+        ) {
+          return;
+        }
+        const { x: startX, y: startY } = state.tool.selectionStart;
+        const { x: endX, y: endY } = state.tool.selectionEnd;
+        const toX = state.tool.dragEnd.x - (state.tool.dragStart.x - startX);
+        const toY = state.tool.dragEnd.y - (state.tool.dragStart.y - startY);
+        return dispatch(cloneTiles(startX, startY, endX, endY, toX, toY));
+      }
       default:
         return dispatch(endUpdate());
     }

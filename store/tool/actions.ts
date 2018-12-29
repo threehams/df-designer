@@ -26,6 +26,12 @@ export const updateSelection = createAction(
     return (x: number, y: number) => resolve({ x, y });
   },
 );
+export const startDrag = createAction("app/tool/START_DRAG", resolve => {
+  return (x: number, y: number) => resolve({ x, y });
+});
+export const updateDrag = createAction("app/tool/UPDATE_DRAG", resolve => {
+  return (x: number, y: number) => resolve({ x, y });
+});
 export const setSelectedItem = createAction(
   "app/tool/SET_SELECTED_ITEM",
   resolve => {
