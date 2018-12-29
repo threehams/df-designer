@@ -176,7 +176,8 @@ const baseTilesReducer = (
     if (
       action.type === getType(actions.updateTiles) ||
       action.type === getType(actions.endUpdate) ||
-      action.type === getType(actions.resetBoard)
+      action.type === getType(actions.resetBoard) ||
+      action.type === getType(actions.cloneTiles)
     ) {
       if (outerDraft.transaction.length) {
         outerDraft.past.push(outerDraft.transaction);
