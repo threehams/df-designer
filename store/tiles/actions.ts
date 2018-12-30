@@ -26,7 +26,7 @@ export const setAdjustment = createAction(
     };
   },
 );
-export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
+export const fillTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
   return (
     // TODO use an object and unify start/end/min/max all around
     startX: number,
@@ -64,6 +64,18 @@ export const moveTiles = createAction("app/tiles/MOVE_TILES", resolve => {
 });
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
   return (x: number, y: number, command: Command) => resolve({ x, y, command });
+});
+export const removeTiles = createAction("app/tiles/REMOVE_TILES", resolve => {
+  return (
+    // TODO use an object and unify start/end/min/max all around
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    command: Command,
+  ) => {
+    return resolve({ startX, startY, endX, endY, command });
+  };
 });
 export const resetBoard = createAction("app/tiles/RESET_BOARD");
 export const undo = createAction("app/tiles/UNDO");
@@ -181,7 +193,7 @@ export const endClickTile = (
         }
         const { x: startX, y: startY } = state.tool.selectionStart;
         return dispatch(
-          updateTiles(
+          fillTiles(
             // TODO source of bugs here, maybe fix when writing to state?
             Math.min(startX, x),
             Math.min(startY, y),

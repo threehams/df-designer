@@ -2,7 +2,7 @@
 import { css, jsx } from "@emotion/core";
 
 import { tilesActions } from "../store/tiles";
-import { Button } from "./Button";
+import { Button, ButtonGroup } from "./";
 
 jsx; // tslint:disable-line
 
@@ -15,10 +15,18 @@ export const MultiSelectBar: React.FunctionComponent<Props> = ({
 }) => {
   return (
     <div>
-      <Button onClick={() => flipSelection("horizontal")}>
-        Flip Horizontal
-      </Button>
-      <Button onClick={() => flipSelection("vertical")}>Flip Vertical</Button>
+      <ButtonGroup
+        css={css`
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+        `}
+      >
+        <Button onClick={() => flipSelection("horizontal")}>
+          Flip Horizontal
+        </Button>
+        <Button onClick={() => flipSelection("vertical")}>Flip Vertical</Button>
+      </ButtonGroup>
     </div>
   );
 };

@@ -69,7 +69,7 @@ export const toolReducer = (
         };
         draft.selecting = false;
         break;
-      case getType(tilesActions.updateTiles):
+      case getType(tilesActions.fillTiles):
         draft.selecting = false;
         draft.selectionStart = null;
         draft.selectionEnd = null;

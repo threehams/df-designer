@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import * as PIXI from "pixi.js";
 import { Stage, Container, Sprite } from "@inlet/react-pixi";
 import { useState } from "react";
@@ -16,6 +16,7 @@ import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
 import { Cursor } from "./Cursor";
+import { useHotKey, useKeyHandler } from "../lib/useHotKey";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
@@ -56,28 +57,6 @@ interface SelectionArea {
   minX: number;
   minY: number;
 }
-
-const useHotKey = () => {
-  const [key, setKey] = useState<keyof typeof keycode.codes | null>(null);
-
-  useEffect(() => {
-    const set = (event: KeyboardEvent) => {
-      if (event.keyCode) {
-        setKey(keycode(event) as keyof typeof keycode.codes);
-      }
-    };
-    const reset = () => {
-      setKey(null);
-    };
-    window.addEventListener("keydown", set);
-    window.addEventListener("keyup", reset);
-    return () => {
-      window.removeEventListener("keydown", set);
-      window.removeEventListener("keyup", reset);
-    };
-  });
-  return key;
-};
 
 const ArtboardBase: React.FunctionComponent<Props> = ({
   clickTile,

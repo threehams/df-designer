@@ -104,7 +104,7 @@ const baseTilesReducer = (
             }
             break;
           }
-          case getType(actions.updateTiles): {
+          case getType(actions.fillTiles): {
             const { startX, startY, endX, endY, command } = action.payload;
             for (const x of range(startX, endX + 1)) {
               for (const y of range(startY, endY + 1)) {
@@ -231,7 +231,7 @@ const baseTilesReducer = (
       outerDraft.future = [];
     }
     if (
-      action.type === getType(actions.updateTiles) ||
+      action.type === getType(actions.fillTiles) ||
       action.type === getType(actions.endUpdate) ||
       action.type === getType(actions.resetBoard) ||
       action.type === getType(actions.cloneTiles) ||
