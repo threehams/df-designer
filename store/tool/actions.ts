@@ -1,5 +1,5 @@
 import { createAction } from "typesafe-actions";
-import { Tool, Phase, CommandKey, Io } from "./types";
+import { CommandKey, Io, Phase, Tool } from "./types";
 
 export const setTool = createAction("app/tool/SET_TOOL", resolve => {
   return (tool: Tool) => resolve({ tool });

@@ -2,18 +2,18 @@
 import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
+import { Button, ButtonGroup } from ".";
 import { State } from "../store";
 import {
-  toolActions,
-  selectPhase,
-  selectCurrentCommand,
-  selectPhases,
-  selectCommands,
   Command,
   Phase,
   PhaseConfig,
+  selectCommands,
+  selectCurrentCommand,
+  selectPhase,
+  selectPhases,
+  toolActions,
 } from "../store/tool";
-import { Button, ButtonGroup } from ".";
 
 jsx; // tslint:disable-line
 

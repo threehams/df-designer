@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
 
-import { Command, Adjustment } from "../store/tool";
 import { Tile, tilesActions } from "../store/tiles";
+import { Adjustment, Command } from "../store/tool";
 import { Button } from "./Button";
 
 jsx; // tslint:disable-line

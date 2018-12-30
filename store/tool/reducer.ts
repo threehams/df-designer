@@ -1,13 +1,13 @@
 import produce from "immer";
+import { createSelector } from "reselect";
 import { ActionType, getType } from "typesafe-actions";
+import { toolActions } from ".";
+import * as tilesActions from "../tiles/actions";
 import { State } from "../types";
 import * as actions from "./actions";
-import * as tilesActions from "../tiles/actions";
-import { ToolState, Phase } from "./types";
-import { toolActions } from ".";
 import { commands } from "./commands";
 import { phases } from "./phases";
-import { createSelector } from "reselect";
+import { Phase, ToolState } from "./types";
 
 const INITIAL_STATE: ToolState = {
   command: "mine",
@@ -173,7 +173,7 @@ export const selectSelection = createSelector(
       startX: Math.min(start.x, end.x),
       startY: Math.min(start.y, end.y),
       endX: Math.max(start.x, end.x),
-      endY: Math.max(start.x, end.x),
+      endY: Math.max(start.y, end.y),
     };
   },
 );

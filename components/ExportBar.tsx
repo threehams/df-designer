@@ -1,19 +1,19 @@
 /** @jsx jsx */
+import { css, jsx } from "@emotion/core";
 import React from "react";
 import { useState } from "react";
-import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
-import { State } from "../store";
-import {
-  toolActions,
-  Phase,
-  Io,
-  selectPhases,
-  PhaseConfig,
-} from "../store/tool";
 import { Button, ButtonGroup } from ".";
+import { State } from "../store";
 import { selectExported } from "../store/tiles";
+import {
+  Io,
+  Phase,
+  PhaseConfig,
+  selectPhases,
+  toolActions,
+} from "../store/tool";
 
 jsx; // tslint:disable-line
 

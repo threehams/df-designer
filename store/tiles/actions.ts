@@ -1,18 +1,19 @@
+import keycode from "keycode";
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
-import { State } from "../types";
+import { withinCoordinates } from "../../lib/withinCoordinates";
 import {
-  selectTool,
-  selectCurrentCommand,
-  toolActions,
   Command,
   Coords,
+  selectCurrentCommand,
   SelectedCoords,
+  selectSelection,
+  selectTool,
+  toolActions,
 } from "../tool";
+import { State } from "../types";
 import { selectTile } from "./reducer";
 import { Tile } from "./types";
-import { withinCoordinates } from "../../lib/withinCoordinates";
-import keycode from "keycode";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -61,21 +62,10 @@ export const flip = createAction("app/tiles/FLIP", resolve => {
 
 export const flipSelection = (direction: "horizontal" | "vertical") => {
   return (dispatch: Dispatch, getState: () => State) => {
-    const { selectionStart, selectionEnd } = getState().tool;
-    if (!selectionStart || !selectionEnd) {
-      return;
+    const selection = selectSelection(getState());
+    if (selection) {
+      return dispatch(flip(selection, direction));
     }
-    return dispatch(
-      flip(
-        {
-          startX: selectionStart.x,
-          startY: selectionStart.y,
-          endX: selectionEnd.x,
-          endY: selectionEnd.y,
-        },
-        direction,
-      ),
-    );
   };
 };
 
@@ -143,61 +133,36 @@ export const clickTile = (x: number, y: number) => {
   };
 };
 
-export const endClickTile = (
-  x: number,
-  y: number,
-  keyPressed: keyof typeof keycode.codes | null,
-) => {
+export const endClickTile = (keyPressed: keyof typeof keycode.codes | null) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
+    const selection = selectSelection(state);
     switch (tool) {
       case "rectangle": {
         // it's possible if some click events get lost
-        if (!state.tool.selectionStart) {
+        if (!selection) {
           return;
         }
-        if (x < 0 || y < 0) {
-          return dispatch(toolActions.endSelection());
-        }
-        const { x: startX, y: startY } = state.tool.selectionStart;
-        return dispatch(
-          fillTiles(
-            // TODO complicated stuff here. the min/max in reducer happens in response
-            // to the fillTiles action. maybe it would help to have a selector which does
-            // this min/max and use it everywhere?
-            {
-              startX: Math.min(startX, x),
-              startY: Math.min(startY, y),
-              endX: Math.max(startX, x),
-              endY: Math.max(startY, y),
-            },
-            command,
-          ),
-        );
+        return dispatch(fillTiles(selection, command));
       }
       case "select": {
         // get rid of all the nulls right away
         if (!state.tool.dragging) {
           return dispatch(toolActions.endSelection());
         }
-        if (
-          !state.tool.selectionStart ||
-          !state.tool.selectionEnd ||
-          !state.tool.dragStart ||
-          !state.tool.dragEnd
-        ) {
+        if (!selection || !state.tool.dragStart || !state.tool.dragEnd) {
           return;
         }
-        const { x: startX, y: startY } = state.tool.selectionStart;
-        const { x: endX, y: endY } = state.tool.selectionEnd;
-        const toX = state.tool.dragEnd.x - (state.tool.dragStart.x - startX);
-        const toY = state.tool.dragEnd.y - (state.tool.dragStart.y - startY);
+        const toX =
+          state.tool.dragEnd.x - (state.tool.dragStart.x - selection.startX);
+        const toY =
+          state.tool.dragEnd.y - (state.tool.dragStart.y - selection.startY);
         if (keyPressed === "shift") {
-          return dispatch(cloneTiles({ startX, startY, endX, endY }, toX, toY));
+          return dispatch(cloneTiles(selection, toX, toY));
         } else {
-          return dispatch(moveTiles({ startX, startY, endX, endY }, toX, toY));
+          return dispatch(moveTiles(selection, toX, toY));
         }
       }
       default:

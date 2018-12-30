@@ -1,15 +1,15 @@
-import { State } from "../types";
 import { createSelector } from "reselect";
-import { selectCommandMap, selectPhases } from "../tool/reducer";
 import {
   coordinatesFromId,
   idFromCoordinates,
 } from "../../lib/coordinatesFromId";
-import { Phase, CommandKey } from "../tool/types";
 import { keys } from "../../lib/keys";
-import { Tile } from "./types";
-import { wallMap, tilesetNames } from "../../lib/tilesetNames";
 import { range } from "../../lib/range";
+import { tilesetNames, wallMap } from "../../lib/tilesetNames";
+import { selectCommandMap, selectPhases } from "../tool/reducer";
+import { CommandKey, Phase } from "../tool/types";
+import { State } from "../types";
+import { Tile } from "./types";
 
 type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };

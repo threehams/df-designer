@@ -1,12 +1,12 @@
-import produce, { applyPatches, Patch, Draft } from "immer";
+import produce, { applyPatches, Draft, Patch } from "immer";
 import { ActionType, getType } from "typesafe-actions";
+import { idFromCoordinates } from "../../lib/coordinatesFromId";
+import { range } from "../../lib/range";
+import { withinCoordinates } from "../../lib/withinCoordinates";
+import { Command } from "../tool";
 import { State } from "../types";
 import * as actions from "./actions";
 import { Tile, TilesState } from "./types";
-import { range } from "../../lib/range";
-import { Command } from "../tool";
-import { idFromCoordinates } from "../../lib/coordinatesFromId";
-import { withinCoordinates } from "../../lib/withinCoordinates";
 
 const DEFAULT_STATE: TilesState = {
   data: {},

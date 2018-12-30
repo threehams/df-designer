@@ -3,8 +3,8 @@ import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
 import { State } from "../store";
-import { tilesActions, selectExported } from "../store/tiles";
-import { toolActions, selectTool, Tool } from "../store/tool";
+import { selectExported, tilesActions } from "../store/tiles";
+import { selectTool, Tool, toolActions } from "../store/tool";
 import { Button, ButtonGroup } from "./";
 
 jsx; // tslint:disable-line

@@ -1,5 +1,5 @@
-import * as PIXI from "pixi.js";
 import { Sprite } from "@inlet/react-pixi";
+import * as PIXI from "pixi.js";
 
 const TILE_SIZE = 16;
 const DEFAULT_OFFSET = { x: 0, y: 0 };

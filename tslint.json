@@ -24,6 +24,7 @@
     "no-shadowed-variable": { "severity": "error" },
     "jsx-boolean-value": false,
     "no-empty": true,
-    "object-literal-shorthand": { "severity": "error" }
+    "object-literal-shorthand": { "severity": "error" },
+    "ordered-imports": { "severity": "warn" }
   }
 }

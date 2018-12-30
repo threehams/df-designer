@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import keycode from "keycode";
+import { useEffect, useState } from "react";
 
 export const useHotKey = () => {
   const [key, setKey] = useState<keyof typeof keycode.codes | null>(null);

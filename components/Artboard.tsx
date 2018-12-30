@@ -1,23 +1,24 @@
-import React, { memo } from "react";
+import { Container, Sprite, Stage } from "@inlet/react-pixi";
+import keycode from "keycode";
 import * as PIXI from "pixi.js";
-import { Stage, Container, Sprite } from "@inlet/react-pixi";
+import React, { memo } from "react";
 import { useState } from "react";
 import { connect } from "react-redux";
-import keycode from "keycode";
 
-import { State } from "../store";
-import { tilesActions, TileSprite, selectChunks, Chunk } from "../store/tiles";
-import {
-  selectCommandMap,
-  selectSelectionOffset,
-  Coords,
-  SelectedCoords,
-} from "../store/tool";
-import { tilesetNames } from "../lib/tilesetNames";
-import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
-import { Cursor } from "./Cursor";
+import { keys } from "../lib/keys";
+import { tilesetNames } from "../lib/tilesetNames";
 import { useHotKey } from "../lib/useHotKey";
+import { State } from "../store";
+import { Chunk, selectChunks, tilesActions, TileSprite } from "../store/tiles";
+import {
+  Coords,
+  selectCommandMap,
+  SelectedCoords,
+  selectSelection,
+  selectSelectionOffset,
+} from "../store/tool";
+import { Cursor } from "./Cursor";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
@@ -42,22 +43,16 @@ const textures = keys(tilesetNames).reduce(
 interface Props {
   chunks: Chunk[];
   clickTile: (x: number, y: number) => any;
-  endClickTile: (
-    x: number,
-    y: number,
-    keyPressed: keyof typeof keycode.codes | null,
-  ) => any;
-  selectionEnd: Coords | null;
+  endClickTile: (keyPressed: keyof typeof keycode.codes | null) => any;
+  selection: SelectedCoords | null;
   selectionOffset: Coords;
-  selectionStart: Coords | null;
 }
 
 const ArtboardBase: React.FunctionComponent<Props> = ({
   clickTile,
   endClickTile,
-  selectionEnd,
   selectionOffset,
-  selectionStart,
+  selection,
   chunks,
 }) => {
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
@@ -88,9 +83,8 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
               clickTile(x, y);
             }
           }}
-          pointerup={event => {
-            const { x, y } = tilePosition(event.data.global);
-            endClickTile(x, y, keyboardKey);
+          pointerup={() => {
+            endClickTile(keyboardKey);
           }}
           texture={PIXI.Texture.EMPTY}
           width={2048}
@@ -100,15 +94,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
           return <ChunkTiles key={key} tiles={chunk.tiles} />;
         })}
         <Cursor {...cursorPosition} />
-        {selectionStart && selectionEnd && (
-          <Cursor
-            startX={Math.min(selectionStart.x, selectionEnd.x)}
-            startY={Math.min(selectionStart.y, selectionEnd.y)}
-            endX={Math.max(selectionStart.x, selectionEnd.x)}
-            endY={Math.max(selectionStart.y, selectionEnd.y)}
-            offset={selectionOffset}
-          />
-        )}
+        {selection && <Cursor {...selection} offset={selectionOffset} />}
       </Container>
     </Stage>
   );
@@ -151,9 +137,8 @@ const Artboard = connect(
     return {
       chunks: selectChunks(state),
       commandMap: selectCommandMap(),
-      selectionEnd: state.tool.selectionEnd,
+      selection: selectSelection(state),
       selectionOffset: selectSelectionOffset(state),
-      selectionStart: state.tool.selectionStart,
     };
   },
   {

@@ -1,9 +1,9 @@
 /** @jsx jsx */
-import { Global, jsx, css } from "@emotion/core";
+import { css, Global, jsx } from "@emotion/core";
 import dynamic from "next/dynamic";
 
 import { connect } from "react-redux";
-import { Toolbar, CommandBar, ExportBar, SelectBar } from "../components/";
+import { CommandBar, ExportBar, SelectBar, Toolbar } from "../components/";
 import { State } from "../store";
 import { selectTool, Tool } from "../store/tool";
 

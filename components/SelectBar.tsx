@@ -2,10 +2,10 @@
 import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
-import { State } from "../store";
-import { Command, selectCommandMap } from "../store/tool";
 import { idFromCoordinates } from "../lib/coordinatesFromId";
+import { State } from "../store";
 import { Tile, tilesActions } from "../store/tiles";
+import { Command, selectCommandMap, selectSelection } from "../store/tool";
 import { AdjustmentBar } from "./AdjustmentBar";
 import { MultiSelectBar } from "./MultiSelectBar";
 
@@ -65,7 +65,8 @@ export const SelectBar = connect(
 
 // probably a sign that the ducks don't make a lot of sense yet
 const selectSelectedTile = (state: State) => {
-  if (!state.tool.selectionStart || !state.tool.selectionEnd) {
+  const selection = selectSelection(state);
+  if (!selection) {
     return {
       command: null,
       multiSelect: false,
@@ -75,8 +76,8 @@ const selectSelectedTile = (state: State) => {
   const commandMap = selectCommandMap();
 
   if (
-    state.tool.selectionEnd.x !== state.tool.selectionStart.x ||
-    state.tool.selectionEnd.y !== state.tool.selectionStart.y
+    selection.startX !== selection.endX ||
+    selection.startY !== selection.endY
   ) {
     return {
       command: null,
@@ -84,10 +85,7 @@ const selectSelectedTile = (state: State) => {
       tile: null,
     };
   }
-  const id = idFromCoordinates(
-    state.tool.selectionStart.x,
-    state.tool.selectionStart.y,
-  );
+  const id = idFromCoordinates(selection.startX, selection.startY);
   const tile = state.tiles.data[id] || null;
   return {
     command: tile && tile.item ? commandMap[tile.item] : null,
