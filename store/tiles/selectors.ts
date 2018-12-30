@@ -286,7 +286,8 @@ const exposed = (tile: Tile | null) => {
   return !!tile.designation;
 };
 
-function within(id: string, { minX, maxX, minY, maxY }: Dimensions) {
+// TODO move to shared place along with tiles/actions version
+const within = (id: string, { minX, maxX, minY, maxY }: Dimensions) => {
   const { x, y } = coordinatesFromId(id);
   return minX <= x && x <= maxX && minY <= y && y <= maxY;
-}
+};

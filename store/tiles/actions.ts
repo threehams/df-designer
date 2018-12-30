@@ -10,6 +10,8 @@ import {
 } from "../tool";
 import { selectTile } from "./reducer";
 import { Tile } from "./types";
+import { withinCoordinates } from "../../lib/withinCoordinates";
+import keycode from "keycode";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -26,6 +28,7 @@ export const setAdjustment = createAction(
 );
 export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
   return (
+    // TODO use an object and unify start/end/min/max all around
     startX: number,
     startY: number,
     endX: number,
@@ -36,6 +39,18 @@ export const updateTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
   };
 });
 export const cloneTiles = createAction("app/tiles/CLONE_TILES", resolve => {
+  return (
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+    toX: number,
+    toY: number,
+  ) => {
+    return resolve({ startX, startY, endX, endY, toX, toY });
+  };
+});
+export const moveTiles = createAction("app/tiles/MOVE_TILES", resolve => {
   return (
     startX: number,
     startY: number,
@@ -70,11 +85,15 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
     if (!selectionStart || !selectionEnd) {
       return;
     }
-    const startX = Math.min(selectionStart.x, selectionEnd.x);
-    const startY = Math.min(selectionStart.y, selectionEnd.y);
-    const endX = Math.max(selectionStart.x, selectionEnd.x);
-    const endY = Math.max(selectionStart.y, selectionEnd.y);
-    return dispatch(flip(startX, startY, endX, endY, direction));
+    return dispatch(
+      flip(
+        selectionStart.x,
+        selectionStart.y,
+        selectionEnd.x,
+        selectionEnd.y,
+        direction,
+      ),
+    );
   };
 };
 
@@ -116,7 +135,11 @@ export const clickTile = (x: number, y: number) => {
         }
         if (
           !state.tool.dragging &&
-          within(state.tool.selectionStart, state.tool.selectionEnd, { x, y })
+          withinCoordinates(
+            state.tool.selectionStart,
+            state.tool.selectionEnd,
+            { x, y },
+          )
         ) {
           return dispatch(toolActions.startDrag(x, y));
         }
@@ -138,27 +161,11 @@ export const clickTile = (x: number, y: number) => {
   };
 };
 
-const within = (
-  start: Coordinates | null,
-  end: Coordinates | null,
-  current: Coordinates,
+export const endClickTile = (
+  x: number,
+  y: number,
+  keyPressed: keyof typeof keycode.codes | null,
 ) => {
-  if (!start || !end) {
-    return false;
-  }
-  const minX = Math.min(start.x, end.x);
-  const maxX = Math.max(start.x, end.x);
-  const minY = Math.min(start.y, end.y);
-  const maxY = Math.max(start.y, end.y);
-  return (
-    minX <= current.x &&
-    current.x <= maxX &&
-    minY <= current.y &&
-    current.y <= maxY
-  );
-};
-
-export const endClickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
@@ -175,6 +182,7 @@ export const endClickTile = (x: number, y: number) => {
         const { x: startX, y: startY } = state.tool.selectionStart;
         return dispatch(
           updateTiles(
+            // TODO source of bugs here, maybe fix when writing to state?
             Math.min(startX, x),
             Math.min(startY, y),
             Math.max(startX, x),
@@ -200,7 +208,11 @@ export const endClickTile = (x: number, y: number) => {
         const { x: endX, y: endY } = state.tool.selectionEnd;
         const toX = state.tool.dragEnd.x - (state.tool.dragStart.x - startX);
         const toY = state.tool.dragEnd.y - (state.tool.dragStart.y - startY);
-        return dispatch(cloneTiles(startX, startY, endX, endY, toX, toY));
+        if (keyPressed === "shift") {
+          return dispatch(cloneTiles(startX, startY, endX, endY, toX, toY));
+        } else {
+          return dispatch(moveTiles(startX, startY, endX, endY, toX, toY));
+        }
       }
       default:
         return dispatch(endUpdate());

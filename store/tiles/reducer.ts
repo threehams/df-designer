@@ -1,4 +1,4 @@
-import produce, { applyPatches, Patch, DraftObject } from "immer";
+import produce, { applyPatches, Patch, Draft } from "immer";
 import { ActionType, getType } from "typesafe-actions";
 import { State } from "../types";
 import * as actions from "./actions";
@@ -6,6 +6,7 @@ import { Tile, TilesState } from "./types";
 import { range } from "../../lib/range";
 import { Command } from "../tool";
 import { idFromCoordinates } from "../../lib/coordinatesFromId";
+import { withinCoordinates } from "../../lib/withinCoordinates";
 
 const DEFAULT_STATE: TilesState = {
   data: {},
@@ -130,6 +131,40 @@ const baseTilesReducer = (
                     ...state.data[sourceId],
                     id: destinationId,
                   };
+                } else if (draft[destinationId]) {
+                  delete draft[destinationId];
+                }
+              }
+            }
+            break;
+          }
+          case getType(actions.moveTiles): {
+            const { startX, startY, endX, endY, toX, toY } = action.payload;
+            for (const x of range(startX, endX + 1)) {
+              for (const y of range(startY, endY + 1)) {
+                const sourceId = idFromCoordinates(x, y);
+                const destinationId = idFromCoordinates(
+                  toX + (x - startX),
+                  toY + (y - startY),
+                );
+                const offsetX = toX - startX;
+                const offsetY = toY - startY;
+                if (
+                  !withinCoordinates(
+                    { x: startX + offsetX, y: startY + offsetY },
+                    { x: endX + offsetX, y: endY + offsetY },
+                    { x, y },
+                  )
+                ) {
+                  delete draft[sourceId];
+                }
+                if (state.data[sourceId]) {
+                  draft[destinationId] = {
+                    ...state.data[sourceId],
+                    id: destinationId,
+                  };
+                } else if (draft[destinationId]) {
+                  delete draft[destinationId];
                 }
               }
             }
@@ -200,6 +235,7 @@ const baseTilesReducer = (
       action.type === getType(actions.endUpdate) ||
       action.type === getType(actions.resetBoard) ||
       action.type === getType(actions.cloneTiles) ||
+      action.type === getType(actions.moveTiles) ||
       action.type === getType(actions.flip)
     ) {
       if (outerDraft.transaction.length) {
@@ -223,7 +259,7 @@ export const tilesReducer = (
 
 const removeCommand = (
   command: Command,
-  current: DraftObject<Tile> | null,
+  current: Draft<Tile> | null,
 ): Tile | null => {
   if (!current || command.type === "designation") {
     return null;
@@ -235,7 +271,7 @@ const removeCommand = (
 // Replace a command from the same phase, while keeping the rest.
 const addCommand = (
   command: Command,
-  current: DraftObject<Tile> | null,
+  current: Draft<Tile> | null,
   id: string,
 ): Tile | null => {
   if (command.type !== "designation" && (!current || !current.designation)) {

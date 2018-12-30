@@ -59,6 +59,14 @@ export const toolReducer = (
         break;
       }
       case getType(actions.endSelection):
+        draft.selectionStart = {
+          x: Math.min(state.selectionStart!.x, state.selectionEnd!.x),
+          y: Math.min(state.selectionStart!.y, state.selectionEnd!.y),
+        };
+        draft.selectionEnd = {
+          x: Math.max(state.selectionStart!.x, state.selectionEnd!.x),
+          y: Math.max(state.selectionStart!.y, state.selectionEnd!.y),
+        };
         draft.selecting = false;
         break;
       case getType(tilesActions.updateTiles):
@@ -67,6 +75,7 @@ export const toolReducer = (
         draft.selectionEnd = null;
         break;
       case getType(tilesActions.cloneTiles):
+      case getType(tilesActions.moveTiles):
         draft.dragging = false;
         draft.selectionStart = {
           x: action.payload.toX,

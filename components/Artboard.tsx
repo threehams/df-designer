@@ -1,12 +1,17 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import * as PIXI from "pixi.js";
 import { Stage, Container, Sprite } from "@inlet/react-pixi";
 import { useState } from "react";
 import { connect } from "react-redux";
+import keycode from "keycode";
 
 import { State } from "../store";
 import { tilesActions, TileSprite, selectChunks, Chunk } from "../store/tiles";
-import { selectCommandMap, selectSelectionOffset } from "../store/tool";
+import {
+  selectCommandMap,
+  selectSelectionOffset,
+  Coordinates,
+} from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
@@ -21,11 +26,11 @@ type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const textures = keys(tilesetNames).reduce(
   (result, name) => {
     const num = tilesetNames[name];
-    const x = (num % 16) * 16;
-    const y = Math.floor(num / 16) * 16;
+    const x = (num % TILE_SIZE) * TILE_SIZE;
+    const y = Math.floor(num / TILE_SIZE) * TILE_SIZE;
     result[name] = new PIXI.Texture(
       spriteSheet,
-      new PIXI.Rectangle(x, y, 16, 16),
+      new PIXI.Rectangle(x, y, TILE_SIZE, TILE_SIZE),
     );
     return result;
   },
@@ -35,18 +40,44 @@ const textures = keys(tilesetNames).reduce(
 interface Props {
   chunks: Chunk[];
   clickTile: (x: number, y: number) => any;
-  endClickTile: (x: number, y: number) => any;
-  selectionEnd: { x: number; y: number } | null;
-  selectionOffset: { x: number; y: number };
-  selectionStart: { x: number; y: number } | null;
+  endClickTile: (
+    x: number,
+    y: number,
+    keyPressed: keyof typeof keycode.codes | null,
+  ) => any;
+  selectionEnd: Coordinates | null;
+  selectionOffset: Coordinates;
+  selectionStart: Coordinates | null;
 }
 
-interface Coordinates {
+interface SelectionArea {
   maxX?: number;
   maxY?: number;
   minX: number;
   minY: number;
 }
+
+const useHotKey = () => {
+  const [key, setKey] = useState<keyof typeof keycode.codes | null>(null);
+
+  useEffect(() => {
+    const set = (event: KeyboardEvent) => {
+      if (event.keyCode) {
+        setKey(keycode(event) as keyof typeof keycode.codes);
+      }
+    };
+    const reset = () => {
+      setKey(null);
+    };
+    window.addEventListener("keydown", set);
+    window.addEventListener("keyup", reset);
+    return () => {
+      window.removeEventListener("keydown", set);
+      window.removeEventListener("keyup", reset);
+    };
+  });
+  return key;
+};
 
 const ArtboardBase: React.FunctionComponent<Props> = ({
   clickTile,
@@ -56,11 +87,11 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
   selectionStart,
   chunks,
 }) => {
-  const [cursorPosition, setCursorPosition] = useState<Coordinates>({
+  const [cursorPosition, setCursorPosition] = useState<SelectionArea>({
     minX: 0,
     minY: 0,
   });
-
+  const keyboardKey = useHotKey();
   return (
     <Stage width={2048} height={2048}>
       <Container>
@@ -84,7 +115,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
           }}
           pointerup={event => {
             const { x, y } = tilePosition(event.data.global);
-            endClickTile(x, y);
+            endClickTile(x, y, keyboardKey);
           }}
           texture={PIXI.Texture.EMPTY}
           width={2048}
@@ -124,7 +155,7 @@ const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
             height={TILE_SIZE}
             x={x * TILE_SIZE}
             y={y * TILE_SIZE}
-            // show "X" in case of something going wrong
+            // show "X" if something goes wrong instead of crashing
             texture={textures[tile.textureName] || textures.X}
           />
         );
@@ -133,7 +164,7 @@ const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
   );
 });
 
-const tilePosition = ({ x, y }: { x: number; y: number }) => {
+const tilePosition = ({ x, y }: Coordinates) => {
   return {
     x: Math.floor(x / TILE_SIZE),
     y: Math.floor(y / TILE_SIZE),
