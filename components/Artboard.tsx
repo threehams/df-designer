@@ -90,7 +90,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
           width={2048}
         />
         {chunks.map(chunk => {
-          const key = `${chunk.minX},${chunk.maxY}`;
+          const key = `${chunk.startX},${chunk.endY}`;
           return <ChunkTiles key={key} tiles={chunk.tiles} />;
         })}
         <Cursor {...cursorPosition} />

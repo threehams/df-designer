@@ -1,17 +1,16 @@
-import { Coords } from "../store/tool";
+import { Coords, SelectedCoords } from "../store/tool";
 
 export const withinCoordinates = (
-  start: Coords | null,
-  end: Coords | null,
+  selection: SelectedCoords | null,
   current: Coords,
 ) => {
-  if (!start || !end) {
+  if (!selection) {
     return false;
   }
   return (
-    start.x <= current.x &&
-    current.x <= end.x &&
-    start.y <= current.y &&
-    current.y <= end.y
+    selection.startX <= current.x &&
+    current.x <= selection.endX &&
+    selection.startY <= current.y &&
+    current.y <= selection.endY
   );
 };

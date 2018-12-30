@@ -151,8 +151,12 @@ const baseTilesReducer = (
                 const offsetY = toY - startY;
                 if (
                   !withinCoordinates(
-                    { x: startX + offsetX, y: startY + offsetY },
-                    { x: endX + offsetX, y: endY + offsetY },
+                    {
+                      startX: startX + offsetX,
+                      startY: startY + offsetY,
+                      endX: endX + offsetX,
+                      endY: endY + offsetY,
+                    },
                     { x, y },
                   )
                 ) {

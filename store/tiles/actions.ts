@@ -78,6 +78,7 @@ export const clickTile = (x: number, y: number) => {
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
     const tile = selectTile(state, { x, y });
+    const selection = selectSelection(state);
     switch (tool) {
       case "rectangle":
         if (
@@ -105,14 +106,7 @@ export const clickTile = (x: number, y: number) => {
         if (state.tool.dragging) {
           return dispatch(toolActions.updateDrag(x, y));
         }
-        if (
-          !state.tool.dragging &&
-          withinCoordinates(
-            state.tool.selectionStart,
-            state.tool.selectionEnd,
-            { x, y },
-          )
-        ) {
+        if (!state.tool.dragging && withinCoordinates(selection, { x, y })) {
           return dispatch(toolActions.startDrag(x, y));
         }
         if (!state.tool.selecting) {
