@@ -10,13 +10,14 @@ import { tilesActions, TileSprite, selectChunks, Chunk } from "../store/tiles";
 import {
   selectCommandMap,
   selectSelectionOffset,
-  Coordinates,
+  Coords,
+  SelectedCoords,
 } from "../store/tool";
 import { tilesetNames } from "../lib/tilesetNames";
 import { keys } from "../lib/keys";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
 import { Cursor } from "./Cursor";
-import { useHotKey, useKeyHandler } from "../lib/useHotKey";
+import { useHotKey } from "../lib/useHotKey";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
@@ -46,16 +47,9 @@ interface Props {
     y: number,
     keyPressed: keyof typeof keycode.codes | null,
   ) => any;
-  selectionEnd: Coordinates | null;
-  selectionOffset: Coordinates;
-  selectionStart: Coordinates | null;
-}
-
-interface SelectionArea {
-  maxX?: number;
-  maxY?: number;
-  minX: number;
-  minY: number;
+  selectionEnd: Coords | null;
+  selectionOffset: Coords;
+  selectionStart: Coords | null;
 }
 
 const ArtboardBase: React.FunctionComponent<Props> = ({
@@ -66,9 +60,11 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
   selectionStart,
   chunks,
 }) => {
-  const [cursorPosition, setCursorPosition] = useState<SelectionArea>({
-    minX: 0,
-    minY: 0,
+  const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
+    startX: 0,
+    startY: 0,
+    endX: 0,
+    endY: 0,
   });
   const keyboardKey = useHotKey();
   return (
@@ -85,8 +81,8 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
           }}
           pointermove={event => {
             const { x, y } = tilePosition(event.data.global);
-            if (x !== cursorPosition.minX || y !== cursorPosition.minY) {
-              setCursorPosition({ minX: x, minY: y });
+            if (x !== cursorPosition.startX || y !== cursorPosition.startY) {
+              setCursorPosition({ startX: x, startY: y, endX: x, endY: y });
             }
             if (event.data.buttons === 1) {
               clickTile(x, y);
@@ -106,10 +102,10 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
         <Cursor {...cursorPosition} />
         {selectionStart && selectionEnd && (
           <Cursor
-            minX={Math.min(selectionStart.x, selectionEnd.x)}
-            minY={Math.min(selectionStart.y, selectionEnd.y)}
-            maxX={Math.max(selectionStart.x, selectionEnd.x)}
-            maxY={Math.max(selectionStart.y, selectionEnd.y)}
+            startX={Math.min(selectionStart.x, selectionEnd.x)}
+            startY={Math.min(selectionStart.y, selectionEnd.y)}
+            endX={Math.max(selectionStart.x, selectionEnd.x)}
+            endY={Math.max(selectionStart.y, selectionEnd.y)}
             offset={selectionOffset}
           />
         )}
@@ -143,7 +139,7 @@ const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
   );
 });
 
-const tilePosition = ({ x, y }: Coordinates) => {
+const tilePosition = ({ x, y }: Coords) => {
   return {
     x: Math.floor(x / TILE_SIZE),
     y: Math.floor(y / TILE_SIZE),

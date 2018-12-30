@@ -135,9 +135,16 @@ export type CommandKey =
   | "noartifactsStockpile"
   | "junkgoodsStockpile";
 
-export interface Coordinates {
+// abbreviation prevents shadowing a global geolocation type
+export interface Coords {
   x: number;
   y: number;
+}
+export interface SelectedCoords {
+  endX: number;
+  endY: number;
+  startX: number;
+  startY: number;
 }
 type TilesetName = keyof typeof tilesetNames;
 
@@ -148,16 +155,16 @@ export type CommandMap = { [Key in CommandKey]: Command };
 export interface ToolState {
   readonly command: CommandKey;
   readonly current: Tool;
-  readonly dragEnd: Coordinates | null;
+  readonly dragEnd: Coords | null;
   readonly dragging: boolean;
-  readonly dragStart: Coordinates | null;
+  readonly dragStart: Coords | null;
   readonly export: boolean;
   readonly io: Io | null;
   readonly last: Tool | null;
   readonly phase: Phase;
   readonly selecting: boolean;
-  readonly selectionEnd: Coordinates | null;
-  readonly selectionStart: Coordinates | null;
+  readonly selectionEnd: Coords | null;
+  readonly selectionStart: Coords | null;
 }
 
 interface ResizeAdjustment {

@@ -91,7 +91,7 @@ const selectSelectedTile = (state: State) => {
   const tile = state.tiles.data[id] || null;
   return {
     command: tile && tile.item ? commandMap[tile.item] : null,
-    tile: tile,
+    tile,
     multiSelect: false,
   };
 };

@@ -1,9 +1,9 @@
-import { Coordinates } from "../store/tool";
+import { Coords } from "../store/tool";
 
 export const withinCoordinates = (
-  start: Coordinates | null,
-  end: Coordinates | null,
-  current: Coordinates,
+  start: Coords | null,
+  end: Coords | null,
+  current: Coords,
 ) => {
   if (!start || !end) {
     return false;

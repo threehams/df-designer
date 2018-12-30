@@ -6,7 +6,8 @@ import {
   selectCurrentCommand,
   toolActions,
   Command,
-  Coordinates,
+  Coords,
+  SelectedCoords,
 } from "../tool";
 import { selectTile } from "./reducer";
 import { Tile } from "./types";
@@ -27,54 +28,26 @@ export const setAdjustment = createAction(
   },
 );
 export const fillTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
-  return (
-    // TODO use an object and unify start/end/min/max all around
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    command: Command,
-  ) => {
-    return resolve({ startX, startY, endX, endY, command });
+  return (selection: SelectedCoords, command: Command) => {
+    return resolve({ ...selection, command });
   };
 });
 export const cloneTiles = createAction("app/tiles/CLONE_TILES", resolve => {
-  return (
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    toX: number,
-    toY: number,
-  ) => {
-    return resolve({ startX, startY, endX, endY, toX, toY });
+  return (selection: SelectedCoords, toX: number, toY: number) => {
+    return resolve({ ...selection, toX, toY });
   };
 });
 export const moveTiles = createAction("app/tiles/MOVE_TILES", resolve => {
-  return (
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    toX: number,
-    toY: number,
-  ) => {
-    return resolve({ startX, startY, endX, endY, toX, toY });
+  return (selection: SelectedCoords, toX: number, toY: number) => {
+    return resolve({ ...selection, toX, toY });
   };
 });
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
   return (x: number, y: number, command: Command) => resolve({ x, y, command });
 });
 export const removeTiles = createAction("app/tiles/REMOVE_TILES", resolve => {
-  return (
-    // TODO use an object and unify start/end/min/max all around
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    command: Command,
-  ) => {
-    return resolve({ startX, startY, endX, endY, command });
+  return (selection: SelectedCoords, command: Command) => {
+    return resolve({ ...selection, command });
   };
 });
 export const resetBoard = createAction("app/tiles/RESET_BOARD");
@@ -82,13 +55,8 @@ export const undo = createAction("app/tiles/UNDO");
 export const redo = createAction("app/tiles/REDO");
 export const endUpdate = createAction("app/tiles/END_UPDATE");
 export const flip = createAction("app/tiles/FLIP", resolve => {
-  return (
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-    direction: "horizontal" | "vertical",
-  ) => resolve({ startX, startY, endX, endY, direction });
+  return (selection: SelectedCoords, direction: "horizontal" | "vertical") =>
+    resolve({ ...selection, direction });
 });
 
 export const flipSelection = (direction: "horizontal" | "vertical") => {
@@ -99,10 +67,12 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
     }
     return dispatch(
       flip(
-        selectionStart.x,
-        selectionStart.y,
-        selectionEnd.x,
-        selectionEnd.y,
+        {
+          startX: selectionStart.x,
+          startY: selectionStart.y,
+          endX: selectionEnd.x,
+          endY: selectionEnd.y,
+        },
         direction,
       ),
     );
@@ -194,11 +164,15 @@ export const endClickTile = (
         const { x: startX, y: startY } = state.tool.selectionStart;
         return dispatch(
           fillTiles(
-            // TODO source of bugs here, maybe fix when writing to state?
-            Math.min(startX, x),
-            Math.min(startY, y),
-            Math.max(startX, x),
-            Math.max(startY, y),
+            // TODO complicated stuff here. the min/max in reducer happens in response
+            // to the fillTiles action. maybe it would help to have a selector which does
+            // this min/max and use it everywhere?
+            {
+              startX: Math.min(startX, x),
+              startY: Math.min(startY, y),
+              endX: Math.max(startX, x),
+              endY: Math.max(startY, y),
+            },
             command,
           ),
         );
@@ -221,9 +195,9 @@ export const endClickTile = (
         const toX = state.tool.dragEnd.x - (state.tool.dragStart.x - startX);
         const toY = state.tool.dragEnd.y - (state.tool.dragStart.y - startY);
         if (keyPressed === "shift") {
-          return dispatch(cloneTiles(startX, startY, endX, endY, toX, toY));
+          return dispatch(cloneTiles({ startX, startY, endX, endY }, toX, toY));
         } else {
-          return dispatch(moveTiles(startX, startY, endX, endY, toX, toY));
+          return dispatch(moveTiles({ startX, startY, endX, endY }, toX, toY));
         }
       }
       default:
@@ -232,10 +206,7 @@ export const endClickTile = (
   };
 };
 
-const coordinatesMatch = (
-  previous: Coordinates | null,
-  current: Coordinates | null,
-) => {
+const coordinatesMatch = (previous: Coords | null, current: Coords | null) => {
   if (!current || !previous) {
     return false;
   }

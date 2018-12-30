@@ -161,3 +161,19 @@ export const selectSelectionOffset = createSelector(
     };
   },
 );
+
+export const selectSelection = createSelector(
+  (state: State) => state.tool.selectionStart,
+  (state: State) => state.tool.selectionEnd,
+  (start, end) => {
+    if (!start || !end) {
+      return null;
+    }
+    return {
+      startX: Math.min(start.x, end.x),
+      startY: Math.min(start.y, end.y),
+      endX: Math.max(start.x, end.x),
+      endY: Math.max(start.x, end.x),
+    };
+  },
+);

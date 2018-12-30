@@ -23,6 +23,7 @@
     "forin": { "severity": "error" },
     "no-shadowed-variable": { "severity": "error" },
     "jsx-boolean-value": false,
-    "no-empty": true
+    "no-empty": true,
+    "object-literal-shorthand": { "severity": "error" }
   }
 }

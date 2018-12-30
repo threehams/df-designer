@@ -5,27 +5,27 @@ const TILE_SIZE = 16;
 const DEFAULT_OFFSET = { x: 0, y: 0 };
 
 interface CursorProps {
-  maxX?: number;
-  maxY?: number;
-  minX: number;
-  minY: number;
+  endX?: number;
+  endY?: number;
+  startX: number;
+  startY: number;
   offset?: { x: number; y: number };
 }
 export const Cursor: React.FunctionComponent<CursorProps> = ({
-  minX,
-  minY,
-  maxX,
-  maxY,
+  startX,
+  startY,
+  endX,
+  endY,
   offset = DEFAULT_OFFSET,
 }) => {
   return (
     <Sprite
       alpha={0.5}
-      height={maxY ? (maxY - minY + 1) * TILE_SIZE : TILE_SIZE}
+      height={endY ? (endY - startY + 1) * TILE_SIZE : TILE_SIZE}
       texture={PIXI.Texture.WHITE}
-      width={maxX ? (maxX - minX + 1) * TILE_SIZE : TILE_SIZE}
-      x={(minX + offset.x) * TILE_SIZE}
-      y={(minY + offset.y) * TILE_SIZE}
+      width={endX ? (endX - startX + 1) * TILE_SIZE : TILE_SIZE}
+      x={(startX + offset.x) * TILE_SIZE}
+      y={(startY + offset.y) * TILE_SIZE}
     />
   );
 };
