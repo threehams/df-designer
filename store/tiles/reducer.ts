@@ -117,6 +117,18 @@ const baseTilesReducer = (
             }
             break;
           }
+          case getType(actions.removeTiles): {
+            const { startX, startY, endX, endY } = action.payload;
+            for (const x of range(startX, endX + 1)) {
+              for (const y of range(startY, endY + 1)) {
+                const id = idFromCoordinates(x, y);
+                if (state.data[id]) {
+                  delete draft[id];
+                }
+              }
+            }
+            break;
+          }
           case getType(actions.cloneTiles): {
             const { startX, startY, endX, endY, toX, toY } = action.payload;
             for (const x of range(startX, endX + 1)) {
@@ -190,7 +202,7 @@ const baseTilesReducer = (
             draft[id].adjustments[name] = value;
             break;
           }
-          case getType(actions.flip): {
+          case getType(actions.flipTiles): {
             const { startX, startY, endX, endY, direction } = action.payload;
             for (const x of range(startX, endX + 1)) {
               for (const y of range(startY, endY + 1)) {
@@ -235,12 +247,8 @@ const baseTilesReducer = (
       outerDraft.future = [];
     }
     if (
-      action.type === getType(actions.fillTiles) ||
-      action.type === getType(actions.endUpdate) ||
-      action.type === getType(actions.resetBoard) ||
-      action.type === getType(actions.cloneTiles) ||
-      action.type === getType(actions.moveTiles) ||
-      action.type === getType(actions.flip)
+      action.type !== getType(actions.updateTile) &&
+      action.type !== getType(actions.removeTile)
     ) {
       if (outerDraft.transaction.length) {
         outerDraft.past.push(outerDraft.transaction);

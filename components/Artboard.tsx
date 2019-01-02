@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { coordinatesFromId } from "../lib/coordinatesFromId";
 import { keys } from "../lib/keys";
 import { tilesetNames } from "../lib/tilesetNames";
-import { useHotKey } from "../lib/useHotKey";
+import { useHotKey, useKeyHandler } from "../lib/useHotKey";
 import { State } from "../store";
 import { Chunk, selectChunks, tilesActions, TileSprite } from "../store/tiles";
 import {
@@ -17,6 +17,7 @@ import {
   SelectedCoords,
   selectSelection,
   selectSelectionOffset,
+  toolActions,
 } from "../store/tool";
 import { Cursor } from "./Cursor";
 
@@ -41,19 +42,23 @@ const textures = keys(tilesetNames).reduce(
 );
 
 interface Props {
+  cancel: () => any;
   chunks: Chunk[];
   clickTile: (x: number, y: number) => any;
   endClickTile: (keyPressed: keyof typeof keycode.codes | null) => any;
+  removeSelection: () => any;
   selection: SelectedCoords | null;
   selectionOffset: Coords;
 }
 
 const ArtboardBase: React.FunctionComponent<Props> = ({
+  cancel,
+  chunks,
   clickTile,
   endClickTile,
-  selectionOffset,
+  removeSelection,
   selection,
-  chunks,
+  selectionOffset,
 }) => {
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
@@ -62,6 +67,16 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
     endY: 0,
   });
   const keyboardKey = useHotKey();
+  useKeyHandler(key => {
+    switch (key) {
+      case "delete":
+        removeSelection();
+        break;
+      case "esc":
+        cancel();
+        break;
+    }
+  });
   return (
     <Stage width={2048} height={2048}>
       <Container>
@@ -142,8 +157,10 @@ const Artboard = connect(
     };
   },
   {
+    cancel: toolActions.cancel,
     clickTile: tilesActions.clickTile,
     endClickTile: tilesActions.endClickTile,
+    removeSelection: tilesActions.removeSelection,
   },
 )(ArtboardBase);
 

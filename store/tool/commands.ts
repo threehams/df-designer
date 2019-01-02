@@ -7,7 +7,7 @@ export const commands: CommandMap = {
     shortcut: "d",
     phase: "dig",
     type: "designation",
-    textures: ["floorRough1", "floorRough2", "floorRough3", "floorRough4"],
+    textures: ["plus"],
   },
   channel: {
     name: "Channel",

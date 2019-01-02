@@ -13,7 +13,6 @@ jsx; // tslint:disable-line
 
 interface Props {
   command: Command | null;
-  flipSelection: (direction: "horizontal" | "vertical") => any;
   multiSelect: boolean;
   setAdjustment: typeof tilesActions.setAdjustment;
   tile: Tile | null;
@@ -22,7 +21,6 @@ interface Props {
 const SelectBarBase: React.FunctionComponent<Props> = ({
   command,
   multiSelect,
-  flipSelection,
   setAdjustment,
   tile,
 }) => {
@@ -42,7 +40,7 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
           setAdjustment={setAdjustment}
         />
       )}
-      {multiSelect && <MultiSelectBar flipSelection={flipSelection} />}
+      {multiSelect && <MultiSelectBar />}
     </aside>
   );
 };
@@ -59,7 +57,6 @@ export const SelectBar = connect(
   },
   {
     setAdjustment: tilesActions.setAdjustment,
-    flipSelection: tilesActions.flipSelection,
   },
 )(SelectBarBase);
 

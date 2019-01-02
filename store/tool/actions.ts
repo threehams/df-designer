@@ -38,3 +38,4 @@ export const setSelectedItem = createAction(
     return (x: number, y: number) => resolve({ x, y });
   },
 );
+export const cancel = createAction("app/tool/CANCEL");

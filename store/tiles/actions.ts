@@ -46,25 +46,30 @@ export const moveTiles = createAction("app/tiles/MOVE_TILES", resolve => {
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
   return (x: number, y: number, command: Command) => resolve({ x, y, command });
 });
-export const removeTiles = createAction("app/tiles/REMOVE_TILES", resolve => {
-  return (selection: SelectedCoords, command: Command) => {
-    return resolve({ ...selection, command });
-  };
-});
 export const resetBoard = createAction("app/tiles/RESET_BOARD");
 export const undo = createAction("app/tiles/UNDO");
 export const redo = createAction("app/tiles/REDO");
 export const endUpdate = createAction("app/tiles/END_UPDATE");
-export const flip = createAction("app/tiles/FLIP", resolve => {
+export const removeTiles = createAction("app/tiles/REMOVE_TILES", resolve => {
+  return (selection: SelectedCoords) => resolve(selection);
+});
+export const removeSelection = () => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    const selection = selectSelection(getState());
+    if (selection) {
+      return dispatch(removeTiles(selection));
+    }
+  };
+};
+export const flipTiles = createAction("app/tiles/FLIP_TILES", resolve => {
   return (selection: SelectedCoords, direction: "horizontal" | "vertical") =>
     resolve({ ...selection, direction });
 });
-
 export const flipSelection = (direction: "horizontal" | "vertical") => {
   return (dispatch: Dispatch, getState: () => State) => {
     const selection = selectSelection(getState());
     if (selection) {
-      return dispatch(flip(selection, direction));
+      return dispatch(flipTiles(selection, direction));
     }
   };
 };
