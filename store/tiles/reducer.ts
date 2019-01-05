@@ -160,18 +160,40 @@ const baseTilesReducer = (
                 toX + (x - selection.startX),
                 toY + (y - selection.startY),
               );
-              const offset = {
-                x: toX - selection.startX,
-                y: toY - selection.startY,
-              };
               if (
-                !coordinates.within(coordinates.offset(selection, offset), {
-                  x,
-                  y,
-                })
+                !coordinates.within(
+                  coordinates.offset(selection, {
+                    x: toX - selection.startX,
+                    y: toY - selection.startY,
+                  }),
+                  { x, y },
+                )
               ) {
                 delete draft[sourceId];
               }
+              if (state.data[sourceId]) {
+                draft[destinationId] = {
+                  ...state.data[sourceId],
+                  id: destinationId,
+                };
+              } else if (draft[destinationId]) {
+                delete draft[destinationId];
+              }
+            });
+            break;
+          }
+          case getType(actions.flipTiles): {
+            const { selection, direction } = action.payload;
+            coordinates.each(selection, ({ x, y, id: sourceId }) => {
+              const toX =
+                direction === "horizontal"
+                  ? selection.endX - (x - selection.startX)
+                  : x;
+              const toY =
+                direction === "vertical"
+                  ? selection.endY - (y - selection.startY)
+                  : y;
+              const destinationId = coordinates.toId(toX, toY);
               if (state.data[sourceId]) {
                 draft[destinationId] = {
                   ...state.data[sourceId],
@@ -197,29 +219,6 @@ const baseTilesReducer = (
           case getType(actions.setAdjustment): {
             const { id, name, value } = action.payload;
             draft[id].adjustments[name] = value;
-            break;
-          }
-          case getType(actions.flipTiles): {
-            const { selection, direction } = action.payload;
-            coordinates.each(selection, ({ x, y, id: sourceId }) => {
-              const destX =
-                direction === "horizontal"
-                  ? selection.endX - (x - selection.startX)
-                  : x;
-              const destY =
-                direction === "vertical"
-                  ? selection.endY - (y - selection.startY)
-                  : y;
-              const destinationId = coordinates.toId(destX, destY);
-              if (state.data[sourceId]) {
-                draft[destinationId] = {
-                  ...state.data[sourceId],
-                  id: destinationId,
-                };
-              } else if (draft[destinationId]) {
-                delete draft[destinationId];
-              }
-            });
             break;
           }
           case getType(actions.resetBoard): {

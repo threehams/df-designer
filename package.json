@@ -27,8 +27,6 @@
     "@zeit/next-typescript": "^1.1.1",
     "babel-plugin-emotion": "^10.0.5",
     "emotion": "^10.0.5",
-    "enzyme": "^3.8.0",
-    "enzyme-adapter-react-16": "^1.7.1",
     "immer": "^1.9.3",
     "jest": "^23.6.0",
     "keycode": "^2.2.0",
@@ -42,9 +40,14 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "seedrandom": "^2.4.4",
-    "tslint": "^5.12.0",
-    "tslint-react": "^3.6.0",
     "typesafe-actions": "^2.1.1",
     "typescript": "^3.2.2"
+  },
+  "devDependencies": {
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.7.1",
+    "prettier": "^1.15.3",
+    "tslint": "^5.12.0",
+    "tslint-react": "^3.6.0"
   }
 }
