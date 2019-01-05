@@ -5,7 +5,7 @@ import React, { memo } from "react";
 import { useState } from "react";
 import { connect } from "react-redux";
 
-import { coordinatesFromId } from "../lib/coordinatesFromId";
+import * as coordinates from "../lib/coordinates";
 import { keys } from "../lib/keys";
 import { tilesetNames } from "../lib/tilesetNames";
 import { useHotKey, useKeyHandler } from "../lib/useHotKey";
@@ -126,7 +126,9 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
           return <ChunkTiles key={key} tiles={chunk.tiles} />;
         })}
         <Cursor {...cursorPosition} />
-        {selection && <Cursor {...selection} offset={selectionOffset} />}
+        {selection && (
+          <Cursor {...coordinates.offset(selection, selectionOffset)} />
+        )}
       </Container>
     </Stage>
   );
@@ -139,7 +141,7 @@ const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
   return (
     <React.Fragment>
       {tiles.map(tile => {
-        const { x, y } = coordinatesFromId(tile.id);
+        const { x, y } = coordinates.fromId(tile.id);
 
         return (
           <Sprite

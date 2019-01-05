@@ -1,15 +1,12 @@
 import { createSelector } from "reselect";
-import {
-  coordinatesFromId,
-  idFromCoordinates,
-} from "../../lib/coordinatesFromId";
+import * as coordinates from "../../lib/coordinates";
 import { keys } from "../../lib/keys";
 import { range } from "../../lib/range";
 import { tilesetNames, wallMap } from "../../lib/tilesetNames";
-import { withinCoordinates } from "../../lib/withinCoordinates";
 import { selectCommandMap, selectPhases } from "../tool/reducer";
 import { CommandKey, Phase, SelectedCoords } from "../tool/types";
 import { State } from "../types";
+import { selectLevelTiles } from "./reducer";
 import { Tile } from "./types";
 
 type Grids = { [key in Phase]: string[][] | null };
@@ -23,11 +20,11 @@ export type Chunk = SelectedCoords & {
 };
 
 const selectExtents = createSelector(
-  (state: State) => state.tiles.data,
+  selectLevelTiles,
   tiles => {
     const dimensions = Object.entries(tiles).reduce(
       (result, [id]) => {
-        const { x, y } = coordinatesFromId(id);
+        const { x, y } = coordinates.fromId(id);
         result.startX = x < result.startX ? x : result.startX;
         result.startY = y < result.startY ? y : result.startY;
         result.endX = x + 1 > result.endX ? x + 1 : result.endX;
@@ -52,7 +49,7 @@ export const selectExported = createSelector(
   selectCommandMap,
   selectPhases,
   selectExtents,
-  (state: State) => state.tiles.data,
+  selectLevelTiles,
   (commandMap, phases, extents, tiles) => {
     if (!extents) {
       return null;
@@ -68,7 +65,7 @@ export const selectExported = createSelector(
       if (!tile) {
         continue;
       }
-      const { x, y } = coordinatesFromId(id);
+      const { x, y } = coordinates.fromId(id);
       const exportCommand = (commandKey: CommandKey | null) => {
         if (!commandKey) {
           return;
@@ -181,13 +178,14 @@ export const selectChunks = (state: State) => {
 
 const selectTilesCache: { [key: string]: TileSprite[] } = {};
 const selectTiles = (state: State, selection: SelectedCoords) => {
+  const tiles = selectLevelTiles(state);
   const key = `${selection.startX},${selection.startY},${selection.endX},${
     selection.endY
   }`;
   let invalidate = false;
   for (const id of state.tiles.updates) {
-    const { x, y } = coordinatesFromId(id);
-    if (withinCoordinates(selection, { x, y })) {
+    const { x, y } = coordinates.fromId(id);
+    if (coordinates.within(coordinates.expand(selection, 1), { x, y })) {
       invalidate = true;
       break;
     }
@@ -195,8 +193,8 @@ const selectTiles = (state: State, selection: SelectedCoords) => {
   if (!invalidate && selectTilesCache[key]) {
     return selectTilesCache[key];
   }
-  const result = createTiles(state.tiles.data, selection).concat(
-    createWalls(state.tiles.data, selection),
+  const result = createTiles(tiles, selection).concat(
+    createWalls(tiles, selection),
   );
   selectTilesCache[key] = result;
   return result;
@@ -208,7 +206,7 @@ const createTiles = (
 ): TileSprite[] => {
   const commandMap = selectCommandMap();
   return Object.values(tiles)
-    .filter(tile => withinCoordinates(selection, coordinatesFromId(tile.id)))
+    .filter(tile => coordinates.within(selection, coordinates.fromId(tile.id)))
     .reduce((result: TileSprite[], tile) => {
       if (tile.designation) {
         result.push({
@@ -261,17 +259,17 @@ const createWalls = (
 
 // TODO loops are fun and all
 const neighborIds = (id: string) => {
-  const { x, y } = coordinatesFromId(id);
+  const { x, y } = coordinates.fromId(id);
   return [
-    idFromCoordinates(x - 1, y - 1),
-    idFromCoordinates(x, y - 1),
-    idFromCoordinates(x + 1, y - 1),
-    idFromCoordinates(x - 1, y),
-    idFromCoordinates(x, y),
-    idFromCoordinates(x + 1, y),
-    idFromCoordinates(x - 1, y + 1),
-    idFromCoordinates(x, y + 1),
-    idFromCoordinates(x + 1, y + 1),
+    coordinates.toId(x - 1, y - 1),
+    coordinates.toId(x, y - 1),
+    coordinates.toId(x + 1, y - 1),
+    coordinates.toId(x - 1, y),
+    coordinates.toId(x, y),
+    coordinates.toId(x + 1, y),
+    coordinates.toId(x - 1, y + 1),
+    coordinates.toId(x, y + 1),
+    coordinates.toId(x + 1, y + 1),
   ];
 };
 
@@ -284,6 +282,6 @@ const exposed = (tile: Tile | null) => {
 
 // TODO move to shared place along with tiles/actions version
 const within = (id: string, { startX, endX, startY, endY }: SelectedCoords) => {
-  const { x, y } = coordinatesFromId(id);
+  const { x, y } = coordinates.fromId(id);
   return startX <= x && x <= endX && startY <= y && y <= endY;
 };

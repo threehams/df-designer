@@ -1,8 +1,7 @@
 import produce, { applyPatches, Draft, Patch } from "immer";
 import { ActionType, getType } from "typesafe-actions";
-import { idFromCoordinates } from "../../lib/coordinatesFromId";
+import * as coordinates from "../../lib/coordinates";
 import { range } from "../../lib/range";
-import { withinCoordinates } from "../../lib/withinCoordinates";
 import { Command } from "../tool";
 import { State } from "../types";
 import * as actions from "./actions";
@@ -111,7 +110,7 @@ const baseTilesReducer = (
         switch (action.type) {
           case getType(actions.updateTile): {
             const { x, y, command } = action.payload;
-            const id = idFromCoordinates(x, y);
+            const id = coordinates.toId(x, y);
             const newTile = addCommand(command, draft[id], id);
             if (newTile) {
               draft[id] = newTile;
@@ -120,35 +119,29 @@ const baseTilesReducer = (
           }
           case getType(actions.fillTiles): {
             const { startX, startY, endX, endY, command } = action.payload;
-            for (const x of range(startX, endX + 1)) {
-              for (const y of range(startY, endY + 1)) {
-                const id = idFromCoordinates(x, y);
-                const newTile = addCommand(command, draft[id], id);
-                if (newTile) {
-                  draft[id] = newTile;
-                }
+            coordinates.each({ startX, startY, endX, endY }, ({ id }) => {
+              const newTile = addCommand(command, draft[id], id);
+              if (newTile) {
+                draft[id] = newTile;
               }
-            }
+            });
             break;
           }
           case getType(actions.removeTiles): {
             const { startX, startY, endX, endY } = action.payload;
-            for (const x of range(startX, endX + 1)) {
-              for (const y of range(startY, endY + 1)) {
-                const id = idFromCoordinates(x, y);
-                if (state.data[id]) {
-                  delete draft[id];
-                }
+            coordinates.each({ startX, startY, endX, endY }, ({ id }) => {
+              if (state.data[id]) {
+                delete draft[id];
               }
-            }
+            });
             break;
           }
           case getType(actions.cloneTiles): {
             const { startX, startY, endX, endY, toX, toY } = action.payload;
-            for (const x of range(startX, endX + 1)) {
-              for (const y of range(startY, endY + 1)) {
-                const sourceId = idFromCoordinates(x, y);
-                const destinationId = idFromCoordinates(
+            coordinates.each(
+              { startX, startY, endX, endY },
+              ({ x, y, id: sourceId }) => {
+                const destinationId = coordinates.toId(
                   toX + (x - startX),
                   toY + (y - startY),
                 );
@@ -160,23 +153,23 @@ const baseTilesReducer = (
                 } else if (draft[destinationId]) {
                   delete draft[destinationId];
                 }
-              }
-            }
+              },
+            );
             break;
           }
           case getType(actions.moveTiles): {
             const { startX, startY, endX, endY, toX, toY } = action.payload;
-            for (const x of range(startX, endX + 1)) {
-              for (const y of range(startY, endY + 1)) {
-                const sourceId = idFromCoordinates(x, y);
-                const destinationId = idFromCoordinates(
+            coordinates.each(
+              { startX, startY, endX, endY },
+              ({ x, y, id: sourceId }) => {
+                const destinationId = coordinates.toId(
                   toX + (x - startX),
                   toY + (y - startY),
                 );
                 const offsetX = toX - startX;
                 const offsetY = toY - startY;
                 if (
-                  !withinCoordinates(
+                  !coordinates.within(
                     {
                       startX: startX + offsetX,
                       startY: startY + offsetY,
@@ -196,13 +189,13 @@ const baseTilesReducer = (
                 } else if (draft[destinationId]) {
                   delete draft[destinationId];
                 }
-              }
-            }
+              },
+            );
             break;
           }
           case getType(actions.removeTile): {
             const { x, y, command } = action.payload;
-            const id = idFromCoordinates(x, y);
+            const id = coordinates.toId(x, y);
             const newTile = removeCommand(command, draft[id]);
             if (newTile) {
               draft[id] = newTile;
@@ -218,14 +211,14 @@ const baseTilesReducer = (
           }
           case getType(actions.flipTiles): {
             const { startX, startY, endX, endY, direction } = action.payload;
-            for (const x of range(startX, endX + 1)) {
-              for (const y of range(startY, endY + 1)) {
-                const sourceId = idFromCoordinates(x, y);
+            coordinates.each(
+              { startX, startY, endX, endY },
+              ({ x, y, id: sourceId }) => {
                 const destX =
                   direction === "horizontal" ? endX - (x - startX) : x;
                 const destY =
                   direction === "vertical" ? endY - (y - startY) : y;
-                const destinationId = idFromCoordinates(destX, destY);
+                const destinationId = coordinates.toId(destX, destY);
                 if (state.data[sourceId]) {
                   draft[destinationId] = {
                     ...state.data[sourceId],
@@ -234,8 +227,8 @@ const baseTilesReducer = (
                 } else if (draft[destinationId]) {
                   delete draft[destinationId];
                 }
-              }
-            }
+              },
+            );
             break;
           }
           case getType(actions.resetBoard): {
@@ -319,6 +312,10 @@ export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
 ): Tile | null => {
-  const id = idFromCoordinates(x, y);
+  const id = coordinates.toId(x, y);
   return state.tiles.data[id];
+};
+
+export const selectLevelTiles = (state: State) => {
+  return state.tiles.data;
 };

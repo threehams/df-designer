@@ -2,9 +2,8 @@
 import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
-import { idFromCoordinates } from "../lib/coordinatesFromId";
 import { State } from "../store";
-import { Tile, tilesActions } from "../store/tiles";
+import { selectTile, Tile, tilesActions } from "../store/tiles";
 import { Command, selectCommandMap, selectSelection } from "../store/tool";
 import { AdjustmentBar } from "./AdjustmentBar";
 import { MultiSelectBar } from "./MultiSelectBar";
@@ -82,8 +81,8 @@ const selectSelectedTile = (state: State) => {
       tile: null,
     };
   }
-  const id = idFromCoordinates(selection.startX, selection.startY);
-  const tile = state.tiles.data[id] || null;
+  const tile =
+    selectTile(state, { x: selection.startX, y: selection.startY }) || null;
   return {
     command: tile && tile.item ? commandMap[tile.item] : null,
     tile,

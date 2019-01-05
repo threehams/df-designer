@@ -1,10 +1,9 @@
 import keycode from "keycode";
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
-import { withinCoordinates } from "../../lib/withinCoordinates";
+import * as coordinates from "../../lib/coordinates";
 import {
   Command,
-  Coords,
   selectCurrentCommand,
   SelectedCoords,
   selectSelection,
@@ -90,7 +89,7 @@ export const clickTile = (x: number, y: number) => {
       case "rectangle":
         if (
           state.tool.selecting &&
-          !coordinatesMatch(state.tool.selectionEnd, { x, y })
+          !coordinates.match(state.tool.selectionEnd, { x, y })
         ) {
           return dispatch(toolActions.updateSelection(x, y));
         }
@@ -101,7 +100,7 @@ export const clickTile = (x: number, y: number) => {
       case "select":
         if (
           (state.tool.selecting || state.tool.dragging) &&
-          coordinatesMatch(state.tool.selectionEnd, { x, y })
+          coordinates.match(state.tool.selectionEnd, { x, y })
         ) {
           // don't bother dispatching action - prevents noise in devtools
           return;
@@ -113,7 +112,7 @@ export const clickTile = (x: number, y: number) => {
         if (state.tool.dragging) {
           return dispatch(toolActions.updateDrag(x, y));
         }
-        if (!state.tool.dragging && withinCoordinates(selection, { x, y })) {
+        if (!state.tool.dragging && coordinates.within(selection, { x, y })) {
           return dispatch(toolActions.startDrag(x, y));
         }
         if (!state.tool.selecting) {
@@ -172,13 +171,6 @@ export const endClickTile = (
         return dispatch(endUpdate());
     }
   };
-};
-
-const coordinatesMatch = (previous: Coords | null, current: Coords | null) => {
-  if (!current || !previous) {
-    return false;
-  }
-  return previous.x === current.x && previous.y === current.y;
 };
 
 const shouldUpdate = (tile: Tile | null, command: Command) => {
