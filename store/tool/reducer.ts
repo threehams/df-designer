@@ -46,16 +46,15 @@ export const toolReducer = (
         break;
       }
       case getType(actions.startSelection): {
-        draft.selectionStart = { x: action.payload.x, y: action.payload.y };
-        draft.selectionEnd = { x: action.payload.x, y: action.payload.y };
+        const { x, y } = action.payload;
+        draft.selectionStart = { x, y };
+        draft.selectionEnd = { x, y };
         draft.selecting = true;
         break;
       }
       case getType(actions.updateSelection): {
-        draft.selectionEnd = {
-          x: action.payload.x,
-          y: action.payload.y,
-        };
+        const { x, y } = action.payload;
+        draft.selectionEnd = { x, y };
         break;
       }
       case getType(actions.endSelection):
@@ -76,29 +75,30 @@ export const toolReducer = (
         draft.selectionEnd = null;
         break;
       case getType(tilesActions.cloneTiles):
-      case getType(tilesActions.moveTiles):
+      case getType(tilesActions.moveTiles): {
+        const { selection, toX, toY } = action.payload;
         draft.dragging = false;
         draft.selectionStart = {
-          x: action.payload.toX,
-          y: action.payload.toY,
+          x: toX,
+          y: toY,
         };
         draft.selectionEnd = {
-          x: action.payload.toX + (action.payload.endX - action.payload.startX),
-          y: action.payload.toY + (action.payload.endY - action.payload.startY),
+          x: toX + (selection.endX - selection.startX),
+          y: toY + (selection.endY - selection.startY),
         };
         draft.dragStart = null;
         draft.dragEnd = null;
         break;
-      case getType(toolActions.setPhase):
-        if (draft.phase !== action.payload.phase) {
-          draft.phase = action.payload.phase;
+      }
+      case getType(toolActions.setPhase): {
+        const { phase } = action.payload;
+        if (draft.phase !== phase) {
+          draft.phase = phase;
           // this is weird
-          draft.command = selectCommands(
-            {},
-            { phase: action.payload.phase },
-          )[0].command;
+          draft.command = selectCommands({}, { phase })[0].command;
         }
         break;
+      }
       case getType(toolActions.setCommand):
         draft.command = action.payload.command;
         if (draft.current === "erase") {
@@ -106,14 +106,18 @@ export const toolReducer = (
           draft.current = "paint";
         }
         break;
-      case getType(toolActions.startDrag):
-        draft.dragStart = { x: action.payload.x, y: action.payload.y };
-        draft.dragEnd = { x: action.payload.x, y: action.payload.y };
+      case getType(toolActions.startDrag): {
+        const { x, y } = action.payload;
+        draft.dragStart = { x, y };
+        draft.dragEnd = { x, y };
         draft.dragging = true;
         break;
-      case getType(toolActions.updateDrag):
-        draft.dragEnd = { x: action.payload.x, y: action.payload.y };
+      }
+      case getType(toolActions.updateDrag): {
+        const { x, y } = action.payload;
+        draft.dragEnd = { x, y };
         break;
+      }
     }
   });
 };
