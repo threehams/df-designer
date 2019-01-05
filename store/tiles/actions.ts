@@ -46,13 +46,13 @@ export const moveTiles = createAction("app/tiles/MOVE_TILES", resolve => {
 export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
   return (x: number, y: number, command: Command) => resolve({ x, y, command });
 });
+export const removeTiles = createAction("app/tiles/REMOVE_TILES", resolve => {
+  return (selection: SelectedCoords) => resolve(selection);
+});
 export const resetBoard = createAction("app/tiles/RESET_BOARD");
 export const undo = createAction("app/tiles/UNDO");
 export const redo = createAction("app/tiles/REDO");
 export const endUpdate = createAction("app/tiles/END_UPDATE");
-export const removeTiles = createAction("app/tiles/REMOVE_TILES", resolve => {
-  return (selection: SelectedCoords) => resolve(selection);
-});
 export const removeSelection = () => {
   return (dispatch: Dispatch, getState: () => State) => {
     const selection = selectSelection(getState());
@@ -73,6 +73,8 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
     }
   };
 };
+export const zLevelUp = createAction("app/tool/Z_LEVEL_UP");
+export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN");
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
@@ -132,7 +134,9 @@ export const clickTile = (x: number, y: number) => {
   };
 };
 
-export const endClickTile = (keyPressed: keyof typeof keycode.codes | null) => {
+export const endClickTile = (
+  keysPressed: Array<keyof typeof keycode.codes>,
+) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
@@ -158,7 +162,7 @@ export const endClickTile = (keyPressed: keyof typeof keycode.codes | null) => {
           state.tool.dragEnd.x - (state.tool.dragStart.x - selection.startX);
         const toY =
           state.tool.dragEnd.y - (state.tool.dragStart.y - selection.startY);
-        if (keyPressed === "shift") {
+        if (keysPressed.includes("shift")) {
           return dispatch(cloneTiles(selection, toX, toY));
         } else {
           return dispatch(moveTiles(selection, toX, toY));

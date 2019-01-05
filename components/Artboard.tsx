@@ -45,10 +45,12 @@ interface Props {
   cancel: () => any;
   chunks: Chunk[];
   clickTile: (x: number, y: number) => any;
-  endClickTile: (keyPressed: keyof typeof keycode.codes | null) => any;
+  endClickTile: (keyPressed: Array<keyof typeof keycode.codes>) => any;
   removeSelection: () => any;
   selection: SelectedCoords | null;
   selectionOffset: Coords;
+  zLevelDown: () => any;
+  zLevelUp: () => any;
 }
 
 const ArtboardBase: React.FunctionComponent<Props> = ({
@@ -59,6 +61,8 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
   removeSelection,
   selection,
   selectionOffset,
+  zLevelUp,
+  zLevelDown,
 }) => {
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
@@ -66,17 +70,30 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
     endX: 0,
     endY: 0,
   });
-  const keyboardKey = useHotKey();
-  useKeyHandler(key => {
-    switch (key) {
-      case "delete":
-        removeSelection();
-        break;
-      case "esc":
-        cancel();
-        break;
-    }
-  });
+  const keysPressed = useHotKey();
+  useKeyHandler(
+    key => {
+      switch (key) {
+        case "delete":
+          removeSelection();
+          break;
+        case "esc":
+          cancel();
+          break;
+        case ".":
+          if (keysPressed.includes("shift")) {
+            zLevelUp();
+          }
+          break;
+        case ",":
+          if (keysPressed.includes("shift")) {
+            zLevelDown();
+          }
+          break;
+      }
+    },
+    [keysPressed],
+  );
   return (
     <Stage width={2048} height={2048}>
       <Container>
@@ -99,7 +116,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
             }
           }}
           pointerup={() => {
-            endClickTile(keyboardKey);
+            endClickTile(keysPressed);
           }}
           texture={PIXI.Texture.EMPTY}
           width={2048}
@@ -161,6 +178,8 @@ const Artboard = connect(
     clickTile: tilesActions.clickTile,
     endClickTile: tilesActions.endClickTile,
     removeSelection: tilesActions.removeSelection,
+    zLevelDown: tilesActions.zLevelDown,
+    zLevelUp: tilesActions.zLevelUp,
   },
 )(ArtboardBase);
 

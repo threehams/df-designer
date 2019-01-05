@@ -17,6 +17,9 @@ interface Props {
   tool: Tool;
   undoSteps: number;
   redoSteps: number;
+  zLevel: number;
+  zLevelDown: typeof tilesActions.zLevelDown;
+  zLevelUp: typeof tilesActions.zLevelUp;
 }
 
 const ToolbarBase: React.FunctionComponent<Props> = ({
@@ -27,6 +30,9 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
   tool,
   undoSteps,
   redoSteps,
+  zLevel,
+  zLevelDown,
+  zLevelUp,
 }) => {
   return (
     <header
@@ -63,6 +69,11 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
           Erase
         </Button>
       </ButtonGroup>
+      <ButtonGroup>
+        <Button onClick={zLevelDown}>Down Level</Button>
+        {zLevel}
+        <Button onClick={zLevelUp}>Up Level</Button>
+      </ButtonGroup>
     </header>
   );
 };
@@ -74,6 +85,7 @@ export const Toolbar = connect(
       exported: state.tool.export ? selectExported(state) : null,
       undoSteps: state.tiles.past.length,
       redoSteps: state.tiles.future.length,
+      zLevel: state.tiles.zLevel,
     };
   },
   {
@@ -81,5 +93,7 @@ export const Toolbar = connect(
     redo: tilesActions.redo,
     setTool: toolActions.setTool,
     resetBoard: tilesActions.resetBoard,
+    zLevelDown: tilesActions.zLevelDown,
+    zLevelUp: tilesActions.zLevelUp,
   },
 )(ToolbarBase);

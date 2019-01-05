@@ -15,4 +15,5 @@ export interface TilesState {
   readonly updates: string[];
   readonly past: Patch[][];
   readonly future: Patch[][];
+  readonly zLevel: number;
 }

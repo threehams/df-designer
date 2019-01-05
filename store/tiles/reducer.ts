@@ -14,6 +14,7 @@ const DEFAULT_STATE: TilesState = {
   past: [],
   future: [],
   updates: [],
+  zLevel: 64,
 };
 
 // be as defensive as possible here
@@ -83,14 +84,27 @@ const baseTilesReducer = (
   state: TilesState,
   action: ActionType<typeof actions>,
 ): TilesState => {
-  if (action.type === getType(actions.undo)) {
-    return changeHistory(state, "undo");
-  }
-  if (action.type === getType(actions.redo)) {
-    return changeHistory(state, "redo");
+  switch (action.type) {
+    case getType(actions.undo):
+      return changeHistory(state, "undo");
+    case getType(actions.redo):
+      return changeHistory(state, "redo");
   }
   let transactionSteps: Patch[];
   return produce(state, outerDraft => {
+    switch (action.type) {
+      case getType(actions.zLevelUp):
+        if (outerDraft.zLevel < 128) {
+          outerDraft.zLevel += 1;
+        }
+        break;
+      case getType(actions.zLevelDown):
+        if (outerDraft.zLevel > 0) {
+          outerDraft.zLevel -= 1;
+        }
+        break;
+    }
+
     outerDraft.data = produce(
       state.data,
       draft => {
@@ -248,12 +262,11 @@ const baseTilesReducer = (
     }
     if (
       action.type !== getType(actions.updateTile) &&
-      action.type !== getType(actions.removeTile)
+      action.type !== getType(actions.removeTile) &&
+      outerDraft.transaction.length
     ) {
-      if (outerDraft.transaction.length) {
-        outerDraft.past.push(outerDraft.transaction);
-        outerDraft.transaction = [];
-      }
+      outerDraft.past.push(outerDraft.transaction);
+      outerDraft.transaction = [];
     }
   });
 };

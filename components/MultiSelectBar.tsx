@@ -2,7 +2,6 @@
 import { css, jsx } from "@emotion/core";
 
 import { connect } from "react-redux";
-import { State } from "../store";
 import { tilesActions } from "../store/tiles";
 import { Button, ButtonGroup } from "./";
 

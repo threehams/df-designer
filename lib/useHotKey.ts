@@ -1,17 +1,22 @@
 import keycode from "keycode";
 import { useEffect, useState } from "react";
 
+type Keycode = keyof typeof keycode.codes;
+
 export const useHotKey = () => {
-  const [key, setKey] = useState<keyof typeof keycode.codes | null>(null);
+  const [keys, setKeys] = useState<Array<Keycode>>([]);
 
   useEffect(() => {
     const set = (event: KeyboardEvent) => {
       if (event.keyCode) {
-        setKey(keycode(event) as keyof typeof keycode.codes);
+        setKeys([
+          ...keys.filter(key => key !== keycode(event)),
+          keycode(event) as Keycode,
+        ]);
       }
     };
-    const reset = () => {
-      setKey(null);
+    const reset = (event: KeyboardEvent) => {
+      setKeys(keys.filter(key => key !== keycode(event)));
     };
     window.addEventListener("keydown", set);
     window.addEventListener("keyup", reset);
@@ -20,22 +25,23 @@ export const useHotKey = () => {
       window.removeEventListener("keyup", reset);
     };
   });
-  return key;
+  return keys;
 };
 
 export const useKeyHandler = (
-  handler: (keyPressed: keyof typeof keycode.codes) => void,
+  handler: (keyPressed: Keycode) => void,
+  watched?: any[],
 ) => {
   useEffect(() => {
     const set = (event: KeyboardEvent) => {
       const keyPressed = keycode(event);
       if (keyPressed) {
-        handler(keyPressed as keyof typeof keycode.codes);
+        handler(keyPressed as Keycode);
       }
     };
     window.addEventListener("keydown", set);
     return () => {
       window.removeEventListener("keydown", set);
     };
-  });
+  }, watched);
 };
