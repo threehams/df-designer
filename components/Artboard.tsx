@@ -97,7 +97,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
     [keysPressed],
   );
   return (
-    <Stage width={2048} height={2048} id="stage">
+    <Stage width={2048} height={2048} data-test="stage">
       <Container>
         <Sprite
           height={2048}

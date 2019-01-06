@@ -42,37 +42,56 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
       `}
     >
       <ButtonGroup>
-        <Button onClick={resetBoard}>Reset</Button>
+        <Button onClick={resetBoard} data-test="reset">
+          Reset
+        </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button disabled={!undoSteps} onClick={undo}>
+        <Button disabled={!undoSteps} data-test="undo" onClick={undo}>
           Undo
         </Button>
-        <Button disabled={!redoSteps} onClick={redo}>
+        <Button disabled={!redoSteps} data-test="redo" onClick={redo}>
           Redo
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button onClick={() => setTool("select")} active={tool === "select"}>
+        <Button
+          data-test="tool-select"
+          onClick={() => setTool("select")}
+          active={tool === "select"}
+        >
           Select
         </Button>
-        <Button onClick={() => setTool("paint")} active={tool === "paint"}>
+        <Button
+          data-test="tool-paint"
+          onClick={() => setTool("paint")}
+          active={tool === "paint"}
+        >
           Paint
         </Button>
         <Button
+          data-test="tool-paint-rectangle"
           onClick={() => setTool("rectangle")}
           active={tool === "rectangle"}
         >
           Paint Rectangle
         </Button>
-        <Button onClick={() => setTool("erase")} active={tool === "erase"}>
+        <Button
+          data-test="tool-erase"
+          onClick={() => setTool("erase")}
+          active={tool === "erase"}
+        >
           Erase
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button onClick={zLevelDown}>Down Level</Button>
+        <Button data-test="z-level-down" onClick={zLevelDown}>
+          Down Level
+        </Button>
         {zLevel}
-        <Button onClick={zLevelUp}>Up Level</Button>
+        <Button data-test="z-level-up" onClick={zLevelUp}>
+          Up Level
+        </Button>
       </ButtonGroup>
     </header>
   );

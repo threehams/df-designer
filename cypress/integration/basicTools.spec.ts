@@ -55,33 +55,35 @@ describe("Artboard", function() {
 
   describe("export", function() {
     beforeEach(function() {
-      cy.get("button")
-        .contains("Export")
-        .click();
+      cy.get("[data-test=export]").click();
     });
 
     it("paints a single tile", function() {
-      cy.get("button")
-        .contains("Paint")
-        .click();
-      clickTile("#stage", { x: 1, y: 1 });
-      cy.get("#export-text-dig").should("have.value", "#dig\nd");
+      cy.get("[data-test=tool-paint]").click();
+      clickTile("[data-test=stage]", { x: 1, y: 1 });
+      cy.get("[data-test=export-text-dig]").should("have.value", "#dig\nd");
     });
 
     it("paints a series of tiles", function() {
-      cy.get("button")
-        .contains("Paint")
-        .click();
-      dragTiles("#stage", { startX: 1, startY: 1, endX: 3, endY: 1 });
-      cy.get("#export-text-dig").should("have.value", "#dig\nd,d,d");
+      cy.get("[data-test=tool-paint]").click();
+      dragTiles("[data-test=stage]", {
+        startX: 1,
+        startY: 1,
+        endX: 3,
+        endY: 1,
+      });
+      cy.get("[data-test=export-text-dig]").should("have.value", "#dig\nd,d,d");
     });
 
     it("paints a rectangle", function() {
-      cy.get("button")
-        .contains("Paint Rectangle")
-        .click();
-      dragTiles("#stage", { startX: 1, startY: 1, endX: 4, endY: 4 });
-      cy.get("#export-text-dig").should(
+      cy.get("[data-test=tool-paint-rectangle]").click();
+      dragTiles("[data-test=stage]", {
+        startX: 1,
+        startY: 1,
+        endX: 4,
+        endY: 4,
+      });
+      cy.get("[data-test=export-text-dig]").should(
         "have.value",
         `#dig
 d,d,d,d
@@ -93,19 +95,32 @@ d,d,d,d`,
 
     describe("Select", function() {
       beforeEach(function() {
-        dragTiles("#stage", { startX: 1, startY: 1, endX: 3, endY: 1 });
+        dragTiles("[data-test=stage]", {
+          startX: 1,
+          startY: 1,
+          endX: 3,
+          endY: 1,
+        });
       });
 
       it("moves a selected area", function() {
-        cy.get("button")
-          .contains("Select")
-          .click();
+        cy.get("[data-test=tool-select]").click();
         // select
-        dragTiles("#stage", { startX: 2, startY: 1, endX: 3, endY: 1 });
+        dragTiles("[data-test=stage]", {
+          startX: 2,
+          startY: 1,
+          endX: 3,
+          endY: 1,
+        });
         // drag
-        dragTiles("#stage", { startX: 2, startY: 1, endX: 2, endY: 2 });
+        dragTiles("[data-test=stage]", {
+          startX: 2,
+          startY: 1,
+          endX: 2,
+          endY: 2,
+        });
 
-        cy.get("#export-text-dig").should(
+        cy.get("[data-test=export-text-dig]").should(
           "have.value",
           `#dig
 d,\`,\`
@@ -114,18 +129,26 @@ d,\`,\`
       });
 
       it("clones a selected area", function() {
-        cy.get("button")
-          .contains("Select")
-          .click();
-        dragTiles("#stage", { startX: 2, startY: 1, endX: 3, endY: 1 });
+        cy.get("[data-test=tool-select]").click();
+        dragTiles("[data-test=stage]", {
+          startX: 2,
+          startY: 1,
+          endX: 3,
+          endY: 1,
+        });
         // drag area
-        cy.get("#stage").trigger("keydown", {
+        cy.get("[data-test=stage]").trigger("keydown", {
           keyCode: keycode.codes.shift,
           force: true,
         });
-        dragTiles("#stage", { startX: 2, startY: 1, endX: 2, endY: 2 });
+        dragTiles("[data-test=stage]", {
+          startX: 2,
+          startY: 1,
+          endX: 2,
+          endY: 2,
+        });
 
-        cy.get("#export-text-dig").should(
+        cy.get("[data-test=export-text-dig]").should(
           "have.value",
           `#dig
 d,d,d
@@ -134,15 +157,18 @@ d,d,d
       });
 
       it("deletes a selected area", function() {
-        cy.get("button")
-          .contains("Select")
-          .click();
-        dragTiles("#stage", { startX: 2, startY: 1, endX: 3, endY: 1 });
-        cy.get("#stage").trigger("keydown", {
+        cy.get("[data-test=tool-select]").click();
+        dragTiles("[data-test=stage]", {
+          startX: 2,
+          startY: 1,
+          endX: 3,
+          endY: 1,
+        });
+        cy.get("[data-test=stage]").trigger("keydown", {
           keyCode: keycode.codes.delete,
           force: true,
         });
-        cy.get("#export-text-dig").should("have.value", `#dig\nd`);
+        cy.get("[data-test=export-text-dig]").should("have.value", `#dig\nd`);
       });
     });
   });

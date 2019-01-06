@@ -55,10 +55,20 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
           align-items: center;
         `}
       >
-        <Button block onClick={() => setIo("import")} active={io === "import"}>
+        <Button
+          block
+          data-test="import"
+          onClick={() => setIo("import")}
+          active={io === "import"}
+        >
           Import
         </Button>
-        <Button block onClick={() => setIo("export")} active={io === "export"}>
+        <Button
+          block
+          data-test="export"
+          onClick={() => setIo("export")}
+          active={io === "export"}
+        >
           Export
         </Button>
       </ButtonGroup>
@@ -69,7 +79,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
               <label>{phase}</label>
 
               <textarea
-                id={`export-text-${phase}`}
+                data-test={`export-text-${phase}`}
                 css={css`
                   display: block;
                   width: 100%;
@@ -82,6 +92,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
             </React.Fragment>
           ))}
           <Button
+            data-test="export-download-all"
             color="primary"
             onClick={() => {
               Object.entries(exported).forEach(([phase, csv]) => {
@@ -100,6 +111,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
             <React.Fragment key={phase.phase}>
               <label>{phase.name}</label>
               <textarea
+                data-test={`import-text-${phase}`}
                 css={css`
                   display: block;
                   width: 100%;
