@@ -11,7 +11,6 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 const webpack = require("@cypress/webpack-preprocessor");
-const util = require("util");
 
 module.exports = (on, config) => {
   on(
@@ -30,6 +29,9 @@ module.exports = (on, config) => {
               ],
             },
           ],
+        },
+        resolve: {
+          extensions: [".js", ".ts", ".tsx", ".json"],
         },
       },
     }),
