@@ -69,6 +69,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
               <label>{phase}</label>
 
               <textarea
+                id={`export-text-${phase}`}
                 css={css`
                   display: block;
                   width: 100%;

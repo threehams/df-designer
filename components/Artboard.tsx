@@ -25,6 +25,8 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
 
 const TILE_SIZE = 16;
+const LEFT_MOUSE_BUTTON = 1;
+
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
 type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 const textures = keys(tilesetNames).reduce(
@@ -95,13 +97,13 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
     [keysPressed],
   );
   return (
-    <Stage width={2048} height={2048}>
+    <Stage width={2048} height={2048} id="stage">
       <Container>
         <Sprite
           height={2048}
           interactive
           pointerdown={event => {
-            if (event.data.buttons === 1) {
+            if (event.data.buttons === LEFT_MOUSE_BUTTON) {
               const { x, y } = tilePosition(event.data.global);
               clickTile(x, y);
             }
@@ -111,7 +113,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
             if (x !== cursorPosition.startX || y !== cursorPosition.startY) {
               setCursorPosition({ startX: x, startY: y, endX: x, endY: y });
             }
-            if (event.data.buttons === 1) {
+            if (event.data.buttons === LEFT_MOUSE_BUTTON) {
               clickTile(x, y);
             }
           }}
