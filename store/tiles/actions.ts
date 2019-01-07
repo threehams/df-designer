@@ -2,8 +2,10 @@ import keycode from "keycode";
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
+import { entries } from "../../lib/entries";
 import {
   Command,
+  selectCommandMap,
   selectCurrentCommand,
   SelectedCoords,
   selectSelection,
@@ -12,7 +14,7 @@ import {
 } from "../tool";
 import { State } from "../types";
 import { selectTile } from "./reducer";
-import { Tile } from "./types";
+import { ImportMap, Tile } from "./types";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -74,6 +76,41 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
 };
 export const zLevelUp = createAction("app/tool/Z_LEVEL_UP");
 export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN");
+export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
+  return (importMap: ImportMap) => {
+    const commandMap = selectCommandMap();
+    const imports = entries(importMap)
+      .filter(([_, string]) => !!string)
+      .flatMap(([phase, string]) => {
+        return string!
+          .split("\n")
+          .filter(line => !line.startsWith("#"))
+          .flatMap((line, y) => {
+            return line.split(",").flatMap((shortcut, x) => {
+              if (["`"].includes(shortcut)) {
+                return null!;
+              }
+              const command = Object.values(commandMap).find(
+                comm => comm.shortcut === shortcut && comm.phase === phase,
+              );
+              if (!command) {
+                // tslint:disable-next-line no-console
+                console.log(
+                  `unknown command for shortcut: ${shortcut}, phase: ${phase}`,
+                );
+                return null;
+              }
+              return {
+                id: coordinates.toId(x + 1, y + 1),
+                command,
+              };
+            });
+          });
+      })
+      .filter(Boolean);
+    return resolve({ imports });
+  };
+});
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {

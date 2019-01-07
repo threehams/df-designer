@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 import { Button, ButtonGroup } from ".";
 import { State } from "../store";
-import { selectExported } from "../store/tiles";
+import { ImportMap, selectExported, tilesActions } from "../store/tiles";
 import {
   Io,
   Phase,
@@ -19,6 +19,7 @@ jsx; // tslint:disable-line
 
 interface Props {
   exported: { [Key in Phase]: string } | null;
+  importAll: typeof tilesActions.importAll;
   io: Io | null;
   setIo: typeof toolActions.setIo;
   phases: PhaseConfig[];
@@ -33,13 +34,12 @@ const download = (filename: string, text: string) => {
 
 export const ExportBarBase: React.FunctionComponent<Props> = ({
   exported,
+  importAll,
   io,
   setIo,
   phases,
 }) => {
-  const [importValue, setImportValue] = useState<{ [Key in Phase]?: string }>(
-    {},
-  );
+  const [importValue, setImportValue] = useState<ImportMap>({});
   return (
     <aside
       css={css`
@@ -105,29 +105,39 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
         </React.Fragment>
       )}
 
-      {io === "import" &&
-        phases.map(phase => {
-          return (
-            <React.Fragment key={phase.phase}>
-              <label>{phase.name}</label>
-              <textarea
-                data-test={`import-text-${phase}`}
-                css={css`
-                  display: block;
-                  width: 100%;
-                `}
-                rows={20}
-                value={importValue[phase.phase]}
-                onChange={event => {
-                  setImportValue({
-                    ...importValue,
-                    [phase.phase]: event.target.value,
-                  });
-                }}
-              />
-            </React.Fragment>
-          );
-        })}
+      {io === "import" && (
+        <>
+          {phases.map(phase => {
+            return (
+              <React.Fragment key={phase.phase}>
+                <label>{phase.name}</label>
+                <textarea
+                  data-test={`import-text-${phase.phase}`}
+                  css={css`
+                    display: block;
+                    width: 100%;
+                  `}
+                  rows={20}
+                  value={importValue[phase.phase]}
+                  onChange={event => {
+                    setImportValue({
+                      ...importValue,
+                      [phase.phase]: event.target.value,
+                    });
+                  }}
+                />
+              </React.Fragment>
+            );
+          })}
+          <Button
+            data-test="import-all"
+            color="primary"
+            onClick={() => importAll(importValue)}
+          >
+            Download All
+          </Button>
+        </>
+      )}
     </aside>
   );
 };
@@ -141,5 +151,8 @@ export const ExportBar = connect(
       phases: selectPhases(),
     };
   },
-  { setIo: toolActions.setIo },
+  {
+    importAll: tilesActions.importAll,
+    setIo: toolActions.setIo,
+  },
 )(ExportBarBase);

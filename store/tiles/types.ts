@@ -1,6 +1,7 @@
 import { Patch } from "immer";
-import { CommandKey } from "../tool";
+import { CommandKey, Phase } from "../tool";
 
+export type ImportMap = { [Key in Phase]?: string };
 export interface Tile {
   readonly designation: CommandKey | null;
   readonly item: CommandKey | null;
