@@ -1,3 +1,4 @@
+import { Draft } from "immer";
 import keycode from "keycode";
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
@@ -5,6 +6,7 @@ import * as coordinates from "../../lib/coordinates";
 import { entries } from "../../lib/entries";
 import {
   Command,
+  Phase,
   selectCommandMap,
   selectCurrentCommand,
   SelectedCoords,
@@ -77,18 +79,19 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
 export const zLevelUp = createAction("app/tool/Z_LEVEL_UP");
 export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN");
 export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
+  const tileMap: { [key: string]: Draft<Tile> } = {};
   return (importMap: ImportMap) => {
     const commandMap = selectCommandMap();
-    const imports = entries(importMap)
+    entries(importMap)
       .filter(([_, string]) => !!string)
-      .flatMap(([phase, string]) => {
+      .forEach(([phase, string]) => {
         return string!
           .split("\n")
           .filter(line => !line.startsWith("#"))
-          .flatMap((line, y) => {
-            return line.split(",").flatMap((shortcut, x) => {
+          .forEach((line, y) => {
+            return line.split(",").forEach((shortcut, x) => {
               if (["`"].includes(shortcut)) {
-                return null!;
+                return;
               }
               const command = Object.values(commandMap).find(
                 comm => comm.shortcut === shortcut && comm.phase === phase,
@@ -98,19 +101,39 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                 console.log(
                   `unknown command for shortcut: ${shortcut}, phase: ${phase}`,
                 );
-                return null;
+                return;
               }
-              return {
-                id: coordinates.toId(x + 1, y + 1),
-                command,
+              const id = coordinates.toId(x + 1, y + 1);
+              if (!tileMap[id]) {
+                tileMap[id] = {
+                  id,
+                  designation: null,
+                  item: null,
+                  adjustments: {},
+                };
+              }
+              tileMap[id] = {
+                ...tileMap[id],
+                ...importTile(command, phase),
               };
             });
           });
-      })
-      .filter(Boolean);
-    return resolve({ imports });
+      });
+    return resolve({ imports: Object.values(tileMap) });
   };
 });
+
+const importTile = (command: Command, phase: Phase): Partial<Tile> => {
+  if (phase === "query") {
+    return {
+      adjustments: {},
+    };
+  } else {
+    return {
+      [command.type]: command.command,
+    };
+  }
+};
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {

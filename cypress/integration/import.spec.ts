@@ -37,17 +37,20 @@ describe("import/export", function() {
       const buildTemplate = "#build\n`,b,`";
       const queryTemplate = "#query\n`,r++,`";
       cy.getId("import").click();
-      cy.getId("import-text-dig").type(digTemplate);
-      cy.getId("import-text-build").type(buildTemplate);
-      cy.getId("import-text-query").type(queryTemplate);
+      cy.getId("import-text-dig").type(digTemplate, { delay: 0 });
+      cy.getId("import-text-build").type(buildTemplate, { delay: 0 });
+      cy.getId("import-text-query").type(queryTemplate, { delay: 0 });
       cy.getId("import-all").click();
       cy.getId("export").click();
       cy.getId("export-text-dig").should("have.value", digTemplate);
       cy.getId("export-text-build").should(
         "have.value",
+        "#build\n`,b,`\n`,`,`\n`,`,`",
+      );
+      cy.getId("export-text-query").should(
+        "have.value",
         "#build\n`,r++,`\n`,`,`\n`,`,`",
       );
-      cy.getId("export-text-query").should("have.value", queryTemplate);
     });
   });
 });

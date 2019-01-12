@@ -223,11 +223,8 @@ const baseTilesReducer = (
           }
           case getType(actions.importAll): {
             deleteAll(draft);
-            action.payload.imports.forEach(({ command, id }) => {
-              const newTile = addCommand(command, draft[id], id);
-              if (newTile) {
-                draft[id] = newTile;
-              }
+            action.payload.imports.forEach(tile => {
+              draft[tile.id] = tile;
             });
             break;
           }
