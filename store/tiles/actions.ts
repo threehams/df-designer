@@ -5,8 +5,10 @@ import { createAction } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
 import { entries } from "../../lib/entries";
 import {
+  AdjustmentKey,
   Command,
   Phase,
+  selectAdjustmentMap,
   selectCommandMap,
   selectCurrentCommand,
   SelectedCoords,
@@ -26,7 +28,7 @@ export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
 export const setAdjustment = createAction(
   "app/tiles/SET_ADJUSTMENT",
   resolve => {
-    return (id: string, name: string, value: any) => {
+    return (id: string, name: AdjustmentKey, value: any) => {
       return resolve({ id, name, value });
     };
   },
@@ -82,28 +84,59 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
   const tileMap: { [key: string]: Draft<Tile> } = {};
   return (importMap: ImportMap) => {
     const commandMap = selectCommandMap();
-    entries(importMap)
-      .filter(([_, string]) => !!string)
-      .forEach(([phase, string]) => {
-        return string!
+    const adjustmentMap = selectAdjustmentMap();
+    const phases: Phase[] = ["dig", "designate", "build", "place", "query"];
+    phases
+      .filter(phase => !!importMap[phase])
+      .forEach(phase => {
+        const string = importMap[phase]!;
+        string!
           .split("\n")
           .filter(line => !line.startsWith("#"))
           .forEach((line, y) => {
-            return line.split(",").forEach((shortcut, x) => {
+            line.split(",").forEach((shortcut, x) => {
               if (["`"].includes(shortcut)) {
                 return;
               }
-              const command = Object.values(commandMap).find(
-                comm => comm.shortcut === shortcut && comm.phase === phase,
-              );
-              if (!command) {
-                // tslint:disable-next-line no-console
-                console.log(
-                  `unknown command for shortcut: ${shortcut}, phase: ${phase}`,
-                );
-                return;
-              }
               const id = coordinates.toId(x + 1, y + 1);
+              let newTile;
+              if (phase === "query") {
+                const command = tileMap[id].item;
+                if (!command) {
+                  // tslint:disable-next-line no-console
+                  console.log(
+                    `received an adjustment with no matching command: ${shortcut}, phase: ${phase}`,
+                  );
+                }
+                const adjustment = Object.values(adjustmentMap).find(
+                  adj => adj.shortcut === shortcut && adj.phase === phase,
+                );
+                if (!adjustment) {
+                  // tslint:disable-next-line no-console
+                  console.log(`unknown adjustment for shortcut: ${shortcut}`);
+                  return;
+                }
+                newTile = {
+                  adjustments: {
+                    ...(tileMap[id] || {}).adjustments,
+                    [adjustment.command]: true,
+                  },
+                };
+              } else {
+                const command = Object.values(commandMap).find(
+                  comm => comm.shortcut === shortcut && comm.phase === phase,
+                );
+                if (!command) {
+                  // tslint:disable-next-line no-console
+                  console.log(
+                    `unknown command for shortcut: ${shortcut}, phase: ${phase}`,
+                  );
+                  return;
+                }
+                newTile = {
+                  [command.type]: command.command,
+                };
+              }
               if (!tileMap[id]) {
                 tileMap[id] = {
                   id,
@@ -114,7 +147,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
               }
               tileMap[id] = {
                 ...tileMap[id],
-                ...importTile(command, phase),
+                ...newTile,
               };
             });
           });
@@ -122,18 +155,6 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
     return resolve({ imports: Object.values(tileMap) });
   };
 });
-
-const importTile = (command: Command, phase: Phase): Partial<Tile> => {
-  if (phase === "query") {
-    return {
-      adjustments: {},
-    };
-  } else {
-    return {
-      [command.type]: command.command,
-    };
-  }
-};
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {

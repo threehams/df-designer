@@ -42,13 +42,19 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
       `}
     >
       <ButtonGroup block>
-        <Button block onClick={() => setPhase("dig")} active={phase === "dig"}>
+        <Button
+          block
+          onClick={() => setPhase("dig")}
+          active={phase === "dig"}
+          data-test="phase-dig"
+        >
           Dig
         </Button>
         <Button
           block
           onClick={() => setPhase("build")}
           active={phase === "build"}
+          data-test="phase-build"
         >
           Build
         </Button>
@@ -56,6 +62,7 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
           block
           onClick={() => setPhase("place")}
           active={phase === "place"}
+          data-test="phase-place"
         >
           Place Stockpiles
         </Button>
@@ -67,6 +74,7 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
             block
             onClick={() => setCommand(comm.command)}
             active={command.command === comm.command}
+            data-test={`command-${comm.command}`}
           >
             {comm.name}
           </Button>

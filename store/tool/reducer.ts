@@ -5,7 +5,7 @@ import { toolActions } from ".";
 import * as tilesActions from "../tiles/actions";
 import { State } from "../types";
 import * as actions from "./actions";
-import { commands } from "./commands";
+import { adjustments, commands } from "./commands";
 import { phases } from "./phases";
 import { Phase, ToolState } from "./types";
 
@@ -141,6 +141,7 @@ export const selectCommands = createSelector(
 );
 
 export const selectCommandMap = () => commands;
+export const selectAdjustmentMap = () => adjustments;
 
 export const selectPhase = (state: State) => {
   return state.tool.phase;

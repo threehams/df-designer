@@ -116,8 +116,12 @@ export type CommandKey =
   | "coinsStockpile"
   | "finishedGoodsStockpile"
   | "weaponsStockpile"
-  | "armorStockpile"
-  // quickfort stockpiles
+  | "armorStockpile";
+// quickfort stockpiles
+
+export type AdjustmentKey =
+  | "makeBedroom"
+  | "makeDiningRoom"
   | "seedsStockpile"
   | "noseedsStockpile"
   | "boozeStockpile"
@@ -150,8 +154,9 @@ type TilesetName = keyof typeof tilesetNames;
 
 export type Io = "export" | "import";
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
-export type Type = "designation" | "item";
+export type Type = "designation" | "item" | "adjustments";
 export type CommandMap = { [Key in CommandKey]: Command };
+export type AdjustmentMap = { [Key in AdjustmentKey]: Adjustment };
 export interface ToolState {
   readonly command: CommandKey;
   readonly current: Tool;
@@ -167,33 +172,25 @@ export interface ToolState {
   readonly selectionStart: Coords | null;
 }
 
-interface ResizeAdjustment {
-  type: "resize";
-  name: string;
-  initialValue: number;
-  increment: string;
-  decrement: string;
-}
-interface ToggleAdjustment {
-  type: "toggle";
-  name: string;
-  initialValue: boolean;
-  shortcut: string;
-}
-export type Adjustment = ToggleAdjustment | ResizeAdjustment;
-
 export interface Command {
-  adjustments?: Adjustment[];
-  bitmask?: boolean;
   command: CommandKey;
   height?: number;
   name: string;
   phase: Phase;
-  requiredTool?: Tool | null;
   shortcut: string;
   textures: TilesetName[];
-  type: Type;
+  type: "designation" | "item";
   width?: number;
+}
+
+export interface Adjustment {
+  command: AdjustmentKey;
+  name: string;
+  phase: Phase;
+  shortcut: string;
+  resize?: boolean;
+  type: "adjustments";
+  requires: CommandKey;
 }
 
 export interface PhaseConfig {

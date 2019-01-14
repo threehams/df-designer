@@ -20,7 +20,6 @@ interface Props {
 const SelectBarBase: React.FunctionComponent<Props> = ({
   command,
   multiSelect,
-  setAdjustment,
   tile,
 }) => {
   return (
@@ -32,13 +31,7 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
       `}
     >
       {tile && !command && <div>No item selected.</div>}
-      {command && tile && (
-        <AdjustmentBar
-          command={command}
-          tile={tile}
-          setAdjustment={setAdjustment}
-        />
-      )}
+      {tile && command && <AdjustmentBar tile={tile} />}
       {multiSelect && <MultiSelectBar />}
     </aside>
   );

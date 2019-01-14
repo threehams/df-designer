@@ -8,8 +8,9 @@
     "build": "next build",
     "start": "next start -p 3000",
     "test": "jest",
-    "e2e": "cypress run",
-    "e2e:dev": "cypress open",
+    "cy:run": "cypress run --browser chrome",
+    "cy:open": "cypress open",
+    "cy:dev": "start-server-and-test dev http://localhost:3000 cy:open",
     "export": "next export"
   },
   "keywords": [],
@@ -42,6 +43,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "seedrandom": "^2.4.4",
+    "start-server-and-test": "^1.7.11",
     "typesafe-actions": "^2.1.1",
     "typescript": "^3.2.2"
   },
