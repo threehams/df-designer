@@ -35,7 +35,7 @@ describe("import/export", function() {
     it("imports and shows the correct export value", function() {
       const digTemplate = "#dig\nd,d,d\nd,d,d\nd,d,d";
       const buildTemplate = "#build\n`,b,`";
-      const queryTemplate = "#query\n`,r,`";
+      const queryTemplate = "#query\n`,r++,`";
       cy.getId("import").click();
       cy.getId("import-text-dig").type(digTemplate, { delay: 0 });
       cy.getId("import-text-build").type(buildTemplate, { delay: 0 });
@@ -49,7 +49,7 @@ describe("import/export", function() {
       );
       cy.getId("export-text-query").should(
         "have.value",
-        "#query\n`,r,`\n`,`,`\n`,`,`",
+        "#query\n`,r++,`\n`,`,`\n`,`,`",
       );
     });
   });

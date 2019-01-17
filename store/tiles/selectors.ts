@@ -101,6 +101,13 @@ export const selectExported = createSelector(
             .map(([name, value]) => {
               const adjustment = adjustmentMap[name];
               if (value) {
+                if (adjustment.type === "resize") {
+                  const suffix =
+                    value < adjustment.initialSize
+                      ? "-".repeat(adjustment.initialSize - value)
+                      : "+".repeat(value - adjustment.initialSize);
+                  return `${adjustment.shortcut}${suffix}`;
+                }
                 return adjustment.shortcut;
               }
               return "";

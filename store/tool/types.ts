@@ -154,7 +154,7 @@ type TilesetName = keyof typeof tilesetNames;
 
 export type Io = "export" | "import";
 export type Phase = "dig" | "designate" | "build" | "place" | "query";
-export type Type = "designation" | "item" | "adjustments";
+export type Type = "designation" | "item";
 export type CommandMap = { [Key in CommandKey]: Command };
 export type AdjustmentMap = { [Key in AdjustmentKey]: Adjustment };
 export interface ToolState {
@@ -183,15 +183,28 @@ export interface Command {
   width?: number;
 }
 
-export interface Adjustment {
+export interface ResizeAdjustment {
+  type: "resize";
   command: AdjustmentKey;
   name: string;
   phase: Phase;
   shortcut: string;
-  resize?: boolean;
-  type: "adjustments";
   requires: CommandKey;
+  initialSize: number;
 }
+
+export interface SelectAdjustment {
+  type: "select";
+  command: AdjustmentKey;
+  name: string;
+  phase: Phase;
+  shortcut: string;
+  requires: CommandKey;
+  selectCommand: string;
+  selectName: string;
+}
+
+export type Adjustment = SelectAdjustment | ResizeAdjustment;
 
 export interface PhaseConfig {
   name: string;

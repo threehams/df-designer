@@ -3,8 +3,8 @@ import keycode from "keycode";
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
-import { entries } from "../../lib/entries";
 import {
+  Adjustment,
   AdjustmentKey,
   Command,
   Phase,
@@ -95,7 +95,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
           .filter(line => !line.startsWith("#"))
           .forEach((line, y) => {
             line.split(",").forEach((shortcut, x) => {
-              if (["`"].includes(shortcut)) {
+              if (!shortcut || ["`"].includes(shortcut)) {
                 return;
               }
               const id = coordinates.toId(x + 1, y + 1);
@@ -109,17 +109,19 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                   );
                 }
                 const adjustment = Object.values(adjustmentMap).find(
-                  adj => adj.shortcut === shortcut && adj.phase === phase,
+                  adj => adj.shortcut === shortcut[0] && adj.phase === phase,
                 );
-                if (!adjustment) {
+                if (!adjustment || adjustment.requires !== command) {
                   // tslint:disable-next-line no-console
-                  console.log(`unknown adjustment for shortcut: ${shortcut}`);
+                  console.log(
+                    `unknown adjustment for shortcut: ${shortcut} for command: ${command}`,
+                  );
                   return;
                 }
                 newTile = {
                   adjustments: {
                     ...(tileMap[id] || {}).adjustments,
-                    [adjustment.command]: true,
+                    ...adjustmentData(adjustment, shortcut),
                   },
                 };
               } else {
@@ -155,6 +157,18 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
     return resolve({ imports: Object.values(tileMap) });
   };
 });
+
+const adjustmentData = (adjustment: Adjustment, shortcut: string) => {
+  if (adjustment.type === "resize") {
+    const increment = shortcut.split("").filter(char => char === "+").length;
+    const decrement = -shortcut.split("").filter(char => char === "-").length;
+    return {
+      [adjustment.command]: adjustment.initialSize + increment + decrement,
+    };
+  } else if (adjustment.type === "select") {
+    return { [adjustment.selectCommand]: shortcut };
+  }
+};
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
