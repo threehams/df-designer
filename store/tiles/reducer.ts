@@ -221,10 +221,15 @@ const baseTilesReducer = (
             draft[id].adjustments[name] = value;
             break;
           }
+          case getType(actions.importAll): {
+            deleteAll(draft);
+            action.payload.imports.forEach(tile => {
+              draft[tile.id] = tile;
+            });
+            break;
+          }
           case getType(actions.resetBoard): {
-            for (const id of Object.keys(draft)) {
-              delete draft[id];
-            }
+            deleteAll(draft);
             break;
           }
         }
@@ -252,6 +257,12 @@ const baseTilesReducer = (
       outerDraft.transaction = [];
     }
   });
+};
+
+const deleteAll = (draft: Draft<TilesState["data"]>) => {
+  for (const id of Object.keys(draft)) {
+    delete draft[id];
+  }
 };
 
 export const tilesReducer = (

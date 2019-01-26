@@ -1,13 +1,18 @@
 import { createSelector } from "reselect";
 import * as coordinates from "../../lib/coordinates";
+import { entries } from "../../lib/entries";
 import { keys } from "../../lib/keys";
 import { range } from "../../lib/range";
 import { tilesetNames, wallMap } from "../../lib/tilesetNames";
-import { selectCommandMap, selectPhases } from "../tool/reducer";
+import {
+  selectAdjustmentMap,
+  selectCommandMap,
+  selectPhases,
+} from "../tool/reducer";
 import { CommandKey, Phase, SelectedCoords } from "../tool/types";
 import { State } from "../types";
 import { selectLevelTiles } from "./reducer";
-import { Tile } from "./types";
+import { AdjustmentData, Tile } from "./types";
 
 type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };
@@ -46,11 +51,12 @@ const selectExtents = createSelector(
 );
 
 export const selectExported = createSelector(
+  selectAdjustmentMap,
   selectCommandMap,
   selectPhases,
   selectExtents,
   selectLevelTiles,
-  (commandMap, phases, extents, tiles) => {
+  (adjustmentMap, commandMap, phases, extents, tiles) => {
     if (!extents) {
       return null;
     }
@@ -79,44 +85,32 @@ export const selectExported = createSelector(
           commandMap[commandKey].shortcut;
       };
 
-      const exportAdjustments = (
-        commandKey: CommandKey | null,
-        adjustments: { [key: string]: number | boolean },
-      ) => {
-        if (!commandKey) {
-          return;
-        }
-        const command = commandMap[commandKey];
-        if (!command.adjustments) {
-          return;
-        }
+      const exportAdjustments = (adjustments: AdjustmentData) => {
         if (!grids.query) {
           grids.query = createGrid(extents);
         }
         grids.query[y - extents.startY][x - extents.startX] =
-          command
-            .adjustments!.map(adjustment => {
-              if (
-                adjustment.type === "toggle" &&
-                adjustments[adjustment.name]
-              ) {
+          entries(adjustments)
+            .map(([name, value]) => {
+              const adjustment = adjustmentMap[name];
+              if (value) {
+                if (adjustment.type === "resize") {
+                  const numberValue = value as number;
+                  const suffix =
+                    value < adjustment.initialSize
+                      ? "-".repeat(adjustment.initialSize - numberValue)
+                      : "+".repeat(numberValue - adjustment.initialSize);
+                  return `${adjustment.shortcut}${suffix}`;
+                }
                 return adjustment.shortcut;
               }
-              if (adjustment.type === "resize") {
-                const delta =
-                  ((adjustments[adjustment.name] as number) ||
-                    adjustment.initialValue) - adjustment.initialValue;
-                if (delta < 0) {
-                  return adjustment.decrement.repeat(Math.abs(delta));
-                }
-                return adjustment.increment.repeat(delta);
-              }
+              return "";
             })
             .join("") || "`";
       };
       exportCommand(tile.designation);
       exportCommand(tile.item);
-      exportAdjustments(tile.item!, tile.adjustments);
+      exportAdjustments(tile.adjustments);
     }
     return keys(grids).reduce(
       (result, phase) => {

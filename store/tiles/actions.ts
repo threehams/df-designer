@@ -1,9 +1,15 @@
+import { Draft } from "immer";
 import keycode from "keycode";
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
 import {
+  Adjustment,
+  AdjustmentKey,
   Command,
+  Phase,
+  selectAdjustmentMap,
+  selectCommandMap,
   selectCurrentCommand,
   SelectedCoords,
   selectSelection,
@@ -12,7 +18,7 @@ import {
 } from "../tool";
 import { State } from "../types";
 import { selectTile } from "./reducer";
-import { Tile } from "./types";
+import { ImportMap, Tile } from "./types";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {
@@ -22,7 +28,7 @@ export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
 export const setAdjustment = createAction(
   "app/tiles/SET_ADJUSTMENT",
   resolve => {
-    return (id: string, name: string, value: any) => {
+    return (id: string, name: AdjustmentKey, value: any) => {
       return resolve({ id, name, value });
     };
   },
@@ -74,6 +80,95 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
 };
 export const zLevelUp = createAction("app/tool/Z_LEVEL_UP");
 export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN");
+export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
+  const tileMap: { [key: string]: Draft<Tile> } = {};
+  return (importMap: ImportMap) => {
+    const commandMap = selectCommandMap();
+    const adjustmentMap = selectAdjustmentMap();
+    const phases: Phase[] = ["dig", "designate", "build", "place", "query"];
+    phases
+      .filter(phase => !!importMap[phase])
+      .forEach(phase => {
+        const string = importMap[phase]!;
+        string!
+          .split("\n")
+          .filter(line => !line.startsWith("#"))
+          .forEach((line, y) => {
+            line.split(",").forEach((shortcut, x) => {
+              if (!shortcut || ["`"].includes(shortcut)) {
+                return;
+              }
+              const id = coordinates.toId(x + 1, y + 1);
+              let newTile;
+              if (phase === "query") {
+                const command = tileMap[id].item;
+                if (!command) {
+                  // tslint:disable-next-line no-console
+                  console.log(
+                    `received an adjustment with no matching command: ${shortcut}, phase: ${phase}`,
+                  );
+                }
+                const adjustment = Object.values(adjustmentMap).find(
+                  adj => adj.shortcut === shortcut[0] && adj.phase === phase,
+                );
+                if (!adjustment || adjustment.requires !== command) {
+                  // tslint:disable-next-line no-console
+                  console.log(
+                    `unknown adjustment for shortcut: ${shortcut} for command: ${command}`,
+                  );
+                  return;
+                }
+                newTile = {
+                  adjustments: {
+                    ...(tileMap[id] || {}).adjustments,
+                    ...adjustmentData(adjustment, shortcut),
+                  },
+                };
+              } else {
+                const command = Object.values(commandMap).find(
+                  comm => comm.shortcut === shortcut && comm.phase === phase,
+                );
+                if (!command) {
+                  // tslint:disable-next-line no-console
+                  console.log(
+                    `unknown command for shortcut: ${shortcut}, phase: ${phase}`,
+                  );
+                  return;
+                }
+                newTile = {
+                  [command.type]: command.command,
+                };
+              }
+              if (!tileMap[id]) {
+                tileMap[id] = {
+                  id,
+                  designation: null,
+                  item: null,
+                  adjustments: {},
+                };
+              }
+              tileMap[id] = {
+                ...tileMap[id],
+                ...newTile,
+              };
+            });
+          });
+      });
+    return resolve({ imports: Object.values(tileMap) });
+  };
+});
+
+const adjustmentData = (adjustment: Adjustment, shortcut: string) => {
+  if (adjustment.type === "resize") {
+    const increment = shortcut.split("").filter(char => char === "+").length;
+    const decrement = -shortcut.split("").filter(char => char === "-").length;
+    return {
+      [adjustment.command]: adjustment.initialSize + increment + decrement,
+    };
+  } else if (adjustment.type === "select") {
+    return { [adjustment.selectCommand]: shortcut };
+  }
+};
 
 export const clickTile = (x: number, y: number) => {
   return (dispatch: Dispatch, getState: () => State) => {
