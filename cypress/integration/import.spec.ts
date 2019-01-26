@@ -1,6 +1,7 @@
+/// <reference types="cypress" />
 describe("import/export", function() {
   beforeEach(function() {
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
   });
 
   describe("simple dig", function() {

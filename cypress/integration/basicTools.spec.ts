@@ -4,7 +4,7 @@ import { clickTile, dragTiles } from "../lib/tiles";
 
 describe("Artboard", function() {
   beforeEach(function() {
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
   });
 
   describe("export", function() {
@@ -12,13 +12,19 @@ describe("Artboard", function() {
       cy.getId("export").click();
     });
 
-    it("paints a single tile", function() {
+    it("paints a single tile with undo/redo", function() {
       cy.getId("tool-paint").click();
       cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
       cy.getId("export-text-dig").should("have.value", "#dig\nd");
+      cy.getId("stage").then(clickTile({ x: 2, y: 1 }));
+      cy.getId("export-text-dig").should("have.value", "#dig\nd,d");
+      cy.getId("undo").click();
+      cy.getId("export-text-dig").should("have.value", "#dig\nd");
+      cy.getId("redo").click();
+      cy.getId("export-text-dig").should("have.value", "#dig\nd,d");
     });
 
-    it("paints a series of tiles", function() {
+    it("paints a series of tiles with undo/redo", function() {
       cy.getId("tool-paint").click();
       cy.getId("stage").then(
         dragTiles({
@@ -29,25 +35,70 @@ describe("Artboard", function() {
         }),
       );
       cy.getId("export-text-dig").should("have.value", "#dig\nd,d,d");
+      cy.getId("stage").then(
+        dragTiles({
+          startX: 3,
+          startY: 1,
+          endX: 3,
+          endY: 2,
+        }),
+      );
+      cy.getId("export-text-dig").should("have.value", "#dig\nd,d,d\n`,`,d");
+      cy.getId("undo").click();
+      cy.getId("export-text-dig").should("have.value", "#dig\nd,d,d");
+      cy.getId("redo").click();
+      cy.getId("export-text-dig").should("have.value", "#dig\nd,d,d\n`,`,d");
     });
 
-    it("paints a rectangle", function() {
+    it("paints a rectangle with undo/redo", function() {
       cy.getId("tool-paint-rectangle").click();
       cy.getId("stage").then(
         dragTiles({
           startX: 1,
           startY: 1,
-          endX: 4,
+          endX: 3,
+          endY: 3,
+        }),
+      );
+      cy.getId("export-text-dig").should(
+        "have.value",
+        `#dig
+d,d,d
+d,d,d
+d,d,d`,
+      );
+      cy.getId("stage").then(
+        dragTiles({
+          startX: 2,
+          startY: 2,
+          endX: 3,
           endY: 4,
         }),
       );
       cy.getId("export-text-dig").should(
         "have.value",
         `#dig
-d,d,d,d
-d,d,d,d
-d,d,d,d
-d,d,d,d`,
+d,d,d
+d,d,d
+d,d,d
+\`,d,d`,
+      );
+      cy.getId("undo").click();
+      cy.getId("export-text-dig").should(
+        "have.value",
+        `#dig
+d,d,d
+d,d,d
+d,d,d`,
+      );
+      cy.getId("redo").click();
+      cy.getId("export-text-dig").should(
+        "have.value",
+        `#dig
+d,d,d
+d,d,d
+d,d,d
+\`,d,d`,
       );
     });
 
@@ -63,11 +114,11 @@ d,d,d,d`,
         );
       });
 
-      it("moves a selected area", function() {
+      it("moves a selected area with undo/redo", function() {
         cy.getId("tool-select").click();
-        // select
         cy.getId("stage")
           .then(
+            // select
             dragTiles({
               startX: 2,
               startY: 1,
@@ -76,6 +127,7 @@ d,d,d,d`,
             }),
           )
           .then(
+            // drag
             dragTiles({
               startX: 2,
               startY: 1,
@@ -89,9 +141,18 @@ d,d,d,d`,
 d,\`,\`
 \`,d,d`,
         );
+        cy.getId("undo").click();
+        cy.getId("export-text-dig").should("have.value", "#dig\nd,d,d");
+        cy.getId("redo").click();
+        cy.getId("export-text-dig").should(
+          "have.value",
+          `#dig
+d,\`,\`
+\`,d,d`,
+        );
       });
 
-      it("clones a selected area", function() {
+      it("clones a selected area with undo/redo", function() {
         cy.getId("tool-select").click();
         cy.getId("stage")
           .then(
@@ -121,9 +182,18 @@ d,\`,\`
 d,d,d
 \`,d,d`,
         );
+        cy.getId("undo").click();
+        cy.getId("export-text-dig").should("have.value", "#dig\nd,d,d");
+        cy.getId("redo").click();
+        cy.getId("export-text-dig").should(
+          "have.value",
+          `#dig
+d,d,d
+\`,d,d`,
+        );
       });
 
-      it("deletes a selected area", function() {
+      it("deletes a selected area with undo/redo", function() {
         cy.getId("tool-select").click();
         cy.getId("stage")
           .then(
@@ -138,6 +208,10 @@ d,d,d
             keyCode: keycode.codes.delete,
             force: true,
           });
+        cy.getId("export-text-dig").should("have.value", `#dig\nd`);
+        cy.getId("undo").click();
+        cy.getId("export-text-dig").should("have.value", `#dig\nd,d,d`);
+        cy.getId("redo").click();
         cy.getId("export-text-dig").should("have.value", `#dig\nd`);
       });
     });

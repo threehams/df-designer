@@ -3,7 +3,7 @@ import { clickTile } from "../lib/tiles";
 
 describe("adjustments", function() {
   beforeEach(function() {
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
   });
 
   describe("bedroom", function() {
