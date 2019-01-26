@@ -9,15 +9,10 @@ import {
   selectCommandMap,
   selectPhases,
 } from "../tool/reducer";
-import {
-  AdjustmentKey,
-  CommandKey,
-  Phase,
-  SelectedCoords,
-} from "../tool/types";
+import { CommandKey, Phase, SelectedCoords } from "../tool/types";
 import { State } from "../types";
 import { selectLevelTiles } from "./reducer";
-import { Tile } from "./types";
+import { AdjustmentData, Tile } from "./types";
 
 type Grids = { [key in Phase]: string[][] | null };
 type GridsResult = { [key in Phase]: string };
@@ -90,9 +85,7 @@ export const selectExported = createSelector(
           commandMap[commandKey].shortcut;
       };
 
-      const exportAdjustments = (
-        adjustments: { [key in AdjustmentKey]?: number | boolean },
-      ) => {
+      const exportAdjustments = (adjustments: AdjustmentData) => {
         if (!grids.query) {
           grids.query = createGrid(extents);
         }
@@ -102,10 +95,11 @@ export const selectExported = createSelector(
               const adjustment = adjustmentMap[name];
               if (value) {
                 if (adjustment.type === "resize") {
+                  const numberValue = value as number;
                   const suffix =
                     value < adjustment.initialSize
-                      ? "-".repeat(adjustment.initialSize - value)
-                      : "+".repeat(value - adjustment.initialSize);
+                      ? "-".repeat(adjustment.initialSize - numberValue)
+                      : "+".repeat(numberValue - adjustment.initialSize);
                   return `${adjustment.shortcut}${suffix}`;
                 }
                 return adjustment.shortcut;

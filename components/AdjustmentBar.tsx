@@ -41,20 +41,22 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
         adjustments.map(adjustment => {
           const value = tileValue(tile, adjustment);
           if (adjustment.type === "resize") {
+            const numberValue = value as number;
             return (
               <ResizeInput
                 key={adjustment.command}
-                value={value}
+                value={numberValue}
                 adjustment={adjustment}
                 tile={tile}
                 setAdjustment={setAdjustment}
               />
             );
           }
+          const selectValue = value as string;
           return (
             <SelectInput
               key={adjustment.command}
-              value={value}
+              value={selectValue}
               adjustment={adjustment}
               tile={tile}
               setAdjustment={setAdjustment}
@@ -168,14 +170,14 @@ interface ExternalProps {
 }
 
 export const AdjustmentBar = connect(
-  (state: State, { tile }: ExternalProps) => {
+  (_: State, { tile }: ExternalProps) => {
     const commandMap = selectCommandMap();
     const adjustmentMap = selectAdjustmentMap();
-    const allAdjustments = Object.entries(adjustmentMap)
-      .filter(([, adjustment]) => {
+    const allAdjustments = Object.values(adjustmentMap)
+      .filter(adjustment => {
         return adjustment.requires === tile.item;
       })
-      .map(([_, adjustment]) => {
+      .map(adjustment => {
         return adjustment as Adjustment;
       });
     return {
