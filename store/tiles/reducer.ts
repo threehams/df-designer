@@ -12,7 +12,7 @@ const DEFAULT_STATE: TilesState = {
   past: [],
   future: [],
   updates: [],
-  zLevel: 64,
+  zLevel: 0,
 };
 
 // be as defensive as possible here
@@ -92,12 +92,12 @@ const baseTilesReducer = (
   return produce(state, outerDraft => {
     switch (action.type) {
       case getType(actions.zLevelUp):
-        if (outerDraft.zLevel < 128) {
+        if (outerDraft.zLevel < 256) {
           outerDraft.zLevel += 1;
         }
         break;
       case getType(actions.zLevelDown):
-        if (outerDraft.zLevel > 0) {
+        if (outerDraft.zLevel > -256) {
           outerDraft.zLevel -= 1;
         }
         break;
