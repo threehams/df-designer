@@ -1,11 +1,11 @@
 /// <reference types="cypress" />
-describe("import/export", function() {
-  beforeEach(function() {
+describe("import/export", () => {
+  beforeEach(() => {
     cy.visit("/");
   });
 
-  describe("simple dig", function() {
-    it("imports and shows the correct export value", function() {
+  describe("simple dig", () => {
+    it("imports and shows the correct export value", () => {
       const template = "#dig\nd,d,d\nd,d,d";
       cy.getId("import").click();
       cy.getId("import-text-dig").type(template);
@@ -15,8 +15,8 @@ describe("import/export", function() {
     });
   });
 
-  describe("multi-phase", function() {
-    it("imports and shows the correct export value", function() {
+  describe("multi-phase", () => {
+    it("imports and shows the correct export value", () => {
       const digTemplate = "#dig\nd,d,d\nd,d,d\nd,d,d";
       const buildTemplate = "#build\n`,b,`";
       cy.getId("import").click();
@@ -32,8 +32,8 @@ describe("import/export", function() {
     });
   });
 
-  describe("adjustments", function() {
-    it("imports and shows the correct export value", function() {
+  describe("adjustments", () => {
+    it("imports and shows the correct export value", () => {
       const digTemplate = "#dig\nd,d,d\nd,d,d\nd,d,d";
       const buildTemplate = "#build\n`,b,`";
       const queryTemplate = "#query\n`,r++,`";

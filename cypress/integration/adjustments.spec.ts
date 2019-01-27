@@ -1,13 +1,13 @@
 /// <reference types="cypress" />
 import { clickTile } from "../lib/tiles";
 
-describe("adjustments", function() {
-  beforeEach(function() {
+describe("adjustments", () => {
+  beforeEach(() => {
     cy.visit("/");
   });
 
-  describe("bedroom", function() {
-    beforeEach(function() {
+  describe("bedroom", () => {
+    beforeEach(() => {
       cy.getId("tool-paint").click();
       cy.getId("phase-dig").click();
       cy.getId("command-mine").click();
@@ -19,24 +19,24 @@ describe("adjustments", function() {
       cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
     });
 
-    it("shows the item name", function() {
+    it("shows the item name", () => {
       cy.getId("adjustment-bar-item-name").should("have.text", "Bed");
     });
 
-    it("shows the correct adjustments", function() {
+    it("shows the correct adjustments", () => {
       cy.getId("adjustment-bar-makeBedroom-check").should("exist");
     });
 
-    describe("without resize", function() {
-      it("exports the correct string", function() {
+    describe("without resize", () => {
+      it("exports the correct string", () => {
         cy.getId("adjustment-bar-makeBedroom-check").check();
         cy.getId("export").click();
         cy.getId("export-text-query").should("have.value", "#query\nr");
       });
     });
 
-    describe("with resize", function() {
-      it("exports the correct string", function() {
+    describe("with resize", () => {
+      it("exports the correct string", () => {
         cy.getId("adjustment-bar-makeBedroom-check").check();
         cy.getId("adjustment-bar-makeBedroom-increment")
           .click()
@@ -53,8 +53,8 @@ describe("adjustments", function() {
     });
   });
 
-  describe("stockpile", function() {
-    beforeEach(function() {
+  describe("stockpile", () => {
+    beforeEach(() => {
       cy.getId("tool-paint").click();
       cy.getId("phase-dig").click();
       cy.getId("command-mine").click();
@@ -66,7 +66,7 @@ describe("adjustments", function() {
       cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
     });
 
-    it("shows the item name", function() {
+    it("shows the item name", () => {
       cy.getId("adjustment-bar-item-name").should(
         "have.text",
         "Food Stockpile",

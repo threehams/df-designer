@@ -2,7 +2,7 @@
 import keycode from "keycode";
 import { clickTile, dragTiles } from "../lib/tiles";
 
-describe("Artboard", function() {
+describe("tools", function() {
   beforeEach(function() {
     cy.visit("/");
   });
