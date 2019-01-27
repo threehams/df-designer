@@ -14,13 +14,14 @@ export interface Tile {
 export type TilesMap = {
   readonly [coordinates: string]: Tile;
 };
+export type ZPatch = { zLevel: number; patches: Patch[] };
 export interface TilesState {
   readonly data: {
     readonly [zLevel: string]: TilesMap;
   };
   readonly transaction: Patch[];
   readonly updates: string[];
-  readonly past: Patch[][];
-  readonly future: Patch[][];
+  readonly past: ZPatch[];
+  readonly future: ZPatch[];
   readonly zLevel: number;
 }

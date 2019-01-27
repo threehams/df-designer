@@ -1,12 +1,12 @@
 /// <reference types="cypress" />
 import { clickTile } from "../lib/tiles";
 
-describe("tools", () => {
+describe("z-levels", () => {
   beforeEach(() => {
     cy.visit("/");
   });
 
-  it.only("paints with undo/redo across z-levels", () => {
+  it("paints with undo/redo across z-levels", () => {
     cy.getId("export").click();
     cy.getId("tool-paint").click();
     cy.getId("stage").then(clickTile({ x: 1, y: 1 }));

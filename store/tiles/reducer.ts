@@ -5,7 +5,7 @@ import { range } from "../../lib/range";
 import { Command } from "../tool";
 import { State } from "../types";
 import * as actions from "./actions";
-import { Tile, TilesMap, TilesState } from "./types";
+import { Tile, TilesMap, TilesState, ZPatch } from "./types";
 
 const DEFAULT_STATE: TilesState = {
   data: range(-64, 64).reduce(
@@ -45,46 +45,35 @@ const initialState = (): TilesState => {
   return DEFAULT_STATE;
 };
 
-interface History {
-  transaction: Patch[];
-  past: Patch[][];
-  future: Patch[][];
-}
-const history: History = {
-  transaction: [],
-  past: [],
-  future: [],
-};
-
 const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
   const from = direction === "undo" ? "past" : "future";
   const to = direction === "undo" ? "future" : "past";
   const transaction = state[from][state[from].length - 1];
-  let redo: Patch[] = [];
   if (!transaction) {
     return state;
   }
-  const newState = produce(state, draft => {
-    draft[from].pop();
-    applyPatches(state, transaction);
-  });
+
+  let redo = {};
   const newTiles = produce(
-    state.data[state.zLevel],
+    state.data[transaction.zLevel],
     draft => {
-      return applyPatches(draft, transaction);
+      return applyPatches(draft, transaction.patches);
     },
     (_, inversePatches) => {
-      redo = inversePatches;
+      redo = {
+        zLevel: transaction.zLevel,
+        patches: inversePatches,
+      };
     },
   );
   return {
-    ...newState,
-    [to]: state[to].concat([redo]),
+    ...state,
+    [to]: state[to].concat([redo as ZPatch]),
     data: {
       ...state.data,
-      [state.zLevel]: newTiles,
+      [transaction.zLevel]: newTiles,
     },
-    updates: transaction.map(patch => patch.path[0] as string),
+    updates: transaction.patches.map(patch => patch.path[0] as string),
   };
 };
 
@@ -249,7 +238,7 @@ const baseTilesReducer = (
         outerDraft.updates = patches.map(patch => patch.path[0] as string);
         transactionSteps = inversePatches;
         if (transactionSteps.length) {
-          history.transaction.push(...inversePatches);
+          outerDraft.transaction.push(...inversePatches);
         }
       },
     );
@@ -264,7 +253,10 @@ const baseTilesReducer = (
       action.type !== getType(actions.removeTile) &&
       outerDraft.transaction.length
     ) {
-      outerDraft.past.push(outerDraft.transaction);
+      outerDraft.past.push({
+        zLevel: outerDraft.zLevel,
+        patches: outerDraft.transaction,
+      });
       outerDraft.transaction = [];
     }
   });
