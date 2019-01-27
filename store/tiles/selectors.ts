@@ -9,7 +9,7 @@ import {
   selectCommandMap,
   selectPhases,
 } from "../tool/reducer";
-import { CommandKey, PhaseSlug, SelectedCoords } from "../tool/types";
+import { CommandSlug, PhaseSlug, SelectedCoords } from "../tool/types";
 import { State } from "../types";
 import { selectLevelTiles } from "./reducer";
 import { AdjustmentData, Tile } from "./types";
@@ -72,17 +72,17 @@ export const selectExported = createSelector(
         continue;
       }
       const { x, y } = coordinates.fromId(id);
-      const exportCommand = (commandKey: CommandKey | null) => {
-        if (!commandKey) {
+      const exportCommand = (commandSlug: CommandSlug | null) => {
+        if (!commandSlug) {
           return;
         }
-        const command = commandMap[commandKey];
+        const command = commandMap[commandSlug];
         const phase = command.phase;
         if (!grids[phase]) {
           grids[phase] = createGrid(extents);
         }
         grids[phase]![y - extents.startY][x - extents.startX] =
-          commandMap[commandKey].shortcut;
+          commandMap[commandSlug].shortcut;
       };
 
       const exportAdjustments = (adjustments: AdjustmentData) => {

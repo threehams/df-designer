@@ -1,6 +1,6 @@
 import { tilesetNames } from "../../lib/tilesetNames";
 export type Tool = "select" | "paint" | "erase" | "rectangle";
-export type CommandKey =
+export type CommandSlug =
   | "armorStand"
   | "bed"
   | "channel"
@@ -155,10 +155,10 @@ type TilesetName = keyof typeof tilesetNames;
 export type Io = "export" | "import";
 export type PhaseSlug = "dig" | "designate" | "build" | "place" | "query";
 export type Type = "designation" | "item";
-export type CommandMap = { [Key in CommandKey]: Command };
+export type CommandMap = { [Key in CommandSlug]: Command };
 export type AdjustmentMap = { [Key in AdjustmentKey]: Adjustment };
 export interface ToolState {
-  readonly command: CommandKey;
+  readonly command: CommandSlug;
   readonly current: Tool;
   readonly dragEnd: Coords | null;
   readonly dragging: boolean;
@@ -173,7 +173,7 @@ export interface ToolState {
 }
 
 export interface Command {
-  slug: CommandKey;
+  slug: CommandSlug;
   height?: number;
   name: string;
   phase: PhaseSlug;
@@ -189,7 +189,7 @@ export interface ResizeAdjustment {
   name: string;
   phase: PhaseSlug;
   shortcut: string;
-  requires: CommandKey;
+  requires: CommandSlug;
   initialSize: number;
 }
 
@@ -199,7 +199,7 @@ export interface SelectAdjustment {
   name: string;
   phase: PhaseSlug;
   shortcut: string;
-  requires: CommandKey;
+  requires: CommandSlug;
   selectCommand: string;
   selectName: string;
 }

@@ -91,16 +91,16 @@ export const toolReducer = (
         break;
       }
       case getType(toolActions.setPhase): {
-        const { phase } = action.payload;
-        if (draft.phase !== phase) {
-          draft.phase = phase;
+        const { phaseSlug } = action.payload;
+        if (draft.phase !== phaseSlug) {
+          draft.phase = phaseSlug;
           // this is weird
-          draft.command = selectCommands({}, { phase })[0].slug;
+          draft.command = selectCommands({}, { phase: phaseSlug })[0].slug;
         }
         break;
       }
       case getType(toolActions.setCommand):
-        draft.command = action.payload.command;
+        draft.command = action.payload.commandSlug;
         if (draft.current === "erase") {
           draft.last = "erase";
           draft.current = "paint";

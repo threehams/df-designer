@@ -1,4 +1,4 @@
-import { PhaseSlug, Phase } from "./types";
+import { Phase, PhaseSlug } from "./types";
 
 export const phases: { [Key in PhaseSlug]: Phase } = {
   dig: {

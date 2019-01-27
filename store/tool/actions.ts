@@ -1,14 +1,14 @@
 import { createAction } from "typesafe-actions";
-import { CommandKey, Io, PhaseSlug, Tool } from "./types";
+import { CommandSlug, Io, PhaseSlug, Tool } from "./types";
 
 export const setTool = createAction("app/tool/SET_TOOL", resolve => {
   return (tool: Tool) => resolve({ tool });
 });
 export const setPhase = createAction("app/tool/SET_PHASE", resolve => {
-  return (phase: PhaseSlug) => resolve({ phase });
+  return (phaseSlug: PhaseSlug) => resolve({ phaseSlug });
 });
 export const setCommand = createAction("app/tool/SET_COMMAND", resolve => {
-  return (command: CommandKey) => resolve({ command });
+  return (commandSlug: CommandSlug) => resolve({ commandSlug });
 });
 export const setIo = createAction("app/tool/SET_IO", resolve => {
   return (io: Io) => resolve({ io });

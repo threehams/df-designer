@@ -6,8 +6,8 @@ import { Button, ButtonGroup } from ".";
 import { State } from "../store";
 import {
   Command,
-  PhaseSlug,
   Phase,
+  PhaseSlug,
   selectCommands,
   selectCurrentCommand,
   selectPhase,

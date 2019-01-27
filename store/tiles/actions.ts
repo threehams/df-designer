@@ -101,8 +101,8 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
               const id = coordinates.toId(x + 1, y + 1);
               let newTile;
               if (phase === "query") {
-                const command = tileMap[id].item;
-                if (!command) {
+                const commandSlug = tileMap[id].item;
+                if (!commandSlug) {
                   // tslint:disable-next-line no-console
                   console.log(
                     `received an adjustment with no matching command: ${shortcut}, phase: ${phase}`,
@@ -111,10 +111,10 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                 const adjustment = Object.values(adjustmentMap).find(
                   adj => adj.shortcut === shortcut[0] && adj.phase === phase,
                 );
-                if (!adjustment || adjustment.requires !== command) {
+                if (!adjustment || adjustment.requires !== commandSlug) {
                   // tslint:disable-next-line no-console
                   console.log(
-                    `unknown adjustment for shortcut: ${shortcut} for command: ${command}`,
+                    `unknown adjustment for shortcut: ${shortcut} for command: ${commandSlug}`,
                   );
                   return;
                 }

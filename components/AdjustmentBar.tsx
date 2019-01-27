@@ -7,7 +7,7 @@ import { State } from "../store";
 import { Tile, tilesActions } from "../store/tiles";
 import {
   Adjustment,
-  CommandKey as CommandSlug,
+  CommandSlug,
   selectAdjustmentMap,
   selectCommandMap,
 } from "../store/tool";
@@ -185,7 +185,8 @@ export const AdjustmentBar = connect(
 interface SelectAdjustmentProps {
   item: CommandSlug | null;
 }
-const selectAdjustments = (state: State, props: SelectAdjustmentProps) => {
+
+const selectAdjustments = (_: State, props: SelectAdjustmentProps) => {
   const adjustmentMap = selectAdjustmentMap();
   return Object.values(adjustmentMap).filter(adjustment => {
     return adjustment.requires === props.item;
