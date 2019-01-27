@@ -2,17 +2,17 @@
 import keycode from "keycode";
 import { clickTile, dragTiles } from "../lib/tiles";
 
-describe("tools", function() {
-  beforeEach(function() {
+describe("tools", () => {
+  beforeEach(() => {
     cy.visit("/");
   });
 
-  describe("export", function() {
-    beforeEach(function() {
+  describe("export", () => {
+    beforeEach(() => {
       cy.getId("export").click();
     });
 
-    it("paints a single tile with undo/redo", function() {
+    it("paints a single tile with undo/redo", () => {
       cy.getId("tool-paint").click();
       cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
       cy.getId("export-text-dig").should("have.value", "#dig\nd");
@@ -24,7 +24,7 @@ describe("tools", function() {
       cy.getId("export-text-dig").should("have.value", "#dig\nd,d");
     });
 
-    it("paints a series of tiles with undo/redo", function() {
+    it("paints a series of tiles with undo/redo", () => {
       cy.getId("tool-paint").click();
       cy.getId("stage").then(
         dragTiles({
@@ -50,7 +50,7 @@ describe("tools", function() {
       cy.getId("export-text-dig").should("have.value", "#dig\nd,d,d\n`,`,d");
     });
 
-    it("paints a rectangle with undo/redo", function() {
+    it("paints a rectangle with undo/redo", () => {
       cy.getId("tool-paint-rectangle").click();
       cy.getId("stage").then(
         dragTiles({
@@ -102,8 +102,8 @@ d,d,d
       );
     });
 
-    describe("Select", function() {
-      beforeEach(function() {
+    describe("Select", () => {
+      beforeEach(() => {
         cy.getId("stage").then(
           dragTiles({
             startX: 1,
@@ -114,7 +114,7 @@ d,d,d
         );
       });
 
-      it("moves a selected area with undo/redo", function() {
+      it("moves a selected area with undo/redo", () => {
         cy.getId("tool-select").click();
         cy.getId("stage")
           .then(
@@ -152,7 +152,7 @@ d,\`,\`
         );
       });
 
-      it("clones a selected area with undo/redo", function() {
+      it("clones a selected area with undo/redo", () => {
         cy.getId("tool-select").click();
         cy.getId("stage")
           .then(
@@ -193,7 +193,7 @@ d,d,d
         );
       });
 
-      it("deletes a selected area with undo/redo", function() {
+      it("deletes a selected area with undo/redo", () => {
         cy.getId("tool-select").click();
         cy.getId("stage")
           .then(
