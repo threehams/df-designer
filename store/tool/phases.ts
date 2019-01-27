@@ -1,24 +1,24 @@
-import { Phase, PhaseConfig } from "./types";
+import { PhaseSlug, Phase } from "./types";
 
-export const phases: { [Key in Phase]: PhaseConfig } = {
+export const phases: { [Key in PhaseSlug]: Phase } = {
   dig: {
     name: "Dig",
-    phase: "dig",
+    slug: "dig",
   },
   designate: {
     name: "Designate",
-    phase: "designate",
+    slug: "designate",
   },
   build: {
     name: "Build",
-    phase: "build",
+    slug: "build",
   },
   place: {
     name: "Stockpiles",
-    phase: "place",
+    slug: "place",
   },
   query: {
     name: "Adjust",
-    phase: "query",
+    slug: "query",
   },
 };

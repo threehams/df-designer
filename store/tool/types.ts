@@ -153,7 +153,7 @@ export interface SelectedCoords {
 type TilesetName = keyof typeof tilesetNames;
 
 export type Io = "export" | "import";
-export type Phase = "dig" | "designate" | "build" | "place" | "query";
+export type PhaseSlug = "dig" | "designate" | "build" | "place" | "query";
 export type Type = "designation" | "item";
 export type CommandMap = { [Key in CommandKey]: Command };
 export type AdjustmentMap = { [Key in AdjustmentKey]: Adjustment };
@@ -166,17 +166,17 @@ export interface ToolState {
   readonly export: boolean;
   readonly io: Io | null;
   readonly last: Tool | null;
-  readonly phase: Phase;
+  readonly phase: PhaseSlug;
   readonly selecting: boolean;
   readonly selectionEnd: Coords | null;
   readonly selectionStart: Coords | null;
 }
 
 export interface Command {
-  command: CommandKey;
+  slug: CommandKey;
   height?: number;
   name: string;
-  phase: Phase;
+  phase: PhaseSlug;
   shortcut: string;
   textures: TilesetName[];
   type: "designation" | "item";
@@ -185,9 +185,9 @@ export interface Command {
 
 export interface ResizeAdjustment {
   type: "resize";
-  command: AdjustmentKey;
+  slug: AdjustmentKey;
   name: string;
-  phase: Phase;
+  phase: PhaseSlug;
   shortcut: string;
   requires: CommandKey;
   initialSize: number;
@@ -195,9 +195,9 @@ export interface ResizeAdjustment {
 
 export interface SelectAdjustment {
   type: "select";
-  command: AdjustmentKey;
+  slug: AdjustmentKey;
   name: string;
-  phase: Phase;
+  phase: PhaseSlug;
   shortcut: string;
   requires: CommandKey;
   selectCommand: string;
@@ -206,7 +206,7 @@ export interface SelectAdjustment {
 
 export type Adjustment = SelectAdjustment | ResizeAdjustment;
 
-export interface PhaseConfig {
+export interface Phase {
   name: string;
-  phase: Phase;
+  slug: PhaseSlug;
 }

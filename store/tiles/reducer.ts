@@ -302,10 +302,10 @@ const addCommand = (
       designation: null,
       item: null,
       adjustments: {},
-      [command.type]: command.command,
+      [command.type]: command.slug,
     };
   }
-  current[command.type] = command.command;
+  current[command.type] = command.slug;
   return current;
 };
 

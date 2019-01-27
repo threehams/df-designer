@@ -6,8 +6,8 @@ import { Button, ButtonGroup } from ".";
 import { State } from "../store";
 import {
   Command,
+  PhaseSlug,
   Phase,
-  PhaseConfig,
   selectCommands,
   selectCurrentCommand,
   selectPhase,
@@ -18,12 +18,12 @@ import {
 jsx; // tslint:disable-line
 
 interface Props {
-  phase: Phase;
+  phase: PhaseSlug;
   setPhase: typeof toolActions.setPhase;
   command: Command;
   setCommand: typeof toolActions.setCommand;
   commands: Command[];
-  phases: PhaseConfig[];
+  phases: Phase[];
 }
 
 const CommandBarBase: React.FunctionComponent<Props> = ({
@@ -70,11 +70,11 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
       <ButtonGroup block>
         {commands.map(comm => (
           <Button
-            key={comm.command}
+            key={comm.slug}
             block
-            onClick={() => setCommand(comm.command)}
-            active={command.command === comm.command}
-            data-test={`command-${comm.command}`}
+            onClick={() => setCommand(comm.slug)}
+            active={command.slug === comm.slug}
+            data-test={`command-${comm.slug}`}
           >
             {comm.name}
           </Button>

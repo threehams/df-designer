@@ -3,7 +3,7 @@ import { AdjustmentMap, CommandMap } from "./types";
 export const commands: CommandMap = {
   mine: {
     name: "Mine",
-    command: "mine",
+    slug: "mine",
     shortcut: "d",
     phase: "dig",
     type: "designation",
@@ -11,7 +11,7 @@ export const commands: CommandMap = {
   },
   channel: {
     name: "Channel",
-    command: "channel",
+    slug: "channel",
     shortcut: "h",
     phase: "dig",
     type: "designation",
@@ -19,7 +19,7 @@ export const commands: CommandMap = {
   },
   upStair: {
     name: "Up Stair",
-    command: "upStair",
+    slug: "upStair",
     shortcut: "u",
     phase: "dig",
     type: "designation",
@@ -27,7 +27,7 @@ export const commands: CommandMap = {
   },
   upDownStair: {
     name: "Up/Down Stair",
-    command: "upDownStair",
+    slug: "upDownStair",
     shortcut: "i",
     phase: "dig",
     type: "designation",
@@ -35,7 +35,7 @@ export const commands: CommandMap = {
   },
   downStair: {
     name: "Down Stair",
-    command: "downStair",
+    slug: "downStair",
     shortcut: "j",
     phase: "dig",
     type: "designation",
@@ -43,7 +43,7 @@ export const commands: CommandMap = {
   },
   upRamp: {
     name: "Up Ramp",
-    command: "upRamp",
+    slug: "upRamp",
     shortcut: "u",
     phase: "dig",
     type: "designation",
@@ -51,7 +51,7 @@ export const commands: CommandMap = {
   },
   fortification: {
     name: "Carve Fortifications",
-    command: "fortification",
+    slug: "fortification",
     textures: ["smoothWallCross"],
     shortcut: "F",
     phase: "designate",
@@ -59,7 +59,7 @@ export const commands: CommandMap = {
   },
   smooth: {
     name: "Smooth Stone",
-    command: "smooth",
+    slug: "smooth",
     shortcut: "s",
     phase: "designate",
     type: "designation",
@@ -67,7 +67,7 @@ export const commands: CommandMap = {
   },
   engrave: {
     name: "Engrave Stone",
-    command: "engrave",
+    slug: "engrave",
     shortcut: "e",
     phase: "designate",
     type: "designation",
@@ -75,7 +75,7 @@ export const commands: CommandMap = {
   },
   armorStand: {
     name: "Armor Stand",
-    command: "armorStand",
+    slug: "armorStand",
     shortcut: "a",
     phase: "build",
     type: "item",
@@ -83,7 +83,7 @@ export const commands: CommandMap = {
   },
   bed: {
     name: "Bed",
-    command: "bed",
+    slug: "bed",
     shortcut: "b",
     phase: "build",
     type: "item",
@@ -91,7 +91,7 @@ export const commands: CommandMap = {
   },
   seat: {
     name: "Seat",
-    command: "seat",
+    slug: "seat",
     shortcut: "c",
     phase: "build",
     type: "item",
@@ -99,7 +99,7 @@ export const commands: CommandMap = {
   },
   tomb: {
     name: "Burial Receptacle",
-    command: "tomb",
+    slug: "tomb",
     shortcut: "n",
     phase: "build",
     type: "item",
@@ -107,7 +107,7 @@ export const commands: CommandMap = {
   },
   door: {
     name: "Door",
-    command: "door",
+    slug: "door",
     shortcut: "d",
     phase: "build",
     type: "item",
@@ -115,7 +115,7 @@ export const commands: CommandMap = {
   },
   floodgate: {
     name: "Floodgate",
-    command: "floodgate",
+    slug: "floodgate",
     shortcut: "x",
     phase: "build",
     type: "item",
@@ -123,7 +123,7 @@ export const commands: CommandMap = {
   },
   floorHatch: {
     name: "Floor Hatch",
-    command: "floorHatch",
+    slug: "floorHatch",
     shortcut: "H",
     phase: "build",
     type: "item",
@@ -131,7 +131,7 @@ export const commands: CommandMap = {
   },
   floorGrate: {
     name: "Floor Grate",
-    command: "floorGrate",
+    slug: "floorGrate",
     shortcut: "G",
     phase: "build",
     type: "item",
@@ -139,7 +139,7 @@ export const commands: CommandMap = {
   },
   verticalBars: {
     name: "Vertical Bars",
-    command: "verticalBars",
+    slug: "verticalBars",
     shortcut: "B",
     phase: "build",
     type: "item",
@@ -147,7 +147,7 @@ export const commands: CommandMap = {
   },
   wallGrate: {
     name: "Wall Grate",
-    command: "wallGrate",
+    slug: "wallGrate",
     shortcut: "W",
     phase: "build",
     type: "item",
@@ -155,7 +155,7 @@ export const commands: CommandMap = {
   },
   cabinet: {
     name: "Cabinet",
-    command: "cabinet",
+    slug: "cabinet",
     shortcut: "f",
     phase: "build",
     type: "item",
@@ -163,7 +163,7 @@ export const commands: CommandMap = {
   },
   container: {
     name: "Container",
-    command: "container",
+    slug: "container",
     shortcut: "h",
     phase: "build",
     type: "item",
@@ -171,7 +171,7 @@ export const commands: CommandMap = {
   },
   kennel: {
     name: "Kennels",
-    command: "kennel",
+    slug: "kennel",
     shortcut: "k",
     phase: "build",
     type: "item",
@@ -179,7 +179,7 @@ export const commands: CommandMap = {
   },
   farmPlot: {
     name: "Farm Plot",
-    command: "farmPlot",
+    slug: "farmPlot",
     shortcut: "p",
     phase: "build",
     type: "item",
@@ -187,7 +187,7 @@ export const commands: CommandMap = {
   },
   weaponRack: {
     name: "Weapon Rack",
-    command: "weaponRack",
+    slug: "weaponRack",
     shortcut: "r",
     phase: "build",
     type: "item",
@@ -195,7 +195,7 @@ export const commands: CommandMap = {
   },
   statue: {
     name: "Statue",
-    command: "statue",
+    slug: "statue",
     shortcut: "s",
     phase: "build",
     type: "item",
@@ -203,7 +203,7 @@ export const commands: CommandMap = {
   },
   table: {
     name: "Table",
-    command: "table",
+    slug: "table",
     shortcut: "t",
     phase: "build",
     type: "item",
@@ -211,7 +211,7 @@ export const commands: CommandMap = {
   },
   pavedRoad: {
     name: "Paved Road",
-    command: "pavedRoad",
+    slug: "pavedRoad",
     shortcut: "o",
     phase: "build",
     type: "item",
@@ -219,7 +219,7 @@ export const commands: CommandMap = {
   },
   dirtRoad: {
     name: "Dirt Road",
-    command: "dirtRoad",
+    slug: "dirtRoad",
     shortcut: "O",
     phase: "build",
     type: "item",
@@ -227,7 +227,7 @@ export const commands: CommandMap = {
   },
   bridge: {
     name: "Bridge",
-    command: "bridge",
+    slug: "bridge",
     shortcut: "g",
     phase: "build",
     type: "item",
@@ -235,7 +235,7 @@ export const commands: CommandMap = {
   },
   well: {
     name: "Well",
-    command: "well",
+    slug: "well",
     shortcut: "l",
     phase: "build",
     type: "item",
@@ -243,7 +243,7 @@ export const commands: CommandMap = {
   },
   ballista: {
     name: "Ballista",
-    command: "ballista",
+    slug: "ballista",
     shortcut: "ib",
     phase: "build",
     type: "item",
@@ -252,7 +252,7 @@ export const commands: CommandMap = {
   },
   catapult: {
     name: "Catapult",
-    command: "catapult",
+    slug: "catapult",
     shortcut: "ic",
     phase: "build",
     type: "item",
@@ -261,7 +261,7 @@ export const commands: CommandMap = {
   },
   leatherWorks: {
     name: "Leather Works",
-    command: "leatherWorks",
+    slug: "leatherWorks",
     shortcut: "we",
     phase: "build",
     type: "item",
@@ -271,7 +271,7 @@ export const commands: CommandMap = {
   },
   quern: {
     name: "Quern",
-    command: "quern",
+    slug: "quern",
     shortcut: "wq",
     phase: "build",
     type: "item",
@@ -279,7 +279,7 @@ export const commands: CommandMap = {
   },
   millstone: {
     name: "Millstone",
-    command: "millstone",
+    slug: "millstone",
     shortcut: "wM",
     phase: "build",
     type: "item",
@@ -287,7 +287,7 @@ export const commands: CommandMap = {
   },
   loom: {
     name: "Loom",
-    command: "loom",
+    slug: "loom",
     shortcut: "wo",
     phase: "build",
     type: "item",
@@ -297,7 +297,7 @@ export const commands: CommandMap = {
   },
   clothiersShop: {
     name: "Clothier's Shop",
-    command: "clothiersShop",
+    slug: "clothiersShop",
     shortcut: "wk",
     phase: "build",
     type: "item",
@@ -307,7 +307,7 @@ export const commands: CommandMap = {
   },
   bowyersWorkshop: {
     name: "Bowyer's Workshop",
-    command: "bowyersWorkshop",
+    slug: "bowyersWorkshop",
     shortcut: "wb",
     phase: "build",
     type: "item",
@@ -317,7 +317,7 @@ export const commands: CommandMap = {
   },
   carpentersWorkshop: {
     name: "Carpenter's Workshop",
-    command: "carpentersWorkshop",
+    slug: "carpentersWorkshop",
     shortcut: "wc",
     phase: "build",
     type: "item",
@@ -327,7 +327,7 @@ export const commands: CommandMap = {
   },
   metalsmithsForge: {
     name: "Metalsmith's Forge",
-    command: "metalsmithsForge",
+    slug: "metalsmithsForge",
     shortcut: "wf",
     phase: "build",
     type: "item",
@@ -337,7 +337,7 @@ export const commands: CommandMap = {
   },
   magmaForge: {
     name: "Magma Forge",
-    command: "magmaForge",
+    slug: "magmaForge",
     shortcut: "wv",
     phase: "build",
     type: "item",
@@ -347,7 +347,7 @@ export const commands: CommandMap = {
   },
   jewelersWorkshop: {
     name: "Jeweler's Workshop",
-    command: "jewelersWorkshop",
+    slug: "jewelersWorkshop",
     shortcut: "wj",
     phase: "build",
     type: "item",
@@ -357,7 +357,7 @@ export const commands: CommandMap = {
   },
   masonsWorkshop: {
     name: "Mason's Workshop",
-    command: "masonsWorkshop",
+    slug: "masonsWorkshop",
     shortcut: "wm",
     phase: "build",
     type: "item",
@@ -367,7 +367,7 @@ export const commands: CommandMap = {
   },
   butchersShop: {
     name: "Butcher's Shop",
-    command: "butchersShop",
+    slug: "butchersShop",
     shortcut: "wu",
     phase: "build",
     type: "item",
@@ -377,7 +377,7 @@ export const commands: CommandMap = {
   },
   tannersShop: {
     name: "Tanner's Shop",
-    command: "tannersShop",
+    slug: "tannersShop",
     shortcut: "wn",
     phase: "build",
     type: "item",
@@ -387,7 +387,7 @@ export const commands: CommandMap = {
   },
   craftsdwarfsWorkshop: {
     name: "Craftdwarf's Workshop",
-    command: "craftsdwarfsWorkshop",
+    slug: "craftsdwarfsWorkshop",
     shortcut: "wr",
     phase: "build",
     type: "item",
@@ -397,7 +397,7 @@ export const commands: CommandMap = {
   },
   siegeWorkshop: {
     name: "Siege Workshop",
-    command: "siegeWorkshop",
+    slug: "siegeWorkshop",
     shortcut: "ws",
     phase: "build",
     type: "item",
@@ -407,7 +407,7 @@ export const commands: CommandMap = {
   },
   mechanicsWorkshop: {
     name: "Mechanic's Workshop",
-    command: "mechanicsWorkshop",
+    slug: "mechanicsWorkshop",
     shortcut: "wt",
     phase: "build",
     type: "item",
@@ -417,7 +417,7 @@ export const commands: CommandMap = {
   },
   still: {
     name: "Still",
-    command: "still",
+    slug: "still",
     shortcut: "wl",
     phase: "build",
     type: "item",
@@ -427,7 +427,7 @@ export const commands: CommandMap = {
   },
   farmersWorkshop: {
     name: "Farmer's Workshop",
-    command: "farmersWorkshop",
+    slug: "farmersWorkshop",
     shortcut: "ww",
     phase: "build",
     type: "item",
@@ -437,7 +437,7 @@ export const commands: CommandMap = {
   },
   kitchen: {
     name: "Kitchen",
-    command: "kitchen",
+    slug: "kitchen",
     shortcut: "wz",
     phase: "build",
     type: "item",
@@ -447,7 +447,7 @@ export const commands: CommandMap = {
   },
   fishery: {
     name: "Fishery",
-    command: "fishery",
+    slug: "fishery",
     shortcut: "wh",
     phase: "build",
     type: "item",
@@ -457,7 +457,7 @@ export const commands: CommandMap = {
   },
   ashery: {
     name: "ashery",
-    command: "ashery",
+    slug: "ashery",
     shortcut: "wy",
     phase: "build",
     type: "item",
@@ -467,7 +467,7 @@ export const commands: CommandMap = {
   },
   dyersShop: {
     name: "Dyer's Shop",
-    command: "dyersShop",
+    slug: "dyersShop",
     shortcut: "wd",
     phase: "build",
     type: "item",
@@ -477,7 +477,7 @@ export const commands: CommandMap = {
   },
   soapMakersWorkshop: {
     name: "Soap Maker's Workshop",
-    command: "soapMakersWorkshop",
+    slug: "soapMakersWorkshop",
     shortcut: "wS",
     phase: "build",
     type: "item",
@@ -487,7 +487,7 @@ export const commands: CommandMap = {
   },
   woodFurnace: {
     name: "Wood Furnace",
-    command: "woodFurnace",
+    slug: "woodFurnace",
     shortcut: "ew",
     phase: "build",
     type: "item",
@@ -497,7 +497,7 @@ export const commands: CommandMap = {
   },
   smelter: {
     name: "Smelter",
-    command: "smelter",
+    slug: "smelter",
     shortcut: "es",
     phase: "build",
     type: "item",
@@ -507,7 +507,7 @@ export const commands: CommandMap = {
   },
   glassFurnace: {
     name: "Glass Furnace",
-    command: "glassFurnace",
+    slug: "glassFurnace",
     shortcut: "eg",
     phase: "build",
     type: "item",
@@ -517,7 +517,7 @@ export const commands: CommandMap = {
   },
   kiln: {
     name: "Kiln",
-    command: "kiln",
+    slug: "kiln",
     shortcut: "ek",
     phase: "build",
     type: "item",
@@ -527,7 +527,7 @@ export const commands: CommandMap = {
   },
   magmaSmelter: {
     name: "Magma Smelter",
-    command: "magmaSmelter",
+    slug: "magmaSmelter",
     shortcut: "el",
     phase: "build",
     type: "item",
@@ -537,7 +537,7 @@ export const commands: CommandMap = {
   },
   magmaGlassFurnace: {
     name: "Magma Glass Furnace",
-    command: "magmaGlassFurnace",
+    slug: "magmaGlassFurnace",
     shortcut: "ea",
     phase: "build",
     type: "item",
@@ -547,7 +547,7 @@ export const commands: CommandMap = {
   },
   magmaKiln: {
     name: "Magma Kiln",
-    command: "magmaKiln",
+    slug: "magmaKiln",
     shortcut: "en",
     phase: "build",
     type: "item",
@@ -557,7 +557,7 @@ export const commands: CommandMap = {
   },
   glassWindow: {
     name: "Glass Window",
-    command: "glassWindow",
+    slug: "glassWindow",
     shortcut: "",
     phase: "build",
     type: "item",
@@ -565,7 +565,7 @@ export const commands: CommandMap = {
   },
   gemWindow: {
     name: "Gem Window",
-    command: "gemWindow",
+    slug: "gemWindow",
     shortcut: "",
     phase: "build",
     type: "item",
@@ -573,7 +573,7 @@ export const commands: CommandMap = {
   },
   constructWall: {
     name: "Wall",
-    command: "constructWall",
+    slug: "constructWall",
     shortcut: "Cw",
     phase: "build",
     type: "item",
@@ -581,7 +581,7 @@ export const commands: CommandMap = {
   },
   constructFloor: {
     name: "Floor",
-    command: "constructFloor",
+    slug: "constructFloor",
     shortcut: "Cf",
     phase: "build",
     type: "item",
@@ -589,7 +589,7 @@ export const commands: CommandMap = {
   },
   constructRamp: {
     name: "Ramp",
-    command: "constructRamp",
+    slug: "constructRamp",
     shortcut: "Cr",
     phase: "build",
     type: "item",
@@ -597,7 +597,7 @@ export const commands: CommandMap = {
   },
   constructUpStair: {
     name: "Up Stair",
-    command: "constructUpStair",
+    slug: "constructUpStair",
     shortcut: "Cu",
     phase: "build",
     type: "item",
@@ -605,7 +605,7 @@ export const commands: CommandMap = {
   },
   constructDownStair: {
     name: "Down Stair",
-    command: "constructDownStair",
+    slug: "constructDownStair",
     shortcut: "Cj",
     phase: "build",
     type: "item",
@@ -613,7 +613,7 @@ export const commands: CommandMap = {
   },
   constructUpDownStair: {
     name: "Up / Down Stair",
-    command: "constructUpDownStair",
+    slug: "constructUpDownStair",
     shortcut: "Cx",
     phase: "build",
     type: "item",
@@ -621,7 +621,7 @@ export const commands: CommandMap = {
   },
   constructFortification: {
     name: "Fortification",
-    command: "constructFortification",
+    slug: "constructFortification",
     shortcut: "CF",
     phase: "build",
     type: "item",
@@ -629,7 +629,7 @@ export const commands: CommandMap = {
   },
   tradeDepot: {
     name: "Trade Depot",
-    command: "tradeDepot",
+    slug: "tradeDepot",
     shortcut: "D",
     phase: "build",
     type: "item",
@@ -639,7 +639,7 @@ export const commands: CommandMap = {
   },
   stoneFallTrap: {
     name: "Stone-Fall Trap",
-    command: "stoneFallTrap",
+    slug: "stoneFallTrap",
     shortcut: "Ts",
     phase: "build",
     type: "item",
@@ -647,7 +647,7 @@ export const commands: CommandMap = {
   },
   weaponTrap: {
     name: "Weapon Trap",
-    command: "weaponTrap",
+    slug: "weaponTrap",
     shortcut: "Tw",
     phase: "build",
     type: "item",
@@ -655,7 +655,7 @@ export const commands: CommandMap = {
   },
   lever: {
     name: "Lever",
-    command: "lever",
+    slug: "lever",
     shortcut: "Tl",
     phase: "build",
     type: "item",
@@ -663,7 +663,7 @@ export const commands: CommandMap = {
   },
   pressurePlate: {
     name: "Pressure Plate",
-    command: "pressurePlate",
+    slug: "pressurePlate",
     shortcut: "Tp",
     phase: "build",
     type: "item",
@@ -671,7 +671,7 @@ export const commands: CommandMap = {
   },
   cageTrap: {
     name: "Cage Trap",
-    command: "cageTrap",
+    slug: "cageTrap",
     shortcut: "Tc",
     phase: "build",
     type: "item",
@@ -679,7 +679,7 @@ export const commands: CommandMap = {
   },
   uprightSpearSpike: {
     name: "Upright Spear/Spike",
-    command: "uprightSpearSpike",
+    slug: "uprightSpearSpike",
     shortcut: "TS",
     phase: "build",
     type: "item",
@@ -687,7 +687,7 @@ export const commands: CommandMap = {
   },
   screwPump: {
     name: "Screw Pump",
-    command: "screwPump",
+    slug: "screwPump",
     shortcut: "Ms",
     phase: "build",
     type: "item",
@@ -695,7 +695,7 @@ export const commands: CommandMap = {
   },
   waterWheel: {
     name: "Water Wheel",
-    command: "waterWheel",
+    slug: "waterWheel",
     shortcut: "Mw",
     phase: "build",
     type: "item",
@@ -703,7 +703,7 @@ export const commands: CommandMap = {
   },
   windmill: {
     name: "Windmill",
-    command: "windmill",
+    slug: "windmill",
     shortcut: "Mm",
     phase: "build",
     type: "item",
@@ -711,7 +711,7 @@ export const commands: CommandMap = {
   },
   gearAssembly: {
     name: "Gear Assembly",
-    command: "gearAssembly",
+    slug: "gearAssembly",
     shortcut: "Mg",
     phase: "build",
     type: "item",
@@ -719,7 +719,7 @@ export const commands: CommandMap = {
   },
   horizontalAxle: {
     name: "Horizontal Axle",
-    command: "horizontalAxle",
+    slug: "horizontalAxle",
     shortcut: "Mh",
     phase: "build",
     type: "item",
@@ -727,7 +727,7 @@ export const commands: CommandMap = {
   },
   verticalAxle: {
     name: "Vertical Axle",
-    command: "verticalAxle",
+    slug: "verticalAxle",
     shortcut: "Mv",
     phase: "build",
     type: "item",
@@ -735,7 +735,7 @@ export const commands: CommandMap = {
   },
   support: {
     name: "Support",
-    command: "support",
+    slug: "support",
     shortcut: "S",
     phase: "build",
     type: "item",
@@ -743,7 +743,7 @@ export const commands: CommandMap = {
   },
   animalTrap: {
     name: "Animal Trap",
-    command: "animalTrap",
+    slug: "animalTrap",
     shortcut: "m",
     phase: "build",
     type: "item",
@@ -751,7 +751,7 @@ export const commands: CommandMap = {
   },
   restraint: {
     name: "Restraint",
-    command: "restraint",
+    slug: "restraint",
     shortcut: "v",
     phase: "build",
     type: "item",
@@ -759,7 +759,7 @@ export const commands: CommandMap = {
   },
   cage: {
     name: "Cage",
-    command: "cage",
+    slug: "cage",
     shortcut: "j",
     phase: "build",
     type: "item",
@@ -767,7 +767,7 @@ export const commands: CommandMap = {
   },
   archeryTarget: {
     name: "Archery Target",
-    command: "archeryTarget",
+    slug: "archeryTarget",
     shortcut: "A",
     phase: "build",
     type: "item",
@@ -775,7 +775,7 @@ export const commands: CommandMap = {
   },
   tractionBench: {
     name: "Traction Bench",
-    command: "tractionBench",
+    slug: "tractionBench",
     shortcut: "R",
     phase: "build",
     type: "item",
@@ -783,7 +783,7 @@ export const commands: CommandMap = {
   },
   animalStockpile: {
     name: "Animal Stockpile",
-    command: "animalStockpile",
+    slug: "animalStockpile",
     shortcut: "a",
     phase: "place",
     type: "item",
@@ -791,7 +791,7 @@ export const commands: CommandMap = {
   },
   foodStockpile: {
     name: "Food Stockpile",
-    command: "foodStockpile",
+    slug: "foodStockpile",
     shortcut: "f",
     phase: "place",
     type: "item",
@@ -799,7 +799,7 @@ export const commands: CommandMap = {
   },
   furnitureStorageStockpile: {
     name: "Furniture Storage Stockpile",
-    command: "furnitureStorageStockpile",
+    slug: "furnitureStorageStockpile",
     shortcut: "u",
     phase: "place",
     type: "item",
@@ -807,7 +807,7 @@ export const commands: CommandMap = {
   },
   graveyardStockpile: {
     name: "Graveyard Stockpile",
-    command: "graveyardStockpile",
+    slug: "graveyardStockpile",
     shortcut: "y",
     phase: "place",
     type: "item",
@@ -815,7 +815,7 @@ export const commands: CommandMap = {
   },
   refuseStockpile: {
     name: "Refuse Stockpile",
-    command: "refuseStockpile",
+    slug: "refuseStockpile",
     shortcut: "r",
     phase: "place",
     type: "item",
@@ -823,7 +823,7 @@ export const commands: CommandMap = {
   },
   stoneStockpile: {
     name: "Stone Stockpile",
-    command: "stoneStockpile",
+    slug: "stoneStockpile",
     shortcut: "s",
     phase: "place",
     type: "item",
@@ -831,7 +831,7 @@ export const commands: CommandMap = {
   },
   woodStockpile: {
     name: "Wood Stockpile",
-    command: "woodStockpile",
+    slug: "woodStockpile",
     shortcut: "w",
     phase: "place",
     type: "item",
@@ -839,7 +839,7 @@ export const commands: CommandMap = {
   },
   gemStockpile: {
     name: "Gem Stockpile",
-    command: "gemStockpile",
+    slug: "gemStockpile",
     shortcut: "e",
     phase: "place",
     type: "item",
@@ -847,7 +847,7 @@ export const commands: CommandMap = {
   },
   barBlockStockpile: {
     name: "Bar/Block Stockpile",
-    command: "barBlockStockpile",
+    slug: "barBlockStockpile",
     shortcut: "b",
     phase: "place",
     type: "item",
@@ -855,7 +855,7 @@ export const commands: CommandMap = {
   },
   clothStockpile: {
     name: "Cloth Stockpile",
-    command: "clothStockpile",
+    slug: "clothStockpile",
     shortcut: "h",
     phase: "place",
     type: "item",
@@ -863,7 +863,7 @@ export const commands: CommandMap = {
   },
   leatherStockpile: {
     name: "Leather Stockpile",
-    command: "leatherStockpile",
+    slug: "leatherStockpile",
     shortcut: "l",
     phase: "place",
     type: "item",
@@ -871,7 +871,7 @@ export const commands: CommandMap = {
   },
   ammoStockpile: {
     name: "Ammo Stockpile",
-    command: "ammoStockpile",
+    slug: "ammoStockpile",
     shortcut: "z",
     phase: "place",
     type: "item",
@@ -879,7 +879,7 @@ export const commands: CommandMap = {
   },
   coinsStockpile: {
     name: "Coins Stockpile",
-    command: "coinsStockpile",
+    slug: "coinsStockpile",
     shortcut: "n",
     phase: "place",
     type: "item",
@@ -887,7 +887,7 @@ export const commands: CommandMap = {
   },
   finishedGoodsStockpile: {
     name: "Finished Goods Stockpile",
-    command: "finishedGoodsStockpile",
+    slug: "finishedGoodsStockpile",
     shortcut: "g",
     phase: "place",
     type: "item",
@@ -895,7 +895,7 @@ export const commands: CommandMap = {
   },
   weaponsStockpile: {
     name: "Weapons Stockpile",
-    command: "weaponsStockpile",
+    slug: "weaponsStockpile",
     shortcut: "p",
     phase: "place",
     type: "item",
@@ -903,7 +903,7 @@ export const commands: CommandMap = {
   },
   armorStockpile: {
     name: "Armor Stockpile",
-    command: "armorStockpile",
+    slug: "armorStockpile",
     shortcut: "d",
     phase: "place",
     type: "item",
@@ -915,7 +915,7 @@ export const commands: CommandMap = {
 export const adjustments: AdjustmentMap = {
   makeBedroom: {
     name: "Make Bedroom",
-    command: "makeBedroom",
+    slug: "makeBedroom",
     shortcut: "r",
     phase: "query",
     type: "resize",
@@ -924,7 +924,7 @@ export const adjustments: AdjustmentMap = {
   },
   makeDiningRoom: {
     name: "Make Dining Room",
-    command: "makeDiningRoom",
+    slug: "makeDiningRoom",
     shortcut: "r",
     phase: "query",
     type: "resize",
@@ -933,7 +933,7 @@ export const adjustments: AdjustmentMap = {
   },
   seedsStockpile: {
     name: "Seeds Stockpile",
-    command: "seedsStockpile",
+    slug: "seedsStockpile",
     shortcut: "seeds",
     phase: "query",
     type: "select",
@@ -943,7 +943,7 @@ export const adjustments: AdjustmentMap = {
   },
   noseedsStockpile: {
     name: "No Seeds Stockpile",
-    command: "noseedsStockpile",
+    slug: "noseedsStockpile",
     shortcut: "noseeds",
     phase: "query",
     type: "select",
@@ -953,7 +953,7 @@ export const adjustments: AdjustmentMap = {
   },
   boozeStockpile: {
     name: "Booze Stockpile",
-    command: "boozeStockpile",
+    slug: "boozeStockpile",
     shortcut: "booze",
     phase: "query",
     type: "select",
@@ -963,7 +963,7 @@ export const adjustments: AdjustmentMap = {
   },
   edibleFoodStockpile: {
     name: "Food Stockpile",
-    command: "edibleFoodStockpile",
+    slug: "edibleFoodStockpile",
     shortcut: "food",
     phase: "query",
     type: "select",
@@ -973,7 +973,7 @@ export const adjustments: AdjustmentMap = {
   },
   plantsStockpile: {
     name: "Plants Stockpile",
-    command: "plantsStockpile",
+    slug: "plantsStockpile",
     shortcut: "plants",
     phase: "query",
     type: "select",
@@ -983,7 +983,7 @@ export const adjustments: AdjustmentMap = {
   },
   corpsesStockpile: {
     name: "Corpses Stockpile",
-    command: "corpsesStockpile",
+    slug: "corpsesStockpile",
     shortcut: "corpses",
     phase: "query",
     type: "select",
@@ -993,7 +993,7 @@ export const adjustments: AdjustmentMap = {
   },
   bonesStockpile: {
     name: "Bones Stockpile",
-    command: "bonesStockpile",
+    slug: "bonesStockpile",
     shortcut: "bones",
     phase: "query",
     type: "select",
@@ -1003,7 +1003,7 @@ export const adjustments: AdjustmentMap = {
   },
   rawhidesStockpile: {
     name: "Raw Hides Stockpile",
-    command: "rawhidesStockpile",
+    slug: "rawhidesStockpile",
     shortcut: "rawhides",
     phase: "query",
     type: "select",
@@ -1013,7 +1013,7 @@ export const adjustments: AdjustmentMap = {
   },
   tannedhidesStockpile: {
     name: "Tanned Hides Stockpile",
-    command: "tannedhidesStockpile",
+    slug: "tannedhidesStockpile",
     shortcut: "tannedhides",
     phase: "query",
     type: "select",
@@ -1023,7 +1023,7 @@ export const adjustments: AdjustmentMap = {
   },
   metalStockpile: {
     name: "Metal Stockpile",
-    command: "metalStockpile",
+    slug: "metalStockpile",
     shortcut: "metal",
     phase: "query",
     type: "select",
@@ -1033,7 +1033,7 @@ export const adjustments: AdjustmentMap = {
   },
   nometalStockpile: {
     name: "No Metal Stockpile",
-    command: "nometalStockpile",
+    slug: "nometalStockpile",
     shortcut: "nometal",
     phase: "query",
     type: "select",
@@ -1043,7 +1043,7 @@ export const adjustments: AdjustmentMap = {
   },
   bauxiteStockpile: {
     name: "Bauxite Stockpile",
-    command: "bauxiteStockpile",
+    slug: "bauxiteStockpile",
     shortcut: "bauxite",
     phase: "query",
     type: "select",
@@ -1053,7 +1053,7 @@ export const adjustments: AdjustmentMap = {
   },
   nobauxiteStockpile: {
     name: "No Bauxite Stockpile",
-    command: "nobauxiteStockpile",
+    slug: "nobauxiteStockpile",
     shortcut: "nobauxite",
     phase: "query",
     type: "select",
@@ -1063,7 +1063,7 @@ export const adjustments: AdjustmentMap = {
   },
   artifactsStockpile: {
     name: "Artifacts Stockpile",
-    command: "artifactsStockpile",
+    slug: "artifactsStockpile",
     shortcut: "artifacts",
     phase: "query",
     type: "select",
@@ -1073,7 +1073,7 @@ export const adjustments: AdjustmentMap = {
   },
   noartifactsStockpile: {
     name: "No Artifacts Stockpile",
-    command: "noartifactsStockpile",
+    slug: "noartifactsStockpile",
     shortcut: "noartifacts",
     phase: "query",
     type: "select",
@@ -1083,7 +1083,7 @@ export const adjustments: AdjustmentMap = {
   },
   junkgoodsStockpile: {
     name: "Junk Goods Stockpile",
-    command: "junkgoodsStockpile",
+    slug: "junkgoodsStockpile",
     shortcut: "junkgoods",
     phase: "query",
     type: "select",

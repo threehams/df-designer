@@ -9,13 +9,13 @@ import {
   selectCommandMap,
   selectPhases,
 } from "../tool/reducer";
-import { CommandKey, Phase, SelectedCoords } from "../tool/types";
+import { CommandKey, PhaseSlug, SelectedCoords } from "../tool/types";
 import { State } from "../types";
 import { selectLevelTiles } from "./reducer";
 import { AdjustmentData, Tile } from "./types";
 
-type Grids = { [key in Phase]: string[][] | null };
-type GridsResult = { [key in Phase]: string };
+type Grids = { [key in PhaseSlug]: string[][] | null };
+type GridsResult = { [key in PhaseSlug]: string };
 export type TileSprite = {
   id: string;
   textureName: keyof typeof tilesetNames;
@@ -62,7 +62,7 @@ export const selectExported = createSelector(
     }
     const grids = phases.reduce(
       (result, phase) => {
-        result[phase.phase] = null;
+        result[phase.slug] = null;
         return result;
       },
       {} as Grids,

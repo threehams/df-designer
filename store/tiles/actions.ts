@@ -7,7 +7,7 @@ import {
   Adjustment,
   AdjustmentKey,
   Command,
-  Phase,
+  PhaseSlug,
   selectAdjustmentMap,
   selectCommandMap,
   selectCurrentCommand,
@@ -85,7 +85,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
   return (importMap: ImportMap) => {
     const commandMap = selectCommandMap();
     const adjustmentMap = selectAdjustmentMap();
-    const phases: Phase[] = ["dig", "designate", "build", "place", "query"];
+    const phases: PhaseSlug[] = ["dig", "designate", "build", "place", "query"];
     phases
       .filter(phase => !!importMap[phase])
       .forEach(phase => {
@@ -136,7 +136,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                   return;
                 }
                 newTile = {
-                  [command.type]: command.command,
+                  [command.type]: command.slug,
                 };
               }
               if (!tileMap[id]) {
@@ -163,7 +163,7 @@ const adjustmentData = (adjustment: Adjustment, shortcut: string) => {
     const increment = shortcut.split("").filter(char => char === "+").length;
     const decrement = -shortcut.split("").filter(char => char === "-").length;
     return {
-      [adjustment.command]: adjustment.initialSize + increment + decrement,
+      [adjustment.slug]: adjustment.initialSize + increment + decrement,
     };
   } else if (adjustment.type === "select") {
     return { [adjustment.selectCommand]: shortcut };
@@ -274,7 +274,7 @@ const shouldUpdate = (tile: Tile | null, command: Command) => {
   }
   // don't bother dispatching the action. necessary since this fires once
   // per frame
-  if (tile[command.type] === command.command) {
+  if (tile[command.type] === command.slug) {
     return false;
   }
   // need to dig before placing

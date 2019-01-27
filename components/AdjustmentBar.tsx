@@ -7,6 +7,7 @@ import { State } from "../store";
 import { Tile, tilesActions } from "../store/tiles";
 import {
   Adjustment,
+  CommandKey as CommandSlug,
   selectAdjustmentMap,
   selectCommandMap,
 } from "../store/tool";
@@ -25,7 +26,7 @@ const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
   if (!tile) {
     return false;
   }
-  return tile.adjustments[adjustment.command];
+  return tile.adjustments[adjustment.slug];
 };
 
 export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
@@ -44,7 +45,7 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
             const numberValue = value as number;
             return (
               <ResizeInput
-                key={adjustment.command}
+                key={adjustment.slug}
                 value={numberValue}
                 adjustment={adjustment}
                 tile={tile}
@@ -55,7 +56,7 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
           const selectValue = value as string;
           return (
             <SelectInput
-              key={adjustment.command}
+              key={adjustment.slug}
               value={selectValue}
               adjustment={adjustment}
               tile={tile}
@@ -80,32 +81,32 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
   setAdjustment,
 }) => {
   return (
-    <React.Fragment key={adjustment.command}>
+    <React.Fragment key={adjustment.slug}>
       <label
-        key={adjustment.command}
+        key={adjustment.slug}
         css={css`
           display: block;
         `}
       >
         <input
           type="checkbox"
-          value={adjustment.command}
+          value={adjustment.slug}
           checked={!!value}
           onChange={() => {
-            return setAdjustment(tile.id, adjustment.command, value ? 0 : 3);
+            return setAdjustment(tile.id, adjustment.slug, value ? 0 : 3);
           }}
-          data-test={`adjustment-bar-${adjustment.command}-check`}
+          data-test={`adjustment-bar-${adjustment.slug}-check`}
         />{" "}
         {adjustment.name}
       </label>
       {value && (
-        <div key={adjustment.command}>
+        <div key={adjustment.slug}>
           <Button
-            data-test={`adjustment-bar-${adjustment.command}-decrement`}
+            data-test={`adjustment-bar-${adjustment.slug}-decrement`}
             onClick={() => {
               setAdjustment(
                 tile.id,
-                adjustment.command,
+                adjustment.slug,
                 Math.max((value as number) - 1, 1),
               );
             }}
@@ -114,11 +115,11 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           </Button>{" "}
           {value}{" "}
           <Button
-            data-test={`adjustment-bar-${adjustment.command}-increment`}
+            data-test={`adjustment-bar-${adjustment.slug}-increment`}
             onClick={() => {
               setAdjustment(
                 tile.id,
-                adjustment.command,
+                adjustment.slug,
                 Math.min((value as number) + 1, 12),
               );
             }}
@@ -145,7 +146,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
 }) => {
   return (
     <label
-      key={adjustment.command}
+      key={adjustment.slug}
       css={css`
         display: block;
       `}
@@ -154,9 +155,9 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
       <select
         value={value || ""}
         onChange={event => {
-          return setAdjustment(tile.id, adjustment.command, event.target.value);
+          return setAdjustment(tile.id, adjustment.slug, event.target.value);
         }}
-        data-test={`adjustment-bar-${adjustment.command}-check`}
+        data-test={`adjustment-bar-${adjustment.slug}-check`}
       >
         <option value="1">1</option>
         <option value="2">2</option>
@@ -170,20 +171,23 @@ interface ExternalProps {
 }
 
 export const AdjustmentBar = connect(
-  (_: State, { tile }: ExternalProps) => {
+  (state: State, { tile }: ExternalProps) => {
     const commandMap = selectCommandMap();
-    const adjustmentMap = selectAdjustmentMap();
-    const allAdjustments = Object.values(adjustmentMap)
-      .filter(adjustment => {
-        return adjustment.requires === tile.item;
-      })
-      .map(adjustment => {
-        return adjustment as Adjustment;
-      });
+    const adjustments = selectAdjustments(state, { item: tile.item });
     return {
       name: commandMap[tile.item!].name,
-      adjustments: allAdjustments,
+      adjustments,
     };
   },
   { setAdjustment: tilesActions.setAdjustment },
 )(AdjustmentBarBase);
+
+interface SelectAdjustmentProps {
+  item: CommandSlug | null;
+}
+const selectAdjustments = (state: State, props: SelectAdjustmentProps) => {
+  const adjustmentMap = selectAdjustmentMap();
+  return Object.values(adjustmentMap).filter(adjustment => {
+    return adjustment.requires === props.item;
+  });
+};

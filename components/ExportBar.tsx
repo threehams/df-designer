@@ -7,22 +7,16 @@ import { connect } from "react-redux";
 import { Button, ButtonGroup } from ".";
 import { State } from "../store";
 import { ImportMap, selectExported, tilesActions } from "../store/tiles";
-import {
-  Io,
-  Phase,
-  PhaseConfig,
-  selectPhases,
-  toolActions,
-} from "../store/tool";
+import { Io, PhaseSlug, Phase, selectPhases, toolActions } from "../store/tool";
 
 jsx; // tslint:disable-line
 
 interface Props {
-  exported: { [Key in Phase]: string } | null;
+  exported: { [Key in PhaseSlug]: string } | null;
   importAll: typeof tilesActions.importAll;
   io: Io | null;
   setIo: typeof toolActions.setIo;
-  phases: PhaseConfig[];
+  phases: Phase[];
 }
 
 const download = (filename: string, text: string) => {
@@ -109,20 +103,20 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
         <>
           {phases.map(phase => {
             return (
-              <React.Fragment key={phase.phase}>
+              <React.Fragment key={phase.slug}>
                 <label>{phase.name}</label>
                 <textarea
-                  data-test={`import-text-${phase.phase}`}
+                  data-test={`import-text-${phase.slug}`}
                   css={css`
                     display: block;
                     width: 100%;
                   `}
                   rows={20}
-                  value={importValue[phase.phase]}
+                  value={importValue[phase.slug]}
                   onChange={event => {
                     setImportValue({
                       ...importValue,
-                      [phase.phase]: event.target.value,
+                      [phase.slug]: event.target.value,
                     });
                   }}
                 />

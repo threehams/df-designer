@@ -1,10 +1,10 @@
 import { Patch } from "immer";
-import { AdjustmentKey, CommandKey, Phase } from "../tool";
+import { AdjustmentKey, CommandKey, PhaseSlug } from "../tool";
 
 export type AdjustmentData = {
   [Key in AdjustmentKey]?: number | boolean | string
 };
-export type ImportMap = { [Key in Phase]?: string };
+export type ImportMap = { [Key in PhaseSlug]?: string };
 export interface Tile {
   readonly designation: CommandKey | null;
   readonly item: CommandKey | null;

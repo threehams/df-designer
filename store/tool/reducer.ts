@@ -7,7 +7,7 @@ import { State } from "../types";
 import * as actions from "./actions";
 import { adjustments, commands } from "./commands";
 import { phases } from "./phases";
-import { Phase, ToolState } from "./types";
+import { PhaseSlug, ToolState } from "./types";
 
 const INITIAL_STATE: ToolState = {
   command: "mine",
@@ -95,7 +95,7 @@ export const toolReducer = (
         if (draft.phase !== phase) {
           draft.phase = phase;
           // this is weird
-          draft.command = selectCommands({}, { phase })[0].command;
+          draft.command = selectCommands({}, { phase })[0].slug;
         }
         break;
       }
@@ -132,7 +132,7 @@ export const selectCurrentCommand = (state: State) => {
 };
 
 export const selectCommands = createSelector(
-  (_: any, props: { phase: Phase | null }) => props.phase,
+  (_: any, props: { phase: PhaseSlug | null }) => props.phase,
   phase => {
     return Object.values(commands).filter(command =>
       phase ? command.phase === phase : true,
