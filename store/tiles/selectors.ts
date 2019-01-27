@@ -12,7 +12,7 @@ import {
 import { CommandSlug, PhaseSlug, SelectedCoords } from "../tool/types";
 import { State } from "../types";
 import { selectLevelTiles } from "./reducer";
-import { AdjustmentData, Tile } from "./types";
+import { AdjustmentData, Tile, TilesMap } from "./types";
 
 type Grids = { [key in PhaseSlug]: string[][] | null };
 type GridsResult = { [key in PhaseSlug]: string };
@@ -195,7 +195,7 @@ const selectTiles = (state: State, selection: SelectedCoords) => {
 };
 
 const createTiles = (
-  tiles: State["tiles"]["data"],
+  tiles: TilesMap,
   selection: SelectedCoords,
 ): TileSprite[] => {
   const commandMap = selectCommandMap();
@@ -219,7 +219,7 @@ const createTiles = (
 };
 
 const createWalls = (
-  tiles: State["tiles"]["data"],
+  tiles: TilesMap,
   selection: SelectedCoords,
 ): TileSprite[] => {
   const walls = new Set<string>();

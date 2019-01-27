@@ -1,13 +1,20 @@
 import produce, { applyPatches, Draft, Patch } from "immer";
 import { ActionType, getType } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
+import { range } from "../../lib/range";
 import { Command } from "../tool";
 import { State } from "../types";
 import * as actions from "./actions";
-import { Tile, TilesState } from "./types";
+import { Tile, TilesMap, TilesState } from "./types";
 
 const DEFAULT_STATE: TilesState = {
-  data: {},
+  data: range(-64, 64).reduce(
+    (result, zIndex) => {
+      result[zIndex] = {};
+      return result;
+    },
+    {} as Draft<State["tiles"]["data"]>,
+  ),
   transaction: [],
   past: [],
   future: [],
@@ -62,7 +69,7 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
     applyPatches(state, transaction);
   });
   const newTiles = produce(
-    state.data,
+    state.data[state.zLevel],
     draft => {
       return applyPatches(draft, transaction);
     },
@@ -73,7 +80,10 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
   return {
     ...newState,
     [to]: state[to].concat([redo]),
-    data: newTiles,
+    data: {
+      ...state.data,
+      [state.zLevel]: newTiles,
+    },
     updates: transaction.map(patch => patch.path[0] as string),
   };
 };
@@ -92,20 +102,21 @@ const baseTilesReducer = (
   return produce(state, outerDraft => {
     switch (action.type) {
       case getType(actions.zLevelUp):
-        if (outerDraft.zLevel < 256) {
+        if (outerDraft.zLevel < 64) {
           outerDraft.zLevel += 1;
         }
         break;
       case getType(actions.zLevelDown):
-        if (outerDraft.zLevel > -256) {
+        if (outerDraft.zLevel > -64) {
           outerDraft.zLevel -= 1;
         }
         break;
     }
 
-    outerDraft.data = produce(
-      state.data,
+    outerDraft.data[state.zLevel] = produce(
+      state.data[state.zLevel],
       draft => {
+        const currentTiles = state.data[state.zLevel];
         switch (action.type) {
           case getType(actions.updateTile): {
             const { x, y, command } = action.payload;
@@ -129,7 +140,7 @@ const baseTilesReducer = (
           case getType(actions.removeTiles): {
             const { selection } = action.payload;
             coordinates.each(selection, ({ id }) => {
-              if (state.data[id]) {
+              if (currentTiles[id]) {
                 delete draft[id];
               }
             });
@@ -142,9 +153,9 @@ const baseTilesReducer = (
                 toX + (x - selection.startX),
                 toY + (y - selection.startY),
               );
-              if (state.data[sourceId]) {
+              if (currentTiles[sourceId]) {
                 draft[destinationId] = {
-                  ...state.data[sourceId],
+                  ...currentTiles[sourceId],
                   id: destinationId,
                 };
               } else if (draft[destinationId]) {
@@ -171,9 +182,9 @@ const baseTilesReducer = (
               ) {
                 delete draft[sourceId];
               }
-              if (state.data[sourceId]) {
+              if (currentTiles[sourceId]) {
                 draft[destinationId] = {
-                  ...state.data[sourceId],
+                  ...currentTiles[sourceId],
                   id: destinationId,
                 };
               } else if (draft[destinationId]) {
@@ -194,9 +205,9 @@ const baseTilesReducer = (
                   ? selection.endY - (y - selection.startY)
                   : y;
               const destinationId = coordinates.toId(toX, toY);
-              if (state.data[sourceId]) {
+              if (currentTiles[sourceId]) {
                 draft[destinationId] = {
-                  ...state.data[sourceId],
+                  ...currentTiles[sourceId],
                   id: destinationId,
                 };
               } else if (draft[destinationId]) {
@@ -259,7 +270,7 @@ const baseTilesReducer = (
   });
 };
 
-const deleteAll = (draft: Draft<TilesState["data"]>) => {
+const deleteAll = (draft: Draft<TilesMap>) => {
   for (const id of Object.keys(draft)) {
     delete draft[id];
   }
@@ -314,9 +325,9 @@ export const selectTile = (
   { x, y }: { x: number; y: number },
 ): Tile | null => {
   const id = coordinates.toId(x, y);
-  return state.tiles.data[id];
+  return state.tiles.data[state.tiles.zLevel][id];
 };
 
 export const selectLevelTiles = (state: State) => {
-  return state.tiles.data;
+  return state.tiles.data[state.tiles.zLevel];
 };

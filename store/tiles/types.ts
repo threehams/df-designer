@@ -11,9 +11,12 @@ export interface Tile {
   readonly adjustments: AdjustmentData;
   readonly id: string;
 }
+export type TilesMap = {
+  readonly [coordinates: string]: Tile;
+};
 export interface TilesState {
   readonly data: {
-    readonly [key: string]: Tile;
+    readonly [zLevel: string]: TilesMap;
   };
   readonly transaction: Patch[];
   readonly updates: string[];
