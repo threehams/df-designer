@@ -21,4 +21,19 @@ describe("z-levels", () => {
     cy.getId("z-level-down").click();
     cy.getId("export-text-dig").should("have.value", "#dig\nd,d");
   });
+
+  it.only("exports across z-levels", () => {
+    cy.getId("export").click();
+    cy.getId("tool-paint").click();
+    cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
+    cy.getId("z-level-up").click();
+    cy.getId("stage").then(clickTile({ x: 2, y: 1 }));
+    cy.getId("export-text-dig").should(
+      "have.value",
+      `#dig
+d,\`
+#>,#
+\`,d`,
+    );
+  });
 });
