@@ -1,8 +1,8 @@
+import { range } from "lodash";
 import { createSelector } from "reselect";
 import * as coordinates from "../../lib/coordinates";
 import { entries } from "../../lib/entries";
 import { keys } from "../../lib/keys";
-import { range } from "../../lib/range";
 import { tilesetNames, wallMap } from "../../lib/tilesetNames";
 import {
   selectAdjustmentMap,
@@ -24,7 +24,7 @@ export type Chunk = SelectedCoords & {
   tiles: TileSprite[];
 };
 
-const selectExtents = createSelector(
+const selectLevelExtents = createSelector(
   selectLevelTiles,
   tiles => {
     const dimensions = Object.entries(tiles).reduce(
@@ -38,8 +38,8 @@ const selectExtents = createSelector(
       },
       {
         startX: Infinity,
-        endX: 0,
         startY: Infinity,
+        endX: 0,
         endY: 0,
       },
     );
@@ -50,7 +50,49 @@ const selectExtents = createSelector(
   },
 );
 
-export const selectExported = createSelector(
+const selectExtents = (state: State) => {
+  return range(127, -1)
+    .map(zLevel => {
+      return selectLevelExtents(state, { zLevel });
+    })
+    .filter(Boolean)
+    .reduce(
+      (result: SelectedCoords, extents) => {
+        result.startX = Math.min(result.startX, extents!.startX);
+        result.startY = Math.min(result.startY, extents!.startY);
+        result.endX = Math.max(result.endX, extents!.endX);
+        result.endY = Math.max(result.endY, extents!.endY);
+        return result;
+      },
+      {
+        startX: Infinity,
+        startY: Infinity,
+        endX: 0,
+        endY: 0,
+      } as SelectedCoords,
+    );
+};
+
+export const selectExported = (state: State) => {
+  return range(127, -1)
+    .map(zLevel => {
+      return selectExportedLevel(state, { zLevel });
+    })
+    .filter(Boolean)
+    .reduce(
+      (result: GridsResult, exported) => {
+        entries(exported!).forEach(([phase, string]) => {
+          result[phase] = result[phase]
+            ? `${result[phase]}\n#>\n${string}`
+            : string;
+        });
+        return result;
+      },
+      {} as GridsResult,
+    );
+};
+
+const selectExportedLevel = createSelector(
   selectAdjustmentMap,
   selectCommandMap,
   selectPhases,
@@ -115,10 +157,7 @@ export const selectExported = createSelector(
     return keys(grids).reduce(
       (result, phase) => {
         if (grids[phase]) {
-          result[phase] = [[`#${phase}`]]
-            .concat(grids[phase]!)
-            .map(x => x.join(","))
-            .join("\n");
+          result[phase] = grids[phase]!.map(x => x.join(",")).join("\n");
         }
         return result;
       },
@@ -170,9 +209,19 @@ export const selectChunks = (state: State) => {
   );
 };
 
-const selectTilesCache: { [key: string]: TileSprite[] } = {};
+const selectTilesCache: {
+  zLevel: number;
+  cache: { [key: string]: TileSprite[] };
+} = {
+  zLevel: 0,
+  cache: {},
+};
 const selectTiles = (state: State, selection: SelectedCoords) => {
-  const tiles = selectLevelTiles(state);
+  if (selectTilesCache.zLevel !== state.tiles.zLevel) {
+    selectTilesCache.zLevel = state.tiles.zLevel;
+    selectTilesCache.cache = {};
+  }
+  const tiles = selectLevelTiles(state, { zLevel: state.tiles.zLevel });
   const key = `${selection.startX},${selection.startY},${selection.endX},${
     selection.endY
   }`;
@@ -184,13 +233,13 @@ const selectTiles = (state: State, selection: SelectedCoords) => {
       break;
     }
   }
-  if (!invalidate && selectTilesCache[key]) {
-    return selectTilesCache[key];
+  if (!invalidate && selectTilesCache.cache[key]) {
+    return selectTilesCache.cache[key];
   }
   const result = createTiles(tiles, selection).concat(
     createWalls(tiles, selection),
   );
-  selectTilesCache[key] = result;
+  selectTilesCache.cache[key] = result;
   return result;
 };
 

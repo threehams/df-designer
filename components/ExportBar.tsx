@@ -80,7 +80,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
                 `}
                 rows={20}
                 key={phase}
-                value={csv}
+                value={`#${phase}\n${csv}`}
                 readOnly
               />
             </React.Fragment>

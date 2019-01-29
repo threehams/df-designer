@@ -909,7 +909,6 @@ export const commands: CommandMap = {
     type: "item",
     textures: ["stockpileEmpty"],
   },
-  // quickfort aliases
 };
 
 export const adjustments: AdjustmentMap = {

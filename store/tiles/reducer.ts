@@ -1,14 +1,14 @@
 import produce, { applyPatches, Draft, Patch } from "immer";
+import { range } from "lodash";
 import { ActionType, getType } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
-import { range } from "../../lib/range";
 import { Command } from "../tool";
 import { State } from "../types";
 import * as actions from "./actions";
 import { Tile, TilesMap, TilesState, ZPatch } from "./types";
 
 const DEFAULT_STATE: TilesState = {
-  data: range(-64, 64).reduce(
+  data: range(0, 128).reduce(
     (result, zIndex) => {
       result[zIndex] = {};
       return result;
@@ -19,7 +19,7 @@ const DEFAULT_STATE: TilesState = {
   past: [],
   future: [],
   updates: [],
-  zLevel: 0,
+  zLevel: 64,
 };
 
 // be as defensive as possible here
@@ -91,12 +91,12 @@ const baseTilesReducer = (
   return produce(state, outerDraft => {
     switch (action.type) {
       case getType(actions.zLevelUp):
-        if (outerDraft.zLevel < 64) {
+        if (outerDraft.zLevel < 128) {
           outerDraft.zLevel += 1;
         }
         break;
       case getType(actions.zLevelDown):
-        if (outerDraft.zLevel > -64) {
+        if (outerDraft.zLevel > 0) {
           outerDraft.zLevel -= 1;
         }
         break;
@@ -320,6 +320,6 @@ export const selectTile = (
   return state.tiles.data[state.tiles.zLevel][id];
 };
 
-export const selectLevelTiles = (state: State) => {
-  return state.tiles.data[state.tiles.zLevel];
+export const selectLevelTiles = (state: State, props: { zLevel: number }) => {
+  return state.tiles.data[props.zLevel];
 };
