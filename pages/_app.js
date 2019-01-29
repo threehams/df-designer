@@ -1,3 +1,4 @@
+import "core-js/fn/array/flat-map";
 import App, { Container } from "next/app";
 import React from "react";
 import withReduxStore from "../store/withReduxStore";
