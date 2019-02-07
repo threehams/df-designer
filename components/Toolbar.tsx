@@ -1,13 +1,11 @@
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
 import { State } from "../store";
 import { selectExported, tilesActions } from "../store/tiles";
 import { selectTool, Tool, toolActions } from "../store/tool";
-import { Button, ButtonGroup } from "./";
-
-jsx; // tslint:disable-line
+import { Button } from "./";
+import { Box } from "./Box";
+import { Flex } from "./Flex";
 
 interface Props {
   undo: typeof tilesActions.undo;
@@ -35,30 +33,26 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
   zLevelUp,
 }) => {
   return (
-    <header
-      css={css`
-        padding: 10px;
-        display: flex;
-      `}
-    >
-      <ButtonGroup>
+    <Flex p={2}>
+      <Box mr={3}>
         <Button onClick={resetBoard} data-test="reset">
           Reset
         </Button>
-      </ButtonGroup>
-      <ButtonGroup>
-        <Button disabled={!undoSteps} data-test="undo" onClick={undo}>
+      </Box>
+      <Box mr={3}>
+        <Button disabled={!undoSteps} data-test="undo" onClick={undo} mr={1}>
           Undo
         </Button>
         <Button disabled={!redoSteps} data-test="redo" onClick={redo}>
           Redo
         </Button>
-      </ButtonGroup>
-      <ButtonGroup>
+      </Box>
+      <Box mr={3}>
         <Button
           data-test="tool-select"
           onClick={() => setTool("select")}
           active={tool === "select"}
+          mr={1}
         >
           Select
         </Button>
@@ -66,6 +60,7 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
           data-test="tool-paint"
           onClick={() => setTool("paint")}
           active={tool === "paint"}
+          mr={1}
         >
           Paint
         </Button>
@@ -73,6 +68,7 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
           data-test="tool-paint-rectangle"
           onClick={() => setTool("rectangle")}
           active={tool === "rectangle"}
+          mr={1}
         >
           Paint Rectangle
         </Button>
@@ -83,17 +79,17 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
         >
           Erase
         </Button>
-      </ButtonGroup>
-      <ButtonGroup>
-        <Button data-test="z-level-down" onClick={zLevelDown}>
+      </Box>
+      <Flex flexWrap="nowrap" alignItems="center">
+        <Button data-test="z-level-down" onClick={zLevelDown} mr={1}>
           Down Level
         </Button>
-        {zLevel}
+        <Box mr={1}>{zLevel}</Box>
         <Button data-test="z-level-up" onClick={zLevelUp}>
           Up Level
         </Button>
-      </ButtonGroup>
-    </header>
+      </Flex>
+    </Flex>
   );
 };
 

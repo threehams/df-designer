@@ -1,14 +1,11 @@
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
 import { State } from "../store";
 import { selectTile, Tile, tilesActions } from "../store/tiles";
 import { Command, selectCommandMap, selectSelection } from "../store/tool";
 import { AdjustmentBar } from "./AdjustmentBar";
+import { Flex } from "./Flex";
 import { MultiSelectBar } from "./MultiSelectBar";
-
-jsx; // tslint:disable-line
 
 interface Props {
   command: Command | null;
@@ -23,17 +20,11 @@ const SelectBarBase: React.FunctionComponent<Props> = ({
   tile,
 }) => {
   return (
-    <aside
-      css={css`
-        padding: 10px;
-        display: flex;
-        flex-flow: column nowrap;
-      `}
-    >
+    <Flex p={2} flexDirection="column" flexWrap="nowrap">
       {tile && !command && <div>No item selected.</div>}
       {tile && command && <AdjustmentBar tile={tile} />}
       {multiSelect && <MultiSelectBar />}
-    </aside>
+    </Flex>
   );
 };
 
