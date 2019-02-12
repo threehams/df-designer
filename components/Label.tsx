@@ -18,8 +18,6 @@ import {
   FlexWrapProps,
   justifyContent,
   JustifyContentProps,
-  justifyItems,
-  JustifyItemsProps,
   justifySelf,
   JustifySelfProps,
   maxWidth,
@@ -28,7 +26,6 @@ import {
   SpaceProps,
 } from "styled-system";
 
-// Add styled-system functions to your component
 export const Label = styled.label<
   AlignContentProps &
     AlignItemsProps &
@@ -39,7 +36,6 @@ export const Label = styled.label<
     FlexDirectionProps &
     FlexWrapProps &
     JustifyContentProps &
-    JustifyItemsProps &
     JustifySelfProps &
     MaxWidthProps &
     SpaceProps
@@ -53,7 +49,6 @@ export const Label = styled.label<
   ${flexDirection}
   ${flexWrap}
   ${justifyContent}
-  ${justifyItems}
   ${justifySelf}
   ${maxWidth}
   ${space}

@@ -1,8 +1,47 @@
 import styled from "@emotion/styled";
-import { maxWidth, MaxWidthProps, space, SpaceProps } from "styled-system";
+import {
+  alignSelf,
+  AlignSelfProps,
+  background,
+  BackgroundProps,
+  display,
+  DisplayProps,
+  gridArea,
+  GridAreaProps,
+  height,
+  HeightProps,
+  justifySelf,
+  JustifySelfProps,
+  maxWidth,
+  MaxWidthProps,
+  overflow,
+  OverflowProps,
+  space,
+  SpaceProps,
+  width,
+  WidthProps,
+} from "styled-system";
 
-// Add styled-system functions to your component
-export const Box = styled.div<SpaceProps & MaxWidthProps>`
+export const Box = styled.div<
+  BackgroundProps &
+    DisplayProps &
+    SpaceProps &
+    MaxWidthProps &
+    AlignSelfProps &
+    JustifySelfProps &
+    GridAreaProps &
+    HeightProps &
+    OverflowProps &
+    WidthProps
+>`
+  ${alignSelf}
+  ${background}
+  ${display}
+  ${gridArea}
+  ${height}
+  ${justifySelf}
   ${maxWidth}
+  ${overflow}
   ${space}
+  ${width}
 `;
