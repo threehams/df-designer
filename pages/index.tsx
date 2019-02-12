@@ -1,17 +1,22 @@
-/** @jsx jsx */
-import { css, Global, jsx } from "@emotion/core";
+import { Global } from "@emotion/core";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
-import { CommandBar, ExportBar, SelectBar, Toolbar } from "../components/";
+import {
+  Box,
+  CommandBar,
+  ExportBar,
+  Grid,
+  SelectBar,
+  Toolbar,
+} from "../components/";
 import { State } from "../store";
 import { selectTool, Tool } from "../store/tool";
-
-jsx; // tslint:disable-line
 
 // @ts-ignore I have no idea how to make these two libraries agree
 // react-redux and react-loadable
 const Artboard = dynamic(import("../components/Artboard"), {
   ssr: false,
+  loading: () => <Box width="100vh" height="100vh" background="black" />,
 });
 
 interface Props {
@@ -20,14 +25,10 @@ interface Props {
 const IndexBase: React.FunctionComponent<Props> = ({ tool }) => {
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
-    <div
-      css={css`
-        display: grid;
-        grid-template-areas:
-          "header header header"
-          "leftbar main rightbar";
-        height: 100vh;
-      `}
+    <Grid
+      height="100vh"
+      gridTemplateAreas={`"header header header"
+      "leftbar main rightbar"`}
     >
       <Global
         styles={`
@@ -41,45 +42,23 @@ const IndexBase: React.FunctionComponent<Props> = ({ tool }) => {
           `}
       />
 
-      <div
-        css={css`
-          grid-area: header;
-        `}
-      >
+      <Box gridArea="header">
         <Toolbar />
-      </div>
+      </Box>
       {/*
        * may want to scroll within PIXI
        * https://medium.com/game-development-stuff/how-to-block-the-page-scroll-while-scrolling-inside-a-pixi-js-canvas-8981306583e6
        */}
-      <div
-        css={css`
-          overflow-x: auto;
-          overflow-y: auto;
-          grid-area: main;
-        `}
-      >
+      <Box overflow="auto" gridArea="main">
         <Artboard />
-      </div>
-      <div
-        css={css`
-          grid-area: leftbar;
-          width: 300px;
-          overflow-y: auto;
-        `}
-      >
+      </Box>
+      <Box gridArea="leftbar" width={300} overflow="visible auto">
         <MainSidebar />
-      </div>
-      <div
-        css={css`
-          grid-area: rightbar;
-          width: 300px;
-          overflow-y: auto;
-        `}
-      >
+      </Box>
+      <Box gridArea="rightbar" width={300} overflow="visible auto">
         <ExportBar />
-      </div>
-    </div>
+      </Box>
+    </Grid>
   );
 };
 

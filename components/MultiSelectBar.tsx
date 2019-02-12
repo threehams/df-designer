@@ -1,11 +1,7 @@
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-
 import { connect } from "react-redux";
 import { tilesActions } from "../store/tiles";
-import { Button, ButtonGroup } from "./";
-
-jsx; // tslint:disable-line
+import { Button } from "./";
+import { Flex } from "./Flex";
 
 interface Props {
   flipSelection: (direction: "horizontal" | "vertical") => any;
@@ -18,19 +14,15 @@ export const MultiSelectBarBase: React.FunctionComponent<Props> = ({
 }) => {
   return (
     <div>
-      <ButtonGroup
-        css={css`
-          display: flex;
-          flex-flow: column nowrap;
-        `}
-        block
-      >
-        <Button onClick={() => flipSelection("horizontal")}>
+      <Flex flexDirection="column" flexWrap="nowrap">
+        <Button onClick={() => flipSelection("horizontal")} mb={1}>
           Flip Horizontal
         </Button>
-        <Button onClick={() => flipSelection("vertical")}>Flip Vertical</Button>
+        <Button onClick={() => flipSelection("vertical")} mb={1}>
+          Flip Vertical
+        </Button>
         <Button onClick={() => removeSelection()}>Delete</Button>
-      </ButtonGroup>
+      </Flex>
     </div>
   );
 };

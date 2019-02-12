@@ -1,3 +1,4 @@
+import { addEventListener } from "consolidated-events";
 import keycode from "keycode";
 import { useEffect, useState } from "react";
 
@@ -8,21 +9,19 @@ export const useHotKey = () => {
 
   useEffect(() => {
     const set = (event: KeyboardEvent) => {
-      if (event.keyCode) {
-        setKeys([
-          ...keys.filter(key => key !== keycode(event)),
-          keycode(event) as Keycode,
-        ]);
+      const keyCode = keycode(event) as Keycode;
+      if (event.keyCode && !keys.includes(keyCode)) {
+        setKeys([...keys.filter(key => key !== keyCode), keyCode]);
       }
     };
     const reset = (event: KeyboardEvent) => {
       setKeys(keys.filter(key => key !== keycode(event)));
     };
-    window.addEventListener("keydown", set);
-    window.addEventListener("keyup", reset);
+    const removeKeydown = addEventListener(window, "keydown", set);
+    const removeKeyup = addEventListener(window, "keyup", reset);
     return () => {
-      window.removeEventListener("keydown", set);
-      window.removeEventListener("keyup", reset);
+      removeKeydown();
+      removeKeyup();
     };
   });
   return keys;
@@ -39,9 +38,9 @@ export const useKeyHandler = (
         handler(keyPressed as Keycode);
       }
     };
-    window.addEventListener("keydown", set);
+    const removeKeydown = addEventListener(window, "keydown", set);
     return () => {
-      window.removeEventListener("keydown", set);
+      removeKeydown();
     };
   }, watched);
 };

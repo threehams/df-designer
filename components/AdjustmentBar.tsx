@@ -1,5 +1,3 @@
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 import React from "react";
 
 import { connect } from "react-redux";
@@ -11,9 +9,7 @@ import {
   selectAdjustmentMap,
   selectCommandMap,
 } from "../store/tool";
-import { Button } from "./Button";
-
-jsx; // tslint:disable-line
+import { Button, Label } from "./";
 
 interface Props {
   adjustments: Adjustment[];
@@ -82,12 +78,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
 }) => {
   return (
     <React.Fragment key={adjustment.slug}>
-      <label
-        key={adjustment.slug}
-        css={css`
-          display: block;
-        `}
-      >
+      <Label key={adjustment.slug} display="block">
         <input
           type="checkbox"
           value={adjustment.slug}
@@ -98,7 +89,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           data-test={`adjustment-bar-${adjustment.slug}-check`}
         />{" "}
         {adjustment.name}
-      </label>
+      </Label>
       {value && (
         <div key={adjustment.slug}>
           <Button
@@ -145,12 +136,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
   setAdjustment,
 }) => {
   return (
-    <label
-      key={adjustment.slug}
-      css={css`
-        display: block;
-      `}
-    >
+    <Label key={adjustment.slug} display="block">
       {adjustment.name}
       <select
         value={value || ""}
@@ -162,7 +148,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
         <option value="1">1</option>
         <option value="2">2</option>
       </select>
-    </label>
+    </Label>
   );
 };
 

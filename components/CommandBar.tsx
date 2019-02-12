@@ -1,8 +1,6 @@
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 import { connect } from "react-redux";
 
-import { Button, ButtonGroup } from ".";
+import { Button } from ".";
 import { State } from "../store";
 import {
   Command,
@@ -14,8 +12,8 @@ import {
   selectPhases,
   toolActions,
 } from "../store/tool";
-
-jsx; // tslint:disable-line
+import { Box } from "./Box";
+import { Flex } from "./Flex";
 
 interface Props {
   phase: PhaseSlug;
@@ -34,19 +32,14 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
   commands,
 }) => {
   return (
-    <aside
-      css={css`
-        padding: 10px;
-        display: flex;
-        flex-flow: column nowrap;
-      `}
-    >
-      <ButtonGroup block>
+    <Flex p={2} flexDirection="column" flexWrap="nowrap">
+      <Box mb={3}>
         <Button
           block
           onClick={() => setPhase("dig")}
           active={phase === "dig"}
           data-test="phase-dig"
+          mb={1}
         >
           Dig
         </Button>
@@ -55,6 +48,7 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
           onClick={() => setPhase("build")}
           active={phase === "build"}
           data-test="phase-build"
+          mb={1}
         >
           Build
         </Button>
@@ -66,8 +60,8 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
         >
           Place Stockpiles
         </Button>
-      </ButtonGroup>
-      <ButtonGroup block>
+      </Box>
+      <Box mb={3}>
         {commands.map(comm => (
           <Button
             key={comm.slug}
@@ -75,12 +69,13 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
             onClick={() => setCommand(comm.slug)}
             active={command.slug === comm.slug}
             data-test={`command-${comm.slug}`}
+            mb={1}
           >
             {comm.name}
           </Button>
         ))}
-      </ButtonGroup>
-    </aside>
+      </Box>
+    </Flex>
   );
 };
 

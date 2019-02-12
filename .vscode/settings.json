@@ -7,5 +7,6 @@
     "**/.DS_Store": true,
     "**/.next": true
   },
-  "tslint.enable": true
+  "tslint.enable": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

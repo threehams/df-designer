@@ -1,15 +1,11 @@
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
 import React from "react";
 import { useState } from "react";
 import { connect } from "react-redux";
 
-import { Button, ButtonGroup } from ".";
+import { Button, Flex, Textarea } from ".";
 import { State } from "../store";
 import { ImportMap, selectExported, tilesActions } from "../store/tiles";
 import { Io, Phase, PhaseSlug, selectPhases, toolActions } from "../store/tool";
-
-jsx; // tslint:disable-line
 
 interface Props {
   exported: { [Key in PhaseSlug]: string } | null;
@@ -35,21 +31,10 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
 }) => {
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (
-    <aside
-      css={css`
-        padding: 10px;
-        display: flex;
-        flex-flow: column nowrap;
-      `}
-    >
-      <ButtonGroup
-        css={css`
-          display: flex;
-          flex-flow: row nowrap;
-          align-items: center;
-        `}
-      >
+    <Flex p={2} flexDirection="column" flexWrap="nowrap">
+      <Flex flexDirection="row" flexWrap="nowrap" alignItems="center">
         <Button
+          mr={1}
           block
           data-test="import"
           onClick={() => setIo("import")}
@@ -65,19 +50,15 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
         >
           Export
         </Button>
-      </ButtonGroup>
+      </Flex>
       {io === "export" && exported && (
         <React.Fragment>
           {Object.entries(exported).map(([phase, csv]) => (
             <React.Fragment key={phase}>
               <label>{phase}</label>
 
-              <textarea
+              <Textarea
                 data-test={`export-text-${phase}`}
-                css={css`
-                  display: block;
-                  width: 100%;
-                `}
                 rows={20}
                 key={phase}
                 value={`#${phase}\n${csv}`}
@@ -105,12 +86,8 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
             return (
               <React.Fragment key={phase.slug}>
                 <label>{phase.name}</label>
-                <textarea
+                <Textarea
                   data-test={`import-text-${phase.slug}`}
-                  css={css`
-                    display: block;
-                    width: 100%;
-                  `}
                   rows={20}
                   value={importValue[phase.slug]}
                   onChange={event => {
@@ -132,7 +109,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
           </Button>
         </>
       )}
-    </aside>
+    </Flex>
   );
 };
 
