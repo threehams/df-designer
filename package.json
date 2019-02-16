@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start -p 3000",
     "build:start": "cross-env yarn build && yarn start",
+    "now-build": "next build && next export -o dist",
     "test": "jest",
     "cy:run": "cypress run --browser chrome",
     "cy:test": "start-server-and-test build:start http://localhost:3000 cy:run",
