@@ -52,7 +52,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
         </Button>
       </Flex>
       {io === "export" && exported && (
-        <React.Fragment>
+        <>
           {Object.entries(exported).map(([phase, csv]) => (
             <React.Fragment key={phase}>
               <label>{phase}</label>
@@ -77,7 +77,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
           >
             Download All
           </Button>
-        </React.Fragment>
+        </>
       )}
 
       {io === "import" && (
@@ -105,7 +105,7 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
             color="primary"
             onClick={() => importAll(importValue)}
           >
-            Download All
+            Import All
           </Button>
         </>
       )}

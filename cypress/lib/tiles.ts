@@ -23,8 +23,10 @@ const path = (selection: SelectedCoords) => {
 export const clickTile = ({ x, y }: Coords) => (
   subject: JQuery<HTMLElement>,
 ) => {
-  return cy
-    .wrap(subject)
+  cy.wrap(subject)
+    .invoke("width")
+    .should("be.greaterThan", 0);
+  cy.wrap(subject)
     .trigger("pointerdown", {
       ...coordinates(x, y),
       buttons: 1,
@@ -35,6 +37,9 @@ export const clickTile = ({ x, y }: Coords) => (
 export const dragTiles = (selection: SelectedCoords) => (
   subject: JQuery<HTMLElement>,
 ) => {
+  cy.wrap(subject)
+    .invoke("width")
+    .should("be.greaterThan", 0);
   cy.wrap(subject).trigger("pointerdown", {
     ...coordinates(selection.startX, selection.startY),
     buttons: 1,
@@ -45,7 +50,8 @@ export const dragTiles = (selection: SelectedCoords) => (
       buttons: 1,
     });
   });
-  return cy
-    .wrap(subject)
-    .trigger("pointerup", coordinates(selection.endX, selection.endY));
+  cy.wrap(subject).trigger(
+    "pointerup",
+    coordinates(selection.endX, selection.endY),
+  );
 };

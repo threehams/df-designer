@@ -28,7 +28,7 @@ const IndexBase: React.FunctionComponent<Props> = ({ tool }) => {
     <Grid
       height="100vh"
       gridTemplateAreas={`"header header header"
-      "leftbar main rightbar"`}
+                          "leftbar main rightbar"`}
     >
       <Global
         styles={`
