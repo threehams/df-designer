@@ -63,7 +63,7 @@ const ArtboardBase: React.FunctionComponent<Props> = ({
             pointerdown={event => {
               if (event.data.buttons === LEFT_MOUSE_BUTTON) {
                 const { x, y } = tilePosition(event.data.global);
-                clickTile(x, y);
+                clickTile(y, x);
               }
             }}
             pointermove={event => {
