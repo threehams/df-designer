@@ -84,7 +84,9 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
         <Button data-test="z-level-down" onClick={zLevelDown} mr={1}>
           Down Level
         </Button>
-        <Box mr={1}>{zLevel}</Box>
+        <Box mr={1} data-test="z-level">
+          {zLevel}
+        </Box>
         <Button data-test="z-level-up" onClick={zLevelUp}>
           Up Level
         </Button>

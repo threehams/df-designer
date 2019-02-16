@@ -100,7 +100,7 @@ interface ChunkProps {
 }
 const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
   return (
-    <React.Fragment>
+    <>
       {tiles.map(tile => {
         const { x, y } = coordinates.fromId(tile.id);
 
@@ -116,7 +116,7 @@ const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
           />
         );
       })}
-    </React.Fragment>
+    </>
   );
 });
 
