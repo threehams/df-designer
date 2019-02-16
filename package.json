@@ -10,7 +10,7 @@
     "build:start": "cross-env yarn build && yarn start",
     "now-build": "next build && next export -o dist",
     "test": "jest",
-    "cy:run": "cypress run --browser chrome",
+    "cy:run": "cypress run",
     "cy:test": "start-server-and-test build:start http://localhost:3000 cy:run",
     "cy:open": "cypress open",
     "cy:dev": "start-server-and-test dev http://localhost:3000 cy:open",
