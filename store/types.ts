@@ -242,3 +242,11 @@ export interface State {
   readonly tiles: TilesState;
   readonly tool: ToolState;
 }
+
+export type TileSprite = {
+  id: string;
+  textureName: keyof typeof tilesetNames;
+};
+export type Chunk = SelectedCoords & {
+  tiles: TileSprite[];
+};

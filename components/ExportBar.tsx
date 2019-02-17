@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Button, Flex, Textarea } from ".";
 import { tilesActions, toolActions } from "../store/actions";
 import { selectPhases } from "../store/reducers/toolReducer";
-import { selectExported } from "../store/selectors/selectors";
+import { selectExported } from "../store/selectors";
 import { ImportMap, Io, Phase, PhaseSlug, State } from "../store/types";
 
 interface Props {

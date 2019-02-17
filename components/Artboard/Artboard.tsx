@@ -13,12 +13,14 @@ import {
   selectSelection,
   selectSelectionOffset,
 } from "../../store/reducers/toolReducer";
+import { selectChunks } from "../../store/selectors";
 import {
   Chunk,
-  selectChunks,
+  Coords,
+  SelectedCoords,
+  State,
   TileSprite,
-} from "../../store/selectors/selectors";
-import { Coords, SelectedCoords, State } from "../../store/types";
+} from "../../store/types";
 import { Cursor } from "../Cursor";
 import { Hotkeys } from "./Hotkeys";
 import { textures, TILE_SIZE } from "./textures";
