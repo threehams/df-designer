@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+import { triggerHotkeys } from "../lib/hotkeys";
 import { clickTile } from "../lib/tiles";
 
 describe("adjustments", () => {
@@ -19,11 +20,13 @@ describe("adjustments", () => {
       cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
     });
 
-    it("shows the item name", () => {
-      cy.getId("adjustment-bar-item-name").should("have.text", "Bed");
+    it("deselects when pressing esc", () => {
+      cy.getId("stage").then(triggerHotkeys("esc"));
+      cy.getId("adjustment-bar-item-name").should("not.exist");
     });
 
     it("shows the correct adjustments", () => {
+      cy.getId("adjustment-bar-item-name").should("have.text", "Bed");
       cy.getId("adjustment-bar-makeBedroom-check").should("exist");
     });
 

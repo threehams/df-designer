@@ -39,7 +39,7 @@ const IndexBase: React.FunctionComponent<Props> = ({ tool }) => {
           canvas {
             display: block;
           }
-          `}
+        `}
       />
 
       <Box gridArea="header">

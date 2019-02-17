@@ -31,19 +31,18 @@ const HotkeysBase: React.FunctionComponent<HotkeysProps> = ({
           break;
         case ".":
           if (keysPressed.includes("shift")) {
-            zLevelUp();
+            zLevelDown();
           }
           break;
         case ",":
           if (keysPressed.includes("shift")) {
-            zLevelDown();
+            zLevelUp();
           }
           break;
         case "z":
           if (keysPressed.includes("shift") && keysPressed.includes("ctrl")) {
             redo();
-          }
-          if (keysPressed.includes("ctrl")) {
+          } else if (keysPressed.includes("ctrl")) {
             undo();
           }
       }
