@@ -1,4 +1,3 @@
-import keycode from "keycode";
 import { triggerHotkeys } from "../lib/hotkeys";
 import { clickTile } from "../lib/tiles";
 
