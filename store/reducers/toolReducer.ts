@@ -1,13 +1,10 @@
 import produce from "immer";
 import { createSelector } from "reselect";
 import { ActionType, getType } from "typesafe-actions";
-import { toolActions } from ".";
-import * as tilesActions from "../tiles/actions";
-import { State } from "../types";
-import * as actions from "./actions";
-import { adjustments, commands } from "./commands";
-import { phases } from "./phases";
-import { PhaseSlug, ToolState } from "./types";
+import { adjustments, commands } from "../../lib/commands";
+import { phases } from "../../lib/phases";
+import { tilesActions, toolActions } from "../actions";
+import { PhaseSlug, State, ToolState } from "../types";
 
 const INITIAL_STATE: ToolState = {
   command: "mine",
@@ -26,11 +23,11 @@ const INITIAL_STATE: ToolState = {
 
 export const toolReducer = (
   state = INITIAL_STATE,
-  action: ActionType<typeof actions | typeof tilesActions>,
+  action: ActionType<typeof toolActions | typeof tilesActions>,
 ) => {
   return produce(state, draft => {
     switch (action.type) {
-      case getType(actions.setTool): {
+      case getType(toolActions.setTool): {
         if (action.payload.tool !== state.current) {
           draft.last = state.current;
           draft.current = action.payload.tool;
@@ -41,23 +38,23 @@ export const toolReducer = (
         }
         break;
       }
-      case getType(actions.setIo): {
+      case getType(toolActions.setIo): {
         draft.io = action.payload.io;
         break;
       }
-      case getType(actions.startSelection): {
+      case getType(toolActions.startSelection): {
         const { x, y } = action.payload;
         draft.selectionStart = { x, y };
         draft.selectionEnd = { x, y };
         draft.selecting = true;
         break;
       }
-      case getType(actions.updateSelection): {
+      case getType(toolActions.updateSelection): {
         const { x, y } = action.payload;
         draft.selectionEnd = { x, y };
         break;
       }
-      case getType(actions.endSelection):
+      case getType(toolActions.endSelection):
         draft.selectionStart = {
           x: Math.min(state.selectionStart!.x, state.selectionEnd!.x),
           y: Math.min(state.selectionStart!.y, state.selectionEnd!.y),

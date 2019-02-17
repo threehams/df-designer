@@ -1,4 +1,4 @@
-import { Coords, SelectedCoords } from "../../store/tool";
+import { Coords, SelectedCoords } from "../../store/types";
 
 const TILE_SIZE = 16;
 

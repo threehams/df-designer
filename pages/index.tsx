@@ -9,8 +9,8 @@ import {
   SelectBar,
   Toolbar,
 } from "../components/";
-import { State } from "../store";
-import { selectTool, Tool } from "../store/tool";
+import { selectTool } from "../store/reducers/toolReducer";
+import { State, Tool } from "../store/types";
 
 // @ts-ignore I have no idea how to make these two libraries agree
 // react-redux and react-loadable

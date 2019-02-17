@@ -7,20 +7,18 @@ import { connect } from "react-redux";
 
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
-import { State } from "../../store";
+import { tilesActions } from "../../store/actions";
+import {
+  selectCommandMap,
+  selectSelection,
+  selectSelectionOffset,
+} from "../../store/reducers/toolReducer";
 import {
   Chunk,
   selectChunks,
-  tilesActions,
   TileSprite,
-} from "../../store/tiles";
-import {
-  Coords,
-  selectCommandMap,
-  SelectedCoords,
-  selectSelection,
-  selectSelectionOffset,
-} from "../../store/tool";
+} from "../../store/selectors/selectors";
+import { Coords, SelectedCoords, State } from "../../store/types";
 import { Cursor } from "../Cursor";
 import { Hotkeys } from "./Hotkeys";
 import { textures, TILE_SIZE } from "./textures";

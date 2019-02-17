@@ -1,8 +1,12 @@
 import { connect } from "react-redux";
 
-import { State } from "../store";
-import { selectTile, Tile, tilesActions } from "../store/tiles";
-import { Command, selectCommandMap, selectSelection } from "../store/tool";
+import { tilesActions } from "../store/actions";
+import { selectTile } from "../store/reducers/tilesReducer";
+import {
+  selectCommandMap,
+  selectSelection,
+} from "../store/reducers/toolReducer";
+import { Command, State, Tile } from "../store/types";
 import { AdjustmentBar } from "./AdjustmentBar";
 import { Flex } from "./Flex";
 import { MultiSelectBar } from "./MultiSelectBar";

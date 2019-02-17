@@ -1,4 +1,4 @@
-import { AdjustmentMap, CommandMap } from "./types";
+import { AdjustmentMap, CommandMap } from "../store/types";
 
 export const commands: CommandMap = {
   mine: {

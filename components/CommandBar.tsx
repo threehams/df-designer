@@ -1,17 +1,14 @@
 import { connect } from "react-redux";
 
 import { Button } from ".";
-import { State } from "../store";
+import { toolActions } from "../store/actions";
 import {
-  Command,
-  Phase,
-  PhaseSlug,
   selectCommands,
   selectCurrentCommand,
   selectPhase,
   selectPhases,
-  toolActions,
-} from "../store/tool";
+} from "../store/reducers/toolReducer";
+import { Command, Phase, PhaseSlug, State } from "../store/types";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 

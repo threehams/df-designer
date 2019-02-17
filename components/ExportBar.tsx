@@ -3,9 +3,10 @@ import { useState } from "react";
 import { connect } from "react-redux";
 
 import { Button, Flex, Textarea } from ".";
-import { State } from "../store";
-import { ImportMap, selectExported, tilesActions } from "../store/tiles";
-import { Io, Phase, PhaseSlug, selectPhases, toolActions } from "../store/tool";
+import { tilesActions, toolActions } from "../store/actions";
+import { selectPhases } from "../store/reducers/toolReducer";
+import { selectExported } from "../store/selectors/selectors";
+import { ImportMap, Io, Phase, PhaseSlug, State } from "../store/types";
 
 interface Props {
   exported: { [Key in PhaseSlug]: string } | null;

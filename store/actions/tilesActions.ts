@@ -2,23 +2,26 @@ import { Draft } from "immer";
 import keycode from "keycode";
 import { Dispatch } from "redux";
 import { createAction } from "typesafe-actions";
+import { toolActions } from ".";
 import * as coordinates from "../../lib/coordinates";
+import { selectTile } from "../reducers/tilesReducer";
+import {
+  selectAdjustmentMap,
+  selectCommandMap,
+  selectCurrentCommand,
+  selectSelection,
+  selectTool,
+} from "../reducers/toolReducer";
 import {
   Adjustment,
   AdjustmentKey,
   Command,
+  ImportMap,
   PhaseSlug,
-  selectAdjustmentMap,
-  selectCommandMap,
-  selectCurrentCommand,
   SelectedCoords,
-  selectSelection,
-  selectTool,
-  toolActions,
-} from "../tool";
-import { State } from "../types";
-import { selectTile } from "./reducer";
-import { ImportMap, Tile } from "./types";
+  State,
+  Tile,
+} from "../types";
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {

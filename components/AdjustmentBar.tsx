@@ -1,14 +1,12 @@
 import React from "react";
 
 import { connect } from "react-redux";
-import { State } from "../store";
-import { Tile, tilesActions } from "../store/tiles";
+import { tilesActions } from "../store/actions";
 import {
-  Adjustment,
-  CommandSlug,
   selectAdjustmentMap,
   selectCommandMap,
-} from "../store/tool";
+} from "../store/reducers/toolReducer";
+import { Adjustment, CommandSlug, State, Tile } from "../store/types";
 import { Button, Label } from "./";
 
 interface Props {

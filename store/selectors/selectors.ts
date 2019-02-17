@@ -4,15 +4,15 @@ import * as coordinates from "../../lib/coordinates";
 import { entries } from "../../lib/entries";
 import { keys } from "../../lib/keys";
 import { tilesetNames, wallMap } from "../../lib/tilesetNames";
+import { selectLevelTiles } from "../reducers/tilesReducer";
 import {
   selectAdjustmentMap,
   selectCommandMap,
   selectPhases,
-} from "../tool/reducer";
-import { CommandSlug, PhaseSlug, SelectedCoords } from "../tool/types";
+} from "../reducers/toolReducer";
+import { CommandSlug, PhaseSlug, SelectedCoords } from "../types";
 import { State } from "../types";
-import { selectLevelTiles } from "./reducer";
-import { AdjustmentData, Tile, TilesMap } from "./types";
+import { AdjustmentData, Tile, TilesMap } from "../types";
 
 type Grids = { [key in PhaseSlug]: string[][] | null };
 type GridsResult = { [key in PhaseSlug]: string };

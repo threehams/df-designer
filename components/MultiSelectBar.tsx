@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { tilesActions } from "../store/tiles";
+import { tilesActions } from "../store/actions";
 import { Button } from "./";
 import { Flex } from "./Flex";
 

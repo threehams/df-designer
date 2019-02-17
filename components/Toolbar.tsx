@@ -1,8 +1,9 @@
 import { connect } from "react-redux";
 
-import { State } from "../store";
-import { selectExported, tilesActions } from "../store/tiles";
-import { selectTool, Tool, toolActions } from "../store/tool";
+import { tilesActions, toolActions } from "../store/actions";
+import { selectTool } from "../store/reducers/toolReducer";
+import { selectExported } from "../store/selectors/selectors";
+import { State, Tool } from "../store/types";
 import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
