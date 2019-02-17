@@ -1,5 +1,4 @@
 import { connect } from "react-redux";
-
 import { tilesActions } from "../store/actions";
 import { selectTile } from "../store/reducers/tilesReducer";
 import {

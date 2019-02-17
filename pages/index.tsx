@@ -12,11 +12,13 @@ import {
 import { selectTool } from "../store/reducers/toolReducer";
 import { State, Tool } from "../store/types";
 
+const Loading = () => <Box width="100vh" height="100vh" background="black" />;
+
 // @ts-ignore I have no idea how to make these two libraries agree
 // react-redux and react-loadable
 const Artboard = dynamic(import("../components/Artboard"), {
   ssr: false,
-  loading: () => <Box width="100vh" height="100vh" background="black" />,
+  loading: Loading,
 });
 
 interface Props {

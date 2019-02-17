@@ -3,9 +3,7 @@ import * as coordinates from "../../lib/coordinates";
 import { wallMap } from "../../static/tilesetNames";
 import { selectLevelTiles } from "../reducers/tilesReducer";
 import { selectCommandMap } from "../reducers/toolReducer";
-import { SelectedCoords, TileSprite } from "../types";
-import { State } from "../types";
-import { Tile, TilesMap } from "../types";
+import { SelectedCoords, State, Tile, TilesMap, TileSprite } from "../types";
 import { selectExtents } from "./extentsSelectors";
 
 const CHUNK_SIZE = 10;

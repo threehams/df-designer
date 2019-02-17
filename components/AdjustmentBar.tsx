@@ -1,5 +1,4 @@
 import React from "react";
-
 import { connect } from "react-redux";
 import { tilesActions } from "../store/actions";
 import {
@@ -93,11 +92,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           <Button
             data-test={`adjustment-bar-${adjustment.slug}-decrement`}
             onClick={() => {
-              setAdjustment(
-                tile.id,
-                adjustment.slug,
-                Math.max((value as number) - 1, 1),
-              );
+              setAdjustment(tile.id, adjustment.slug, Math.max(value - 1, 1));
             }}
           >
             -
@@ -106,11 +101,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           <Button
             data-test={`adjustment-bar-${adjustment.slug}-increment`}
             onClick={() => {
-              setAdjustment(
-                tile.id,
-                adjustment.slug,
-                Math.min((value as number) + 1, 12),
-              );
+              setAdjustment(tile.id, adjustment.slug, Math.min(value + 1, 12));
             }}
           >
             +

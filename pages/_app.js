@@ -1,10 +1,10 @@
 import "core-js/fn/array/flat-map";
-import App, { Container } from "next/app";
-import React from "react";
-import withReduxStore from "../store/withReduxStore";
-import { Provider } from "react-redux";
-import Head from "next/head";
 import { setAutoFreeze } from "immer";
+import App, { Container } from "next/app";
+import Head from "next/head";
+import React from "react";
+import { Provider } from "react-redux";
+import withReduxStore from "../store/withReduxStore";
 
 setAutoFreeze(false);
 

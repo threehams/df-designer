@@ -93,7 +93,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
       .filter(phase => !!importMap[phase])
       .forEach(phase => {
         const string = importMap[phase]!;
-        string!
+        string
           .split("\n")
           .filter(line => !line.startsWith("#"))
           .forEach((line, y) => {
@@ -250,7 +250,7 @@ export const clickTile = (x: number, y: number) => {
 };
 
 export const endClickTile = (
-  keysPressed: Array<keyof typeof keycode.codes>,
+  keysPressed: (keyof typeof keycode.codes)[],
 ) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();

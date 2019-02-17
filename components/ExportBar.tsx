@@ -1,7 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-
 import { Button, Flex, Textarea } from ".";
 import { tilesActions, toolActions } from "../store/actions";
 import { selectPhases } from "../store/reducers/toolReducer";

@@ -223,10 +223,10 @@ export interface Tile {
   readonly adjustments: AdjustmentData;
   readonly id: string;
 }
-export type TilesMap = {
+export interface TilesMap {
   readonly [coordinates: string]: Tile;
-};
-export type ZPatch = { zLevel: number; patches: Patch[] };
+}
+export interface ZPatch { zLevel: number; patches: Patch[] }
 export interface TilesState {
   readonly data: {
     readonly [zLevel: string]: TilesMap;
@@ -243,10 +243,10 @@ export interface State {
   readonly tool: ToolState;
 }
 
-export type TileSprite = {
+export interface TileSprite {
   id: string;
   textureName: keyof typeof tilesetNames;
-};
+}
 export type Chunk = SelectedCoords & {
   tiles: TileSprite[];
 };

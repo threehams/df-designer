@@ -1,11 +1,9 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
-
-import { State } from "./types";
-
 import { tilesReducer } from "./reducers/tilesReducer";
 import { toolReducer } from "./reducers/toolReducer";
+import { State } from "./types";
 
 const rootReducer = combineReducers<State>({
   tiles: tilesReducer,

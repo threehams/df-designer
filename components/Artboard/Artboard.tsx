@@ -1,10 +1,8 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
 import keycode from "keycode";
 import * as PIXI from "pixi.js";
-import React, { memo } from "react";
-import { useState } from "react";
+import React, { memo, useState } from "react";
 import { connect } from "react-redux";
-
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
 import { tilesActions } from "../../store/actions";
@@ -33,7 +31,7 @@ const LEFT_MOUSE_BUTTON = 1;
 interface Props {
   chunks: Chunk[];
   clickTile: (x: number, y: number) => any;
-  endClickTile: (keyPressed: Array<keyof typeof keycode.codes>) => any;
+  endClickTile: (keyPressed: (keyof typeof keycode.codes)[]) => any;
   selection: SelectedCoords | null;
   selectionOffset: Coords;
 }

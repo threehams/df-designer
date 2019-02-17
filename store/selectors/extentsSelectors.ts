@@ -49,6 +49,6 @@ export const selectExtents = (state: State) => {
         startY: Infinity,
         endX: 0,
         endY: 0,
-      } as SelectedCoords,
+      },
     );
 };

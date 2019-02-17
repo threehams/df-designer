@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 import { triggerHotkeys } from "../lib/hotkeys";
 import { clickTile } from "../lib/tiles";
 
