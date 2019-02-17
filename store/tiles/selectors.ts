@@ -148,7 +148,7 @@ const selectExportedLevel = createSelector(
               }
               return "";
             })
-            .join("") || "`";
+            .join("") || "~";
       };
       exportCommand(tile.designation);
       exportCommand(tile.item);
@@ -169,7 +169,7 @@ const selectExportedLevel = createSelector(
 const createGrid = (dimensions: SelectedCoords): string[][] => {
   return Array.from(Array(dimensions.endY - dimensions.startY).keys()).map(
     () => {
-      return Array(dimensions.endX - dimensions.startX).fill("`");
+      return Array(dimensions.endX - dimensions.startX).fill("~");
     },
   );
 };

@@ -95,26 +95,34 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
           .filter(line => !line.startsWith("#"))
           .forEach((line, y) => {
             line.split(",").forEach((shortcut, x) => {
-              if (!shortcut || ["`"].includes(shortcut)) {
+              if (!shortcut || ["~"].includes(shortcut)) {
                 return;
               }
               const id = coordinates.toId(x + 1, y + 1);
               let newTile;
               if (phase === "query") {
+                if (!tileMap[id]) {
+                  // tslint:disable-next-line no-console
+                  console.error(
+                    `cannot add an adjustment to a tile with no item: ${shortcut}, phase: ${phase} at ${id}`,
+                  );
+                  return;
+                }
                 const commandSlug = tileMap[id].item;
                 if (!commandSlug) {
                   // tslint:disable-next-line no-console
-                  console.log(
-                    `received an adjustment with no matching command: ${shortcut}, phase: ${phase}`,
+                  console.error(
+                    `received an adjustment with no matching command: ${shortcut}, phase: ${phase} at ${id}`,
                   );
+                  return;
                 }
                 const adjustment = Object.values(adjustmentMap).find(
                   adj => adj.shortcut === shortcut[0] && adj.phase === phase,
                 );
                 if (!adjustment || adjustment.requires !== commandSlug) {
                   // tslint:disable-next-line no-console
-                  console.log(
-                    `unknown adjustment for shortcut: ${shortcut} for command: ${commandSlug}`,
+                  console.error(
+                    `unknown adjustment for shortcut: ${shortcut} for command: ${commandSlug}, phase: ${phase} at ${id}`,
                   );
                   return;
                 }
@@ -130,8 +138,18 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                 );
                 if (!command) {
                   // tslint:disable-next-line no-console
-                  console.log(
-                    `unknown command for shortcut: ${shortcut}, phase: ${phase}`,
+                  console.error(
+                    `unknown command for shortcut: ${shortcut}, phase: ${phase} at ${id}`,
+                  );
+                  return;
+                }
+                if (
+                  command.type === "item" &&
+                  (!tileMap[id] || tileMap[id].designation !== "mine")
+                ) {
+                  // tslint:disable-next-line no-console
+                  console.error(
+                    `cannot add an item to a space which is not mined: ${shortcut}, phase: ${phase} at ${id}`,
                   );
                   return;
                 }
