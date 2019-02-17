@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ["plugin:react/recommended", "plugin:jsx-a11y/recommended"],
+  extends: ["plugin:react/recommended"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 6,
@@ -15,6 +15,7 @@ module.exports = {
     },
   },
   rules: {
+    "no-shadow": "error",
     // Too many bugs for now
     // "no-unused-vars": "error",
     // "@typescript-eslint/no-unused-vars": "error",
@@ -46,6 +47,10 @@ module.exports = {
     "react/display-name": "off",
     // negative effects
     "jsx-a11y/no-onchange": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      { some: ["nesting", "id"] },
+    ],
   },
   plugins: ["@typescript-eslint", "react", "react-hooks", "jsx-a11y"],
 };

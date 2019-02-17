@@ -1,7 +1,7 @@
 import produce from "immer";
 import { createSelector } from "reselect";
 import { ActionType, getType } from "typesafe-actions";
-import { adjustments, commands } from "../../static/commands";
+import { adjustmentMap, commandMap } from "../../static/commands";
 import { phases } from "../../static/phases";
 import { tilesActions, toolActions } from "../actions";
 import { PhaseSlug, State, ToolState } from "../types";
@@ -124,21 +124,20 @@ export const selectTool = (state: State) => {
 };
 
 export const selectCurrentCommand = (state: State) => {
-  const commandMap = selectCommandMap();
   return commandMap[state.tool.command];
 };
 
 export const selectCommands = createSelector(
   (_: any, props: { phase: PhaseSlug | null }) => props.phase,
   phase => {
-    return Object.values(commands).filter(command =>
+    return Object.values(commandMap).filter(command =>
       phase ? command.phase === phase : true,
     );
   },
 );
 
-export const selectCommandMap = () => commands;
-export const selectAdjustmentMap = () => adjustments;
+export const selectCommandMap = () => commandMap;
+export const selectAdjustmentMap = () => adjustmentMap;
 
 export const selectPhase = (state: State) => {
   return state.tool.phase;

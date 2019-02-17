@@ -1,6 +1,6 @@
 import { AdjustmentMap, CommandMap } from "../store/types";
 
-export const commands: CommandMap = {
+export const commandMap: CommandMap = {
   mine: {
     name: "Mine",
     slug: "mine",
@@ -911,7 +911,7 @@ export const commands: CommandMap = {
   },
 };
 
-export const adjustments: AdjustmentMap = {
+export const adjustmentMap: AdjustmentMap = {
   makeBedroom: {
     name: "Make Bedroom",
     slug: "makeBedroom",

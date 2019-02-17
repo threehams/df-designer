@@ -14,6 +14,7 @@
     "cy:test": "start-server-and-test build:start http://localhost:3000 cy:run",
     "cy:open": "cypress open",
     "cy:dev": "start-server-and-test dev http://localhost:3000 cy:open",
+    "cy:prod": "start-server-and-test build:start http://localhost:3000 cy:open",
     "export": "next export",
     "lint": "eslint ./ --ext .js,.ts,.tsx"
   },

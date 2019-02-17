@@ -75,7 +75,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
 }) => {
   return (
     <React.Fragment key={adjustment.slug}>
-      <Label key={adjustment.slug} display="block">
+      <Label display="block">
         <input
           type="checkbox"
           value={adjustment.slug}
@@ -88,7 +88,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
         {adjustment.name}
       </Label>
       {value && (
-        <div key={adjustment.slug}>
+        <div>
           <Button
             data-test={`adjustment-bar-${adjustment.slug}-decrement`}
             onClick={() => {

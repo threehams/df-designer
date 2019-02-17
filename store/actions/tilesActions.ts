@@ -106,7 +106,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
               if (phase === "query") {
                 if (!tileMap[id]) {
                   // tslint:disable-next-line no-console
-                  console.error(
+                  console.warn(
                     `cannot add an adjustment to a tile with no item: ${shortcut}, phase: ${phase} at ${id}`,
                   );
                   return;
@@ -114,7 +114,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                 const commandSlug = tileMap[id].item;
                 if (!commandSlug) {
                   // tslint:disable-next-line no-console
-                  console.error(
+                  console.warn(
                     `received an adjustment with no matching command: ${shortcut}, phase: ${phase} at ${id}`,
                   );
                   return;
@@ -124,7 +124,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                 );
                 if (!adjustment || adjustment.requires !== commandSlug) {
                   // tslint:disable-next-line no-console
-                  console.error(
+                  console.warn(
                     `unknown adjustment for shortcut: ${shortcut} for command: ${commandSlug}, phase: ${phase} at ${id}`,
                   );
                   return;
@@ -141,7 +141,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                 );
                 if (!command) {
                   // tslint:disable-next-line no-console
-                  console.error(
+                  console.warn(
                     `unknown command for shortcut: ${shortcut}, phase: ${phase} at ${id}`,
                   );
                   return;
@@ -151,7 +151,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                   (!tileMap[id] || tileMap[id].designation !== "mine")
                 ) {
                   // tslint:disable-next-line no-console
-                  console.error(
+                  console.warn(
                     `cannot add an item to a space which is not mined: ${shortcut}, phase: ${phase} at ${id}`,
                   );
                   return;
@@ -249,9 +249,7 @@ export const clickTile = (x: number, y: number) => {
   };
 };
 
-export const endClickTile = (
-  keysPressed: (keyof typeof keycode.codes)[],
-) => {
+export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);

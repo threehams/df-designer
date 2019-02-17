@@ -12,6 +12,12 @@ import {
 import { selectTool } from "../store/reducers/toolReducer";
 import { State, Tool } from "../store/types";
 
+if (process.env.NODE_ENV !== "production") {
+  console.error = (...messages: any[]) => {
+    throw new Error(messages.join(" "));
+  };
+}
+
 const Loading = () => <Box width="100vh" height="100vh" background="black" />;
 
 // @ts-ignore I have no idea how to make these two libraries agree
