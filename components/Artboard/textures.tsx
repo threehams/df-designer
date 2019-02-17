@@ -1,5 +1,5 @@
 import { keys } from "../../lib/keys";
-import { tilesetNames } from "../../lib/tilesetNames";
+import { tilesetNames } from "../../static/tilesetNames";
 
 export const TILE_SIZE = 16;
 

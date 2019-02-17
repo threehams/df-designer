@@ -1,8 +1,8 @@
 import produce from "immer";
 import { createSelector } from "reselect";
 import { ActionType, getType } from "typesafe-actions";
-import { adjustments, commands } from "../../lib/commands";
-import { phases } from "../../lib/phases";
+import { adjustments, commands } from "../../static/commands";
+import { phases } from "../../static/phases";
 import { tilesActions, toolActions } from "../actions";
 import { PhaseSlug, State, ToolState } from "../types";
 

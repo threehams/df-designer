@@ -1,5 +1,5 @@
 import { Patch } from "immer";
-import { tilesetNames } from "../lib/tilesetNames";
+import { tilesetNames } from "../static/tilesetNames";
 
 export type Tool = "select" | "paint" | "erase" | "rectangle";
 export type CommandSlug =
