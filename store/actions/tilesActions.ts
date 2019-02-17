@@ -83,6 +83,101 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
 };
 export const zLevelUp = createAction("app/tool/Z_LEVEL_UP");
 export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN");
+export const clickTile = (x: number, y: number) => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    if (x < 1 || y < 1) {
+      return;
+    }
+    const state = getState();
+    const tool = selectTool(state);
+    const command = selectCurrentCommand(state);
+    const tile = selectTile(state, { x, y });
+    const selection = selectSelection(state);
+    switch (tool) {
+      case "rectangle":
+        if (
+          state.tool.selecting &&
+          !coordinates.match(state.tool.selectionEnd, { x, y })
+        ) {
+          return dispatch(toolActions.updateSelection(x, y));
+        }
+        if (!state.tool.selecting) {
+          return dispatch(toolActions.startSelection(x, y));
+        }
+        break;
+      case "select":
+        if (
+          (state.tool.selecting || state.tool.dragging) &&
+          coordinates.match(state.tool.selectionEnd, { x, y })
+        ) {
+          // don't bother dispatching action - prevents noise in devtools
+          return;
+        }
+
+        if (state.tool.selecting) {
+          return dispatch(toolActions.updateSelection(x, y));
+        }
+        if (state.tool.dragging) {
+          return dispatch(toolActions.updateDrag(x, y));
+        }
+        if (!state.tool.dragging && coordinates.within(selection, { x, y })) {
+          return dispatch(toolActions.startDrag(x, y));
+        }
+        if (!state.tool.selecting) {
+          return dispatch(toolActions.startSelection(x, y));
+        }
+        break;
+      case "paint":
+        if (shouldUpdate(tile, command)) {
+          return dispatch(updateTile(x, y, command));
+        }
+        break;
+      case "erase":
+        if (tile) {
+          return dispatch(removeTile(x, y, command));
+        }
+        break;
+    }
+  };
+};
+
+export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
+  return (dispatch: Dispatch, getState: () => State) => {
+    const state = getState();
+    const tool = selectTool(state);
+    const command = selectCurrentCommand(state);
+    const selection = selectSelection(state);
+    switch (tool) {
+      case "rectangle": {
+        // it's possible if some click events get lost
+        if (!selection) {
+          return;
+        }
+        return dispatch(fillTiles(selection, command));
+      }
+      case "select": {
+        // get rid of all the nulls right away
+        if (!state.tool.dragging) {
+          return dispatch(toolActions.endSelection());
+        }
+        if (!selection || !state.tool.dragStart || !state.tool.dragEnd) {
+          return;
+        }
+        const toX =
+          state.tool.dragEnd.x - (state.tool.dragStart.x - selection.startX);
+        const toY =
+          state.tool.dragEnd.y - (state.tool.dragStart.y - selection.startY);
+        if (keysPressed.includes("shift")) {
+          return dispatch(cloneTiles(selection, toX, toY));
+        } else {
+          return dispatch(moveTiles(selection, toX, toY));
+        }
+      }
+      default:
+        return dispatch(endUpdate());
+    }
+  };
+};
 export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
   const tileMap: { [key: string]: Draft<Tile> } = {};
   return (importMap: ImportMap) => {
@@ -189,102 +284,6 @@ const adjustmentData = (adjustment: Adjustment, shortcut: string) => {
   } else if (adjustment.type === "select") {
     return { [adjustment.selectCommand]: shortcut };
   }
-};
-
-export const clickTile = (x: number, y: number) => {
-  return (dispatch: Dispatch, getState: () => State) => {
-    if (x < 1 || y < 1) {
-      return;
-    }
-    const state = getState();
-    const tool = selectTool(state);
-    const command = selectCurrentCommand(state);
-    const tile = selectTile(state, { x, y });
-    const selection = selectSelection(state);
-    switch (tool) {
-      case "rectangle":
-        if (
-          state.tool.selecting &&
-          !coordinates.match(state.tool.selectionEnd, { x, y })
-        ) {
-          return dispatch(toolActions.updateSelection(x, y));
-        }
-        if (!state.tool.selecting) {
-          return dispatch(toolActions.startSelection(x, y));
-        }
-        break;
-      case "select":
-        if (
-          (state.tool.selecting || state.tool.dragging) &&
-          coordinates.match(state.tool.selectionEnd, { x, y })
-        ) {
-          // don't bother dispatching action - prevents noise in devtools
-          return;
-        }
-
-        if (state.tool.selecting) {
-          return dispatch(toolActions.updateSelection(x, y));
-        }
-        if (state.tool.dragging) {
-          return dispatch(toolActions.updateDrag(x, y));
-        }
-        if (!state.tool.dragging && coordinates.within(selection, { x, y })) {
-          return dispatch(toolActions.startDrag(x, y));
-        }
-        if (!state.tool.selecting) {
-          return dispatch(toolActions.startSelection(x, y));
-        }
-        break;
-      case "paint":
-        if (shouldUpdate(tile, command)) {
-          return dispatch(updateTile(x, y, command));
-        }
-        break;
-      case "erase":
-        if (tile) {
-          return dispatch(removeTile(x, y, command));
-        }
-        break;
-    }
-  };
-};
-
-export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
-  return (dispatch: Dispatch, getState: () => State) => {
-    const state = getState();
-    const tool = selectTool(state);
-    const command = selectCurrentCommand(state);
-    const selection = selectSelection(state);
-    switch (tool) {
-      case "rectangle": {
-        // it's possible if some click events get lost
-        if (!selection) {
-          return;
-        }
-        return dispatch(fillTiles(selection, command));
-      }
-      case "select": {
-        // get rid of all the nulls right away
-        if (!state.tool.dragging) {
-          return dispatch(toolActions.endSelection());
-        }
-        if (!selection || !state.tool.dragStart || !state.tool.dragEnd) {
-          return;
-        }
-        const toX =
-          state.tool.dragEnd.x - (state.tool.dragStart.x - selection.startX);
-        const toY =
-          state.tool.dragEnd.y - (state.tool.dragStart.y - selection.startY);
-        if (keysPressed.includes("shift")) {
-          return dispatch(cloneTiles(selection, toX, toY));
-        } else {
-          return dispatch(moveTiles(selection, toX, toY));
-        }
-      }
-      default:
-        return dispatch(endUpdate());
-    }
-  };
 };
 
 const shouldUpdate = (tile: Tile | null, command: Command) => {
