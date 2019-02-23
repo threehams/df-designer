@@ -27,7 +27,7 @@ export const configureStore = (
     });
   }
   if (!options.isServer) {
-    store.dispatch(tilesActions.hydrateTiles());
+    store.dispatch<any>(tilesActions.hydrateTiles());
     store.subscribe(() => {
       const state = store.getState();
       localStorage.setItem(
