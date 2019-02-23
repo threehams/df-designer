@@ -21,7 +21,33 @@ import {
   SelectedCoords,
   State,
   Tile,
+  TilesState,
 } from "../types";
+
+export const hydrateTiles = () => {
+  return (dispatch: Dispatch) => {
+    try {
+      const json = localStorage.getItem("df-designer-state");
+      if (!json) {
+        return;
+      }
+      const tiles = JSON.parse(json);
+      if (tiles) {
+        dispatch(setTilesState(tiles));
+      }
+    } catch (err) {
+      // nothing available or privacy settings disallow localStorage
+    }
+  };
+};
+export const setTilesState = createAction(
+  "app/tiles/SET_TILES_STATE",
+  resolve => {
+    return (tiles: TilesState["data"]) => {
+      return resolve({ tiles });
+    };
+  },
+);
 
 export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
   return (x: number, y: number, command: Command) => {

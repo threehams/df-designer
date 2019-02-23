@@ -5,7 +5,7 @@ import * as coordinates from "../../lib/coordinates";
 import { tilesActions } from "../actions";
 import { Command, State, Tile, TilesMap, TilesState, ZPatch } from "../types";
 
-const DEFAULT_STATE: TilesState = {
+export const INITIAL_STATE: TilesState = {
   data: range(0, 128).reduce(
     (result, zIndex) => {
       result[zIndex] = {};
@@ -18,29 +18,6 @@ const DEFAULT_STATE: TilesState = {
   future: [],
   updates: [],
   zLevel: 64,
-};
-
-// be as defensive as possible here
-const initialState = (): TilesState => {
-  if (typeof localStorage === "undefined") {
-    return DEFAULT_STATE;
-  }
-  const json = localStorage.getItem("df-designer-state");
-  if (!json) {
-    return DEFAULT_STATE;
-  }
-  try {
-    const tiles = JSON.parse(json);
-    if (tiles) {
-      return produce(DEFAULT_STATE, draft => {
-        draft.data = tiles;
-      });
-    }
-  } catch (err) {
-    // tslint:disable-next-line no-console
-    console.log(err);
-  }
-  return DEFAULT_STATE;
 };
 
 const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
@@ -75,8 +52,8 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
   };
 };
 
-const baseTilesReducer = (
-  state: TilesState,
+export const tilesReducer = (
+  state: TilesState = INITIAL_STATE,
   action: ActionType<typeof tilesActions>,
 ): TilesState => {
   switch (action.type) {
@@ -84,6 +61,12 @@ const baseTilesReducer = (
       return changeHistory(state, "undo");
     case getType(tilesActions.redo):
       return changeHistory(state, "redo");
+    case getType(tilesActions.setTilesState): {
+      return {
+        ...state,
+        data: action.payload.tiles,
+      };
+    }
   }
   let transactionSteps: Patch[];
   return produce(state, outerDraft => {
@@ -264,17 +247,6 @@ const deleteAll = (draft: Draft<TilesMap>) => {
   for (const id of Object.keys(draft)) {
     delete draft[id];
   }
-};
-
-export const tilesReducer = (
-  state = initialState(),
-  action: ActionType<typeof tilesActions>,
-) => {
-  const newState = baseTilesReducer(state, action);
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem("df-designer-state", JSON.stringify(newState.data));
-  }
-  return newState;
 };
 
 const removeCommand = (
