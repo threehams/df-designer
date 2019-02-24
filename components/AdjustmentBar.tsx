@@ -83,14 +83,16 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           onChange={() => {
             return setAdjustment(tile.id, adjustment.slug, value ? 0 : 3);
           }}
-          data-test={`adjustment-bar-${adjustment.slug}-check`}
+          data-test="adjustment-bar-check"
+          data-test-item={adjustment.slug}
         />{" "}
         {adjustment.name}
       </Label>
       {value && (
         <div>
           <Button
-            data-test={`adjustment-bar-${adjustment.slug}-decrement`}
+            data-test="adjustment-bar-decrement"
+            data-test-item={adjustment.slug}
             onClick={() => {
               setAdjustment(tile.id, adjustment.slug, Math.max(value - 1, 1));
             }}
@@ -99,7 +101,8 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           </Button>{" "}
           {value}{" "}
           <Button
-            data-test={`adjustment-bar-${adjustment.slug}-increment`}
+            data-test="adjustment-bar-increment"
+            data-test-item={adjustment.slug}
             onClick={() => {
               setAdjustment(tile.id, adjustment.slug, Math.min(value + 1, 12));
             }}
@@ -132,7 +135,8 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
         onChange={event => {
           return setAdjustment(tile.id, adjustment.slug, event.target.value);
         }}
-        data-test={`adjustment-bar-${adjustment.slug}-check`}
+        data-test="adjustment-bar-check"
+        data-test-item={adjustment.slug}
       >
         <option value="1">1</option>
         <option value="2">2</option>

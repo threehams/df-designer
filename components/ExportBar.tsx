@@ -57,7 +57,8 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
               <label>{phase}</label>
 
               <Textarea
-                data-test={`export-text-${phase}`}
+                data-test="export-text"
+                data-test-item={phase}
                 rows={20}
                 key={phase}
                 value={`#${phase}\n${csv}`}
@@ -86,7 +87,8 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
               <React.Fragment key={phase.slug}>
                 <label>{phase.name}</label>
                 <Textarea
-                  data-test={`import-text-${phase.slug}`}
+                  data-test="import-text"
+                  data-test-item={phase.slug}
                   rows={20}
                   value={importValue[phase.slug]}
                   onChange={event => {

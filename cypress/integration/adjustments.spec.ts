@@ -1,21 +1,18 @@
 import { triggerHotkeys } from "../lib/hotkeys";
-import { clickTile } from "../lib/tiles";
+import { clickTile, setTiles } from "../lib/tiles";
 
 describe("adjustments", () => {
-  beforeEach(() => {
-    cy.visit("/");
-  });
-
   describe("bedroom", () => {
     beforeEach(() => {
-      cy.getId("tool-paint").click();
-      cy.getId("phase-dig").click();
-      cy.getId("command-mine").click();
-      cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
-      cy.getId("phase-build").click();
-      cy.getId("command-bed").click();
-      cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
-      cy.getId("tool-select").click();
+      setTiles([
+        {
+          id: "1,1",
+          designation: "mine",
+          item: "bed",
+        },
+      ]);
+      cy.visit("/");
+      cy.getId("tool", "select").click();
       cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
     });
 
@@ -26,45 +23,46 @@ describe("adjustments", () => {
 
     it("shows the correct adjustments", () => {
       cy.getId("adjustment-bar-item-name").should("have.text", "Bed");
-      cy.getId("adjustment-bar-makeBedroom-check").should("exist");
+      cy.getId("adjustment-bar-check", "makeBedroom").should("exist");
     });
 
     describe("without resize", () => {
       it("exports the correct string", () => {
-        cy.getId("adjustment-bar-makeBedroom-check").check();
+        cy.getId("adjustment-bar-check", "makeBedroom").check();
         cy.getId("export").click();
-        cy.getId("export-text-query").should("have.value", "#query\nr");
+        cy.getId("export-text", "query").should("have.value", "#query\nr");
       });
     });
 
     describe("with resize", () => {
       it("exports the correct string", () => {
-        cy.getId("adjustment-bar-makeBedroom-check").check();
-        cy.getId("adjustment-bar-makeBedroom-increment")
+        cy.getId("adjustment-bar-check", "makeBedroom").check();
+        cy.getId("adjustment-bar-increment", "makeBedroom")
           .click()
           .click();
         cy.getId("export").click();
-        cy.getId("export-text-query").should("have.value", "#query\nr++");
-        cy.getId("adjustment-bar-makeBedroom-decrement")
+        cy.getId("export-text", "query").should("have.value", "#query\nr++");
+        cy.getId("adjustment-bar-decrement", "makeBedroom")
           .click()
           .click()
           .click()
           .click();
-        cy.getId("export-text-query").should("have.value", "#query\nr--");
+        cy.getId("export-text", "query").should("have.value", "#query\nr--");
       });
     });
   });
 
   describe("stockpile", () => {
     beforeEach(() => {
-      cy.getId("tool-paint").click();
-      cy.getId("phase-dig").click();
-      cy.getId("command-mine").click();
-      cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
-      cy.getId("phase-place").click();
-      cy.getId("command-foodStockpile").click();
-      cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
-      cy.getId("tool-select").click();
+      setTiles([
+        {
+          id: "1,1",
+          designation: "mine",
+          item: "foodStockpile",
+        },
+      ]);
+      cy.visit("/");
+      cy.getId("tool", "select").click();
       cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
     });
 

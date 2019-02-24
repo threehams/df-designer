@@ -33,7 +33,7 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
   zLevelUp,
 }) => {
   return (
-    <Flex p={2}>
+    <Flex p={2} data-test="toolbar">
       <Box mr={3}>
         <Button onClick={resetBoard} data-test="reset">
           Reset
@@ -49,7 +49,8 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
       </Box>
       <Box mr={3}>
         <Button
-          data-test="tool-select"
+          data-test="tool"
+          data-test-item="select"
           onClick={() => setTool("select")}
           active={tool === "select"}
           mr={1}
@@ -57,7 +58,8 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
           Select
         </Button>
         <Button
-          data-test="tool-paint"
+          data-test="tool"
+          data-test-item="paint"
           onClick={() => setTool("paint")}
           active={tool === "paint"}
           mr={1}
@@ -65,7 +67,8 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
           Paint
         </Button>
         <Button
-          data-test="tool-paint-rectangle"
+          data-test="tool"
+          data-test-item="paint-rectangle"
           onClick={() => setTool("rectangle")}
           active={tool === "rectangle"}
           mr={1}
@@ -73,7 +76,8 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
           Paint Rectangle
         </Button>
         <Button
-          data-test="tool-erase"
+          data-test="tool"
+          data-test-item="erase"
           onClick={() => setTool("erase")}
           active={tool === "erase"}
         >

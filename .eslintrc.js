@@ -51,6 +51,8 @@ module.exports = {
       "error",
       { some: ["nesting", "id"] },
     ],
+    "mocha/no-exclusive-tests": "error",
+    "no-unused-expressions": "error",
   },
-  plugins: ["@typescript-eslint", "react", "react-hooks", "jsx-a11y"],
+  plugins: ["@typescript-eslint", "react", "react-hooks", "jsx-a11y", "mocha"],
 };

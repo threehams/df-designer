@@ -1,4 +1,6 @@
-import { Coords, SelectedCoords } from "../../store/types";
+import produce from "immer";
+import { INITIAL_STATE } from "../../store/reducers/tilesReducer";
+import { Coords, SelectedCoords, Tile } from "../../store/types";
 
 const TILE_SIZE = 16;
 
@@ -54,4 +56,19 @@ export const dragTiles = (selection: SelectedCoords) => (
     "pointerup",
     coordinates(selection.endX, selection.endY),
   );
+};
+
+export const setTiles = (tiles: (Partial<Tile> & { id: string })[]) => {
+  const storeTiles = produce(INITIAL_STATE.data, draft => {
+    const { zLevel } = INITIAL_STATE;
+    tiles.forEach(tile => {
+      draft[zLevel.toString()][tile.id] = {
+        designation: null,
+        item: null,
+        adjustments: {},
+        ...tile,
+      };
+    });
+  });
+  localStorage["df-designer-state"] = JSON.stringify(storeTiles);
 };
