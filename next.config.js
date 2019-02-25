@@ -4,18 +4,17 @@ try {
   ({ PHASE_PRODUCTION_SERVER } = require("next/constants"));
 }
 
-module.exports = (phase, { defaultConfig }) => {
+module.exports = phase => {
   if (phase === PHASE_PRODUCTION_SERVER) {
     return {
       /* production only config */
     };
   }
-  const withSourceMaps = require("@zeit/next-source-maps");
   const withTypescript = require("@zeit/next-typescript");
   const TerserPlugin = require("terser-webpack-plugin");
 
   return withTypescript({
-    webpack(config, options) {
+    webpack(config) {
       config.devtool = "source-map";
       config.optimization.minimizer = [
         new TerserPlugin({

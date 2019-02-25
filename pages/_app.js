@@ -1,16 +1,17 @@
 import "core-js/fn/array/flat-map";
-import App, { Container } from "next/app";
-import React from "react";
-import withReduxStore from "../store/withReduxStore";
-import { Provider } from "react-redux";
-import Head from "next/head";
 import { setAutoFreeze } from "immer";
+import withRedux from "next-redux-wrapper";
+import App, { Container } from "next/app";
+import Head from "next/head";
+import React from "react";
+import { Provider } from "react-redux";
+import { configureStore } from "../store/configureStore";
 
 setAutoFreeze(false);
 
 class MyApp extends App {
   render() {
-    const { Component, pageProps, reduxStore } = this.props;
+    const { Component, pageProps, store } = this.props;
     return (
       <Container>
         <Head>
@@ -19,7 +20,7 @@ class MyApp extends App {
             rel="stylesheet"
           />
         </Head>
-        <Provider store={reduxStore}>
+        <Provider store={store}>
           <Component {...pageProps} />
         </Provider>
       </Container>
@@ -27,4 +28,4 @@ class MyApp extends App {
   }
 }
 
-export default withReduxStore(MyApp);
+export default withRedux(configureStore)(MyApp);

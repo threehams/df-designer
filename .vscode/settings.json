@@ -4,13 +4,27 @@
     "**/.svn": true,
     "**/.hg": true,
     "**/CVS": true,
-    "**/.DS_Store": true
+    "**/.DS_Store": true,
+    "**/.next": true,
+    "**/.vscode": true
   },
   "search.exclude": {
     "**/node_modules": true,
     "**/bower_components": true,
-    "**/.next": true
+    "**/yarn.lock": true
   },
-  "tslint.enable": true,
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "eslint.autoFixOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    { "language": "typescript", "autoFix": true },
+    { "language": "typescriptreact", "autoFix": true }
+  ],
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "importCost.bundleSizeDecoration": "gzipped",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
 }

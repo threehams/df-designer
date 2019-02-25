@@ -1,15 +1,13 @@
 import React from "react";
-
 import { connect } from "react-redux";
-import { State } from "../store";
-import { Tile, tilesActions } from "../store/tiles";
+import { tilesActions } from "../store/actions";
 import {
-  Adjustment,
-  CommandSlug,
   selectAdjustmentMap,
   selectCommandMap,
-} from "../store/tool";
+} from "../store/reducers/toolReducer";
+import { Adjustment, CommandSlug, State, Tile } from "../store/types";
 import { Button, Label } from "./";
+import { Box } from "./Box";
 
 interface Props {
   adjustments: Adjustment[];
@@ -32,8 +30,8 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
   tile,
 }) => {
   return (
-    <div>
-      <div data-test="adjustment-bar-item-name">{name}</div>
+    <Box>
+      <Box data-test="adjustment-bar-item-name">{name}</Box>
       {adjustments &&
         adjustments.map(adjustment => {
           const value = tileValue(tile, adjustment);
@@ -60,7 +58,7 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
             />
           );
         })}
-    </div>
+    </Box>
   );
 };
 
@@ -78,7 +76,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
 }) => {
   return (
     <React.Fragment key={adjustment.slug}>
-      <Label key={adjustment.slug} display="block">
+      <Label display="block">
         <input
           type="checkbox"
           value={adjustment.slug}
@@ -86,38 +84,33 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           onChange={() => {
             return setAdjustment(tile.id, adjustment.slug, value ? 0 : 3);
           }}
-          data-test={`adjustment-bar-${adjustment.slug}-check`}
+          data-test="adjustment-bar-check"
+          data-test-item={adjustment.slug}
         />{" "}
         {adjustment.name}
       </Label>
       {value && (
-        <div key={adjustment.slug}>
+        <Box>
           <Button
-            data-test={`adjustment-bar-${adjustment.slug}-decrement`}
+            data-test="adjustment-bar-decrement"
+            data-test-item={adjustment.slug}
             onClick={() => {
-              setAdjustment(
-                tile.id,
-                adjustment.slug,
-                Math.max((value as number) - 1, 1),
-              );
+              setAdjustment(tile.id, adjustment.slug, Math.max(value - 1, 1));
             }}
           >
             -
           </Button>{" "}
           {value}{" "}
           <Button
-            data-test={`adjustment-bar-${adjustment.slug}-increment`}
+            data-test="adjustment-bar-increment"
+            data-test-item={adjustment.slug}
             onClick={() => {
-              setAdjustment(
-                tile.id,
-                adjustment.slug,
-                Math.min((value as number) + 1, 12),
-              );
+              setAdjustment(tile.id, adjustment.slug, Math.min(value + 1, 12));
             }}
           >
             +
           </Button>
-        </div>
+        </Box>
       )}
     </React.Fragment>
   );
@@ -143,7 +136,8 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
         onChange={event => {
           return setAdjustment(tile.id, adjustment.slug, event.target.value);
         }}
-        data-test={`adjustment-bar-${adjustment.slug}-check`}
+        data-test="adjustment-bar-check"
+        data-test-item={adjustment.slug}
       >
         <option value="1">1</option>
         <option value="2">2</option>

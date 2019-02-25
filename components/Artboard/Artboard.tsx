@@ -1,26 +1,24 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
 import keycode from "keycode";
 import * as PIXI from "pixi.js";
-import React, { memo } from "react";
-import { useState } from "react";
+import React, { memo, useState } from "react";
 import { connect } from "react-redux";
-
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
-import { State } from "../../store";
+import { tilesActions } from "../../store/actions";
 import {
-  Chunk,
-  selectChunks,
-  tilesActions,
-  TileSprite,
-} from "../../store/tiles";
-import {
-  Coords,
   selectCommandMap,
-  SelectedCoords,
   selectSelection,
   selectSelectionOffset,
-} from "../../store/tool";
+} from "../../store/reducers/toolReducer";
+import { selectChunks } from "../../store/selectors";
+import {
+  Chunk,
+  Coords,
+  SelectedCoords,
+  State,
+  TileSprite,
+} from "../../store/types";
 import { Cursor } from "../Cursor";
 import { Hotkeys } from "./Hotkeys";
 import { textures, TILE_SIZE } from "./textures";
@@ -33,7 +31,7 @@ const LEFT_MOUSE_BUTTON = 1;
 interface Props {
   chunks: Chunk[];
   clickTile: (x: number, y: number) => any;
-  endClickTile: (keyPressed: Array<keyof typeof keycode.codes>) => any;
+  endClickTile: (keyPressed: (keyof typeof keycode.codes)[]) => any;
   selection: SelectedCoords | null;
   selectionOffset: Coords;
 }

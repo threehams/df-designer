@@ -1,7 +1,6 @@
 import { connect } from "react-redux";
 import { useHotKey, useKeyHandler } from "../../lib/useHotKey";
-import { tilesActions } from "../../store/tiles";
-import { toolActions } from "../../store/tool";
+import { tilesActions, toolActions } from "../../store/actions";
 
 interface HotkeysProps {
   cancel: typeof toolActions.cancel;

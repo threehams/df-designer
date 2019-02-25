@@ -12,7 +12,7 @@
 // the project's config changing)
 const webpack = require("@cypress/webpack-preprocessor");
 
-module.exports = (on, config) => {
+module.exports = on => {
   on(
     "file:preprocessor",
     webpack({

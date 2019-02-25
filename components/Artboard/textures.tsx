@@ -1,12 +1,12 @@
 import { keys } from "../../lib/keys";
-import { tilesetNames } from "../../lib/tilesetNames";
+import { tilesetNames } from "../../static/tilesetNames";
 
 export const TILE_SIZE = 16;
 
 const spriteSheet = PIXI.BaseTexture.fromImage("/static/phoebus.png");
 export type TilesetMap = { [key in keyof typeof tilesetNames]: PIXI.Texture };
 export const textures = keys(tilesetNames).reduce(
-  (result, name) => {
+  (result: TilesetMap, name) => {
     const num = tilesetNames[name];
     const x = (num % TILE_SIZE) * TILE_SIZE;
     const y = Math.floor(num / TILE_SIZE) * TILE_SIZE;

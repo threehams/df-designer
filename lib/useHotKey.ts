@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 type Keycode = keyof typeof keycode.codes;
 
 export const useHotKey = () => {
-  const [keys, setKeys] = useState<Array<Keycode>>([]);
+  const [keys, setKeys] = useState<Keycode[]>([]);
 
   useEffect(() => {
     const set = (event: KeyboardEvent) => {

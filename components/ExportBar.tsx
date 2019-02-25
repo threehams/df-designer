@@ -1,11 +1,10 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-
 import { Button, Flex, Textarea } from ".";
-import { State } from "../store";
-import { ImportMap, selectExported, tilesActions } from "../store/tiles";
-import { Io, Phase, PhaseSlug, selectPhases, toolActions } from "../store/tool";
+import { tilesActions, toolActions } from "../store/actions";
+import { selectPhases } from "../store/reducers/toolReducer";
+import { selectExported } from "../store/selectors";
+import { ImportMap, Io, Phase, PhaseSlug, State } from "../store/types";
 
 interface Props {
   exported: { [Key in PhaseSlug]: string } | null;
@@ -58,7 +57,8 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
               <label>{phase}</label>
 
               <Textarea
-                data-test={`export-text-${phase}`}
+                data-test="export-text"
+                data-test-item={phase}
                 rows={20}
                 key={phase}
                 value={`#${phase}\n${csv}`}
@@ -87,7 +87,8 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
               <React.Fragment key={phase.slug}>
                 <label>{phase.name}</label>
                 <Textarea
-                  data-test={`import-text-${phase.slug}`}
+                  data-test="import-text"
+                  data-test-item={phase.slug}
                   rows={20}
                   value={importValue[phase.slug]}
                   onChange={event => {

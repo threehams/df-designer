@@ -2,12 +2,10 @@ import produce, { applyPatches, Draft, Patch } from "immer";
 import { range } from "lodash";
 import { ActionType, getType } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
-import { Command } from "../tool";
-import { State } from "../types";
-import * as actions from "./actions";
-import { Tile, TilesMap, TilesState, ZPatch } from "./types";
+import { tilesActions } from "../actions";
+import { Command, State, Tile, TilesMap, TilesState, ZPatch } from "../types";
 
-const DEFAULT_STATE: TilesState = {
+export const INITIAL_STATE: TilesState = {
   data: range(0, 128).reduce(
     (result, zIndex) => {
       result[zIndex] = {};
@@ -20,29 +18,6 @@ const DEFAULT_STATE: TilesState = {
   future: [],
   updates: [],
   zLevel: 64,
-};
-
-// be as defensive as possible here
-const initialState = (): TilesState => {
-  if (typeof localStorage === "undefined") {
-    return DEFAULT_STATE;
-  }
-  const json = localStorage.getItem("df-designer-state");
-  if (!json) {
-    return DEFAULT_STATE;
-  }
-  try {
-    const tiles = JSON.parse(json);
-    if (tiles) {
-      return produce(DEFAULT_STATE, draft => {
-        draft.data = tiles;
-      });
-    }
-  } catch (err) {
-    // tslint:disable-next-line no-console
-    console.log(err);
-  }
-  return DEFAULT_STATE;
 };
 
 const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
@@ -77,25 +52,31 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
   };
 };
 
-const baseTilesReducer = (
-  state: TilesState,
-  action: ActionType<typeof actions>,
+export const tilesReducer = (
+  state: TilesState = INITIAL_STATE,
+  action: ActionType<typeof tilesActions>,
 ): TilesState => {
   switch (action.type) {
-    case getType(actions.undo):
+    case getType(tilesActions.undo):
       return changeHistory(state, "undo");
-    case getType(actions.redo):
+    case getType(tilesActions.redo):
       return changeHistory(state, "redo");
+    case getType(tilesActions.setTilesState): {
+      return {
+        ...state,
+        data: action.payload.tiles,
+      };
+    }
   }
   let transactionSteps: Patch[];
   return produce(state, outerDraft => {
     switch (action.type) {
-      case getType(actions.zLevelUp):
+      case getType(tilesActions.zLevelUp):
         if (outerDraft.zLevel < 128) {
           outerDraft.zLevel += 1;
         }
         break;
-      case getType(actions.zLevelDown):
+      case getType(tilesActions.zLevelDown):
         if (outerDraft.zLevel > 0) {
           outerDraft.zLevel -= 1;
         }
@@ -107,7 +88,7 @@ const baseTilesReducer = (
       draft => {
         const currentTiles = state.data[state.zLevel];
         switch (action.type) {
-          case getType(actions.updateTile): {
+          case getType(tilesActions.updateTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
             const newTile = addCommand(command, draft[id], id);
@@ -116,7 +97,7 @@ const baseTilesReducer = (
             }
             break;
           }
-          case getType(actions.fillTiles): {
+          case getType(tilesActions.fillTiles): {
             const { selection, command } = action.payload;
             coordinates.each(selection, ({ id }) => {
               const newTile = addCommand(command, draft[id], id);
@@ -126,7 +107,7 @@ const baseTilesReducer = (
             });
             break;
           }
-          case getType(actions.removeTiles): {
+          case getType(tilesActions.removeTiles): {
             const { selection } = action.payload;
             coordinates.each(selection, ({ id }) => {
               if (currentTiles[id]) {
@@ -135,7 +116,7 @@ const baseTilesReducer = (
             });
             break;
           }
-          case getType(actions.cloneTiles): {
+          case getType(tilesActions.cloneTiles): {
             const { selection, toX, toY } = action.payload;
             coordinates.each(selection, ({ x, y, id: sourceId }) => {
               const destinationId = coordinates.toId(
@@ -153,7 +134,7 @@ const baseTilesReducer = (
             });
             break;
           }
-          case getType(actions.moveTiles): {
+          case getType(tilesActions.moveTiles): {
             const { selection, toX, toY } = action.payload;
             coordinates.each(selection, ({ x, y, id: sourceId }) => {
               const destinationId = coordinates.toId(
@@ -182,7 +163,7 @@ const baseTilesReducer = (
             });
             break;
           }
-          case getType(actions.flipTiles): {
+          case getType(tilesActions.flipTiles): {
             const { selection, direction } = action.payload;
             coordinates.each(selection, ({ x, y, id: sourceId }) => {
               const toX =
@@ -205,7 +186,7 @@ const baseTilesReducer = (
             });
             break;
           }
-          case getType(actions.removeTile): {
+          case getType(tilesActions.removeTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
             const newTile = removeCommand(command, draft[id]);
@@ -216,19 +197,19 @@ const baseTilesReducer = (
             }
             break;
           }
-          case getType(actions.setAdjustment): {
+          case getType(tilesActions.setAdjustment): {
             const { id, name, value } = action.payload;
             draft[id].adjustments[name] = value;
             break;
           }
-          case getType(actions.importAll): {
+          case getType(tilesActions.importAll): {
             deleteAll(draft);
             action.payload.imports.forEach(tile => {
               draft[tile.id] = tile;
             });
             break;
           }
-          case getType(actions.resetBoard): {
+          case getType(tilesActions.resetBoard): {
             deleteAll(draft);
             break;
           }
@@ -245,12 +226,12 @@ const baseTilesReducer = (
     if (transactionSteps && transactionSteps.length) {
       // possible improvement: https://medium.com/@dedels/using-immer-to-compress-immer-patches-f382835b6c69
       outerDraft.transaction = [...outerDraft.transaction, ...transactionSteps];
-      // any transactions invalidate the future
+      // any transtilesActions invalidate the future
       outerDraft.future = [];
     }
     if (
-      action.type !== getType(actions.updateTile) &&
-      action.type !== getType(actions.removeTile) &&
+      action.type !== getType(tilesActions.updateTile) &&
+      action.type !== getType(tilesActions.removeTile) &&
       outerDraft.transaction.length
     ) {
       outerDraft.past.push({
@@ -266,17 +247,6 @@ const deleteAll = (draft: Draft<TilesMap>) => {
   for (const id of Object.keys(draft)) {
     delete draft[id];
   }
-};
-
-export const tilesReducer = (
-  state = initialState(),
-  action: ActionType<typeof actions>,
-) => {
-  const newState = baseTilesReducer(state, action);
-  if (typeof localStorage !== "undefined") {
-    localStorage.setItem("df-designer-state", JSON.stringify(newState.data));
-  }
-  return newState;
 };
 
 const removeCommand = (

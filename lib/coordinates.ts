@@ -1,5 +1,5 @@
 import { range } from "lodash";
-import { Coords, SelectedCoords } from "../store/tool";
+import { Coords, SelectedCoords } from "../store/types";
 
 export const coordinatesFromId = (id: string) => {
   const [x, y] = id.split(",");
