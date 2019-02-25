@@ -1,47 +1,24 @@
-type Locators =
-  | "adjustment-bar-item-name"
-  | "adjustment-bar-check"
-  | "adjustment-bar-decrement"
-  | "adjustment-bar-increment"
-  | "adjustment-bar-check"
-  | "stage"
-  | "phase"
-  | "command"
-  | "import"
-  | "export"
-  | "export-text"
-  | "export-download-all"
-  | "import-text"
-  | "import-all"
-  | "selection-flip-horizontal"
-  | "selection-flip-vertical"
-  | "selection-delete"
-  | "reset"
-  | "undo"
-  | "redo"
-  | "tool"
-  | "toolbar"
-  | "z-level-down"
-  | "z-level"
-  | "z-level-up";
+import { Locators } from "../locators";
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  interface Chainable<Subject> {
-    /**
-     * Get an element by data-test attribute.
-     * @example
-     * cy.getId("print-button")
-     */
-    getId<S = any>(
-      id: Locators | Locators[],
-      options?: Partial<Loggable & Timeoutable & { item?: string }>,
-    ): Chainable<S>;
-    getId<S = any>(
-      id: Locators | Locators[],
-      item: string,
-      options?: Partial<Loggable & Timeoutable>,
-    ): Chainable<S>;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    interface Chainable<Subject> {
+      /**
+       * Get an element by data-test attribute.
+       * @example
+       * cy.getId("print-button")
+       */
+      getId<S = any>(
+        id: Locators | Locators[],
+        options?: Partial<Loggable & Timeoutable & { item?: string }>,
+      ): Chainable<S>;
+      getId<S = any>(
+        id: Locators | Locators[],
+        item: string,
+        options?: Partial<Loggable & Timeoutable>,
+      ): Chainable<S>;
+    }
   }
 }
 

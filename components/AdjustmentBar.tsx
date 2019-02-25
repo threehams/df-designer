@@ -7,6 +7,7 @@ import {
 } from "../store/reducers/toolReducer";
 import { Adjustment, CommandSlug, State, Tile } from "../store/types";
 import { Button, Label } from "./";
+import { Box } from "./Box";
 
 interface Props {
   adjustments: Adjustment[];
@@ -29,8 +30,8 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
   tile,
 }) => {
   return (
-    <div>
-      <div data-test="adjustment-bar-item-name">{name}</div>
+    <Box>
+      <Box data-test="adjustment-bar-item-name">{name}</Box>
       {adjustments &&
         adjustments.map(adjustment => {
           const value = tileValue(tile, adjustment);
@@ -57,7 +58,7 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
             />
           );
         })}
-    </div>
+    </Box>
   );
 };
 
@@ -89,7 +90,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
         {adjustment.name}
       </Label>
       {value && (
-        <div>
+        <Box>
           <Button
             data-test="adjustment-bar-decrement"
             data-test-item={adjustment.slug}
@@ -109,7 +110,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           >
             +
           </Button>
-        </div>
+        </Box>
       )}
     </React.Fragment>
   );
