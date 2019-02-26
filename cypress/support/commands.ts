@@ -1,5 +1,16 @@
 import { Locators } from "../locators";
 
+interface ItemLocator<T> {
+  name: T;
+  item: string;
+  index?: never;
+}
+interface IndexLocator<T> {
+  name: T;
+  index: number;
+  item?: never;
+}
+type Locator<T> = string | ItemLocator<T> | IndexLocator<T>;
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -9,15 +20,10 @@ declare global {
        * @example
        * cy.getId("print-button")
        */
-      getId<S = any>(
-        id: Locators | Locators[],
-        options?: Partial<Loggable & Timeoutable & { item?: string }>,
-      ): Chainable<S>;
-      getId<S = any>(
-        id: Locators | Locators[],
-        item: string,
+      getId<T = Locators>(
+        id: Locator<T> | Locator<T>[],
         options?: Partial<Loggable & Timeoutable>,
-      ): Chainable<S>;
+      ): Chainable<JQuery<HTMLElement>>;
     }
   }
 }
@@ -33,25 +39,46 @@ Cypress.SelectorPlayground.defaults({
 
     const parents = Array.from(element.parents("[data-test]"))
       .reverse()
-      .map(parent => `"${parent.dataset.test}"`)
+      .map(parent => {
+        const id = parent.dataset["test"];
+        const itemId = parent.dataset["test-item"];
+        if (itemId) {
+          return `{ name: "${id}", item: "${itemId}" }`;
+        }
+        return `"${id}"`;
+      })
       .join(", ");
 
-    const base = parents ? `[${parents}, "${test}"]` : `"${test}"`;
     const testItem = element.data("test-item");
-    if (testItem) {
-      return `${base}, "${testItem}"`;
-    }
-    return base;
+    const selector = testItem
+      ? `{ name: "${test}", item: "${testItem}" }`
+      : `"${test}"`;
+    return parents ? `[${parents}, ${selector}]` : `${selector}`;
   },
 });
-Cypress.Commands.add("getId", (ids: string | string[], item, options = {}) => {
-  if (typeof item !== "string") {
-    options = item;
-  }
-  ids = Array.isArray(ids) ? ids : [ids];
-  const itemSelector = item ? `[data-test-item=${item}]` : "";
-  return cy.get(
-    `${ids.map(id => `[data-test=${id}]`).join(" ")}${itemSelector}`,
-    options,
-  );
-});
+Cypress.Commands.add(
+  "getId",
+  <T = Locators>(
+    locators: Locator<T> | Locator<T>[],
+    options: Partial<Cypress.Loggable & Cypress.Timeoutable> = {},
+  ) => {
+    locators = Array.isArray(locators) ? locators : [locators];
+
+    return cy.get(
+      locators
+        .map(locator => {
+          if (typeof locator === "string") {
+            return `[data-test=${locator}]`;
+          }
+          if (locator.item !== undefined) {
+            return `[data-test=${locator.name}][data-test-item=${
+              locator.item
+            }]`;
+          }
+          return `[data-test=${locator.name}]:eq(${locator.index})`;
+        })
+        .join(" "),
+      options,
+    );
+  },
+);
