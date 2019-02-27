@@ -1,18 +1,10 @@
+import { useActionCreators, useMapState } from "@epeli/redux-hooks";
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import { Button, Flex, Textarea } from ".";
 import { tilesActions, toolActions } from "../store/actions";
 import { selectPhases } from "../store/reducers/toolReducer";
 import { selectExported } from "../store/selectors";
-import { ImportMap, Io, Phase, PhaseSlug, State } from "../store/types";
-
-interface Props {
-  exported: { [Key in PhaseSlug]: string } | null;
-  importAll: typeof tilesActions.importAll;
-  io: Io | null;
-  setIo: typeof toolActions.setIo;
-  phases: Phase[];
-}
+import { ImportMap, State } from "../store/types";
 
 const download = (filename: string, text: string) => {
   const element = document.createElement("a");
@@ -21,13 +13,18 @@ const download = (filename: string, text: string) => {
   element.click();
 };
 
-export const ExportBarBase: React.FunctionComponent<Props> = ({
-  exported,
-  importAll,
-  io,
-  setIo,
-  phases,
-}) => {
+export const ExportBar: React.FunctionComponent = () => {
+  const { io, exported, phases } = useMapState((state: State) => {
+    return {
+      io: state.tool.io,
+      exported: state.tool.io === "export" ? selectExported(state) : null,
+      phases: selectPhases(),
+    };
+  });
+  const { importAll, setIo } = useActionCreators({
+    ...tilesActions,
+    ...toolActions,
+  });
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
@@ -113,18 +110,3 @@ export const ExportBarBase: React.FunctionComponent<Props> = ({
     </Flex>
   );
 };
-
-export const ExportBar = connect(
-  (state: State) => {
-    const io = state.tool.io;
-    return {
-      io,
-      exported: io === "export" ? selectExported(state) : null,
-      phases: selectPhases(),
-    };
-  },
-  {
-    importAll: tilesActions.importAll,
-    setIo: toolActions.setIo,
-  },
-)(ExportBarBase);

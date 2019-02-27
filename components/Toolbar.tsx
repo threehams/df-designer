@@ -1,37 +1,31 @@
-import { connect } from "react-redux";
+import { useActionCreators, useMapState } from "@epeli/redux-hooks";
 import { tilesActions, toolActions } from "../store/actions";
 import { selectTool } from "../store/reducers/toolReducer";
-import { selectExported } from "../store/selectors";
-import { State, Tool } from "../store/types";
+import { State } from "../store/types";
 import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 
-interface Props {
-  undo: typeof tilesActions.undo;
-  redo: typeof tilesActions.redo;
-  setTool: typeof toolActions.setTool;
-  resetBoard: typeof tilesActions.resetBoard;
-  tool: Tool;
-  undoSteps: number;
-  redoSteps: number;
-  zLevel: number;
-  zLevelDown: typeof tilesActions.zLevelDown;
-  zLevelUp: typeof tilesActions.zLevelUp;
-}
-
-const ToolbarBase: React.FunctionComponent<Props> = ({
-  undo,
-  redo,
-  resetBoard,
-  setTool,
-  tool,
-  undoSteps,
-  redoSteps,
-  zLevel,
-  zLevelDown,
-  zLevelUp,
-}) => {
+export const Toolbar: React.FunctionComponent = () => {
+  const { tool, undoSteps, redoSteps, zLevel } = useMapState((state: State) => {
+    return {
+      tool: selectTool(state),
+      undoSteps: state.tiles.past.length,
+      redoSteps: state.tiles.future.length,
+      zLevel: state.tiles.zLevel,
+    };
+  });
+  const {
+    undo,
+    redo,
+    setTool,
+    resetBoard,
+    zLevelDown,
+    zLevelUp,
+  } = useActionCreators({
+    ...tilesActions,
+    ...toolActions,
+  });
   return (
     <Flex p={2} data-test="toolbar">
       <Box mr={3}>
@@ -98,23 +92,3 @@ const ToolbarBase: React.FunctionComponent<Props> = ({
     </Flex>
   );
 };
-
-export const Toolbar = connect(
-  (state: State) => {
-    return {
-      tool: selectTool(state),
-      exported: state.tool.export ? selectExported(state) : null,
-      undoSteps: state.tiles.past.length,
-      redoSteps: state.tiles.future.length,
-      zLevel: state.tiles.zLevel,
-    };
-  },
-  {
-    undo: tilesActions.undo,
-    redo: tilesActions.redo,
-    setTool: toolActions.setTool,
-    resetBoard: tilesActions.resetBoard,
-    zLevelDown: tilesActions.zLevelDown,
-    zLevelUp: tilesActions.zLevelUp,
-  },
-)(ToolbarBase);

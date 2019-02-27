@@ -8,17 +8,23 @@ export const useHotKey = () => {
   const [keys, setKeys] = useState<Keycode[]>([]);
 
   useEffect(() => {
-    const set = (event: KeyboardEvent) => {
-      const keyCode = keycode(event) as Keycode;
-      if (event.keyCode && !keys.includes(keyCode)) {
-        setKeys([...keys.filter(key => key !== keyCode), keyCode]);
-      }
-    };
-    const reset = (event: KeyboardEvent) => {
-      setKeys(keys.filter(key => key !== keycode(event)));
-    };
-    const removeKeydown = addEventListener(window, "keydown", set);
-    const removeKeyup = addEventListener(window, "keyup", reset);
+    const removeKeydown = addEventListener(
+      window,
+      "keydown",
+      (event: KeyboardEvent) => {
+        const keyCode = keycode(event) as Keycode;
+        if (event.keyCode && !keys.includes(keyCode)) {
+          setKeys([...keys.filter(key => key !== keyCode), keyCode]);
+        }
+      },
+    );
+    const removeKeyup = addEventListener(
+      window,
+      "keyup",
+      (event: KeyboardEvent) => {
+        setKeys(keys.filter(key => key !== keycode(event)));
+      },
+    );
     return () => {
       removeKeydown();
       removeKeyup();
@@ -29,16 +35,19 @@ export const useHotKey = () => {
 
 export const useKeyHandler = (
   handler: (keyPressed: Keycode) => void,
-  watched?: any[],
+  watched?: any[], // eslint-disable-line @typescript-eslint/no-explicit-any
 ) => {
   useEffect(() => {
-    const set = (event: KeyboardEvent) => {
-      const keyPressed = keycode(event);
-      if (keyPressed) {
-        handler(keyPressed as Keycode);
-      }
-    };
-    const removeKeydown = addEventListener(window, "keydown", set);
+    const removeKeydown = addEventListener(
+      window,
+      "keydown",
+      (event: KeyboardEvent) => {
+        const keyPressed = keycode(event);
+        if (keyPressed) {
+          handler(keyPressed as Keycode);
+        }
+      },
+    );
     return () => {
       removeKeydown();
     };

@@ -1,10 +1,40 @@
 import { range } from "lodash";
 import * as coordinates from "../../lib/coordinates";
 import { wallMap } from "../../static/tilesetNames";
-import { selectLevelTiles } from "../reducers/tilesReducer";
-import { selectCommandMap } from "../reducers/toolReducer";
+import { selectLevelTiles, selectTile } from "../reducers/tilesReducer";
+import { selectCommandMap, selectSelection } from "../reducers/toolReducer";
 import { SelectedCoords, State, Tile, TilesMap, TileSprite } from "../types";
 import { selectExtents } from "./extentsSelectors";
+
+export const selectSelectedTile = (state: State) => {
+  const selection = selectSelection(state);
+  if (!selection) {
+    return {
+      command: null,
+      multiSelect: false,
+      tile: null,
+    };
+  }
+  const commandMap = selectCommandMap();
+
+  if (
+    selection.startX !== selection.endX ||
+    selection.startY !== selection.endY
+  ) {
+    return {
+      command: null,
+      multiSelect: true,
+      tile: null,
+    };
+  }
+  const tile =
+    selectTile(state, { x: selection.startX, y: selection.startY }) || null;
+  return {
+    command: tile && tile.item ? commandMap[tile.item] : null,
+    tile,
+    multiSelect: false,
+  };
+};
 
 const CHUNK_SIZE = 10;
 export const selectChunks = (state: State) => {
