@@ -6831,10 +6831,10 @@ typescript@3.3.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3.tgz#f1657fc7daa27e1a8930758ace9ae8da31403221"
   integrity sha512-Y21Xqe54TBVp+VDSNbuDYdGw0BpoR/Q6wo/+35M8PAU0vipahnyduJWirxxdxjsAkS7hue53x2zp8gz7F05u0A==
 
-typescript@^3.4.0-dev.20190223:
-  version "3.4.0-dev.20190223"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.0-dev.20190223.tgz#e7891bf0d66bc5d952c7b328005f8aff52e35261"
-  integrity sha512-LbPIq3ghVX46Xon22BPclxw1sF4VsTYkst2Vsvu1yDfF6ALZiilhFGznDdh69SSdRHTO5TybSeVdjrcts4ZNpg==
+typescript@^3.3.3333:
+  version "3.3.3333"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.3.3333.tgz#171b2c5af66c59e9431199117a3bcadc66fdcfd6"
+  integrity sha512-JjSKsAfuHBE/fB2oZ8NxtRTk5iGcg6hkYXMnZ3Wc+b2RSqejEqTaem11mHASMnFilHrax3sLK0GDzcJrekZYLw==
 
 ua-parser-js@^0.7.18:
   version "0.7.19"
