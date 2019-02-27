@@ -1,5 +1,21 @@
 version: 2.1
 jobs:
+  lint:
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-app
+      - run: yarn install
+      - save_cache:
+          key: v1-app
+          paths:
+            # since we use Yarn it caches NPM modules in ~/.cache
+            # and Cypress caches its binary there!
+            # to confirm:
+            #   yarn cache dir
+            #   npx print-cachedir Cypress
+            - ~/.cache
+      - run: yarn lint
   build:
     docker:
       - image: cypress/base
