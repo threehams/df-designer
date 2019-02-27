@@ -1,6 +1,11 @@
 version: 2.1
 jobs:
   lint:
+    docker:
+      - image: cypress/base
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
     steps:
       - checkout
       - restore_cache:
