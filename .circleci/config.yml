@@ -21,6 +21,7 @@ jobs:
             #   npx print-cachedir Cypress
             - ~/.cache
       - run: yarn lint
+      - run: yarn tsc
   build:
     docker:
       - image: cypress/base
