@@ -1,27 +1,5 @@
 version: 2.1
 jobs:
-  lint:
-    docker:
-      - image: cypress/base
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    steps:
-      - checkout
-      - restore_cache:
-          key: v1-app
-      - run: yarn install
-      - save_cache:
-          key: v1-app
-          paths:
-            # since we use Yarn it caches NPM modules in ~/.cache
-            # and Cypress caches its binary there!
-            # to confirm:
-            #   yarn cache dir
-            #   npx print-cachedir Cypress
-            - ~/.cache
-      - run: yarn lint
-      - run: yarn tsc
   build:
     docker:
       - image: cypress/base
@@ -44,14 +22,10 @@ jobs:
             #   npx print-cachedir Cypress
             - ~/.cache
       - run: yarn cy:test
+      - run: yarn lint
+      - run: yarn tsc
       # store videos and screenshots (if any) as CI artifacts
       - store_artifacts:
           path: cypress/videos
       - store_artifacts:
           path: cypress/screenshots
-workflows:
-  version: 2
-  test_and_lint:
-    jobs:
-      - build
-      - lint
