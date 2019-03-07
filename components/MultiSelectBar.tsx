@@ -1,17 +1,10 @@
-import { connect } from "react-redux";
+import { useActionCreators } from "@epeli/redux-hooks";
 import { tilesActions } from "../store/actions";
 import { Button } from "./";
 import { Flex } from "./Flex";
 
-interface Props {
-  flipSelection: (direction: "horizontal" | "vertical") => any;
-  removeSelection: () => any;
-}
-
-export const MultiSelectBarBase: React.FunctionComponent<Props> = ({
-  flipSelection,
-  removeSelection,
-}) => {
+export const MultiSelectBar: React.FunctionComponent = () => {
+  const { flipSelection, removeSelection } = useActionCreators(tilesActions);
   return (
     <Flex flexDirection="column" flexWrap="nowrap">
       <Button
@@ -34,11 +27,3 @@ export const MultiSelectBarBase: React.FunctionComponent<Props> = ({
     </Flex>
   );
 };
-
-export const MultiSelectBar = connect(
-  null,
-  {
-    flipSelection: tilesActions.flipSelection,
-    removeSelection: tilesActions.removeSelection,
-  },
-)(MultiSelectBarBase);

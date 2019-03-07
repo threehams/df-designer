@@ -1,18 +1,13 @@
+import { useActionCreators, useMapState } from "@epeli/redux-hooks";
 import React from "react";
-import { connect } from "react-redux";
 import { tilesActions } from "../store/actions";
-import {
-  selectAdjustmentMap,
-  selectCommandMap,
-} from "../store/reducers/toolReducer";
-import { Adjustment, CommandSlug, State, Tile } from "../store/types";
+import { selectCommandMap } from "../store/reducers/toolReducer";
+import { selectAdjustments } from "../store/selectors";
+import { Adjustment, State, Tile } from "../store/types";
 import { Button, Label } from "./";
 import { Box } from "./Box";
 
 interface Props {
-  adjustments: Adjustment[];
-  name: string;
-  setAdjustment: typeof tilesActions.setAdjustment;
   tile: Tile;
 }
 
@@ -23,12 +18,14 @@ const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
   return tile.adjustments[adjustment.slug];
 };
 
-export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
-  adjustments,
-  name,
-  setAdjustment,
-  tile,
-}) => {
+export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
+  const { name, adjustments } = useMapState((state: State) => {
+    const commandMap = selectCommandMap();
+    return {
+      name: commandMap[tile.item!].name,
+      adjustments: selectAdjustments(state, { item: tile.item }),
+    };
+  });
   return (
     <Box>
       <Box data-test="adjustment-bar-item-name">{name}</Box>
@@ -43,7 +40,6 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
                 value={numberValue}
                 adjustment={adjustment}
                 tile={tile}
-                setAdjustment={setAdjustment}
               />
             );
           }
@@ -54,7 +50,6 @@ export const AdjustmentBarBase: React.FunctionComponent<Props> = ({
               value={selectValue}
               adjustment={adjustment}
               tile={tile}
-              setAdjustment={setAdjustment}
             />
           );
         })}
@@ -66,14 +61,13 @@ interface ResizeInputProps {
   adjustment: Adjustment;
   value: number | void;
   tile: Tile;
-  setAdjustment: typeof tilesActions.setAdjustment;
 }
 const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
   adjustment,
   value,
   tile,
-  setAdjustment,
 }) => {
+  const { setAdjustment } = useActionCreators(tilesActions);
   return (
     <React.Fragment key={adjustment.slug}>
       <Label display="block">
@@ -82,7 +76,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           value={adjustment.slug}
           checked={!!value}
           onChange={() => {
-            return setAdjustment(tile.id, adjustment.slug, value ? 0 : 3);
+            setAdjustment(tile.id, adjustment.slug, value ? 0 : 3);
           }}
           data-test="adjustment-bar-check"
           data-test-item={adjustment.slug}
@@ -120,14 +114,13 @@ interface SelectInputProps {
   adjustment: Adjustment;
   value: string | null | void;
   tile: Tile;
-  setAdjustment: typeof tilesActions.setAdjustment;
 }
 const SelectInput: React.FunctionComponent<SelectInputProps> = ({
   adjustment,
   value,
   tile,
-  setAdjustment,
 }) => {
+  const { setAdjustment } = useActionCreators(tilesActions);
   return (
     <Label key={adjustment.slug} display="block">
       {adjustment.name}
@@ -144,31 +137,4 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
       </select>
     </Label>
   );
-};
-
-interface ExternalProps {
-  tile: Tile;
-}
-
-export const AdjustmentBar = connect(
-  (state: State, { tile }: ExternalProps) => {
-    const commandMap = selectCommandMap();
-    const adjustments = selectAdjustments(state, { item: tile.item });
-    return {
-      name: commandMap[tile.item!].name,
-      adjustments,
-    };
-  },
-  { setAdjustment: tilesActions.setAdjustment },
-)(AdjustmentBarBase);
-
-interface SelectAdjustmentProps {
-  item: CommandSlug | null;
-}
-
-const selectAdjustments = (_: State, props: SelectAdjustmentProps) => {
-  const adjustmentMap = selectAdjustmentMap();
-  return Object.values(adjustmentMap).filter(adjustment => {
-    return adjustment.requires === props.item;
-  });
 };

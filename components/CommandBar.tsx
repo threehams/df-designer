@@ -1,32 +1,25 @@
-import { connect } from "react-redux";
+import { useActionCreators, useMapState } from "@epeli/redux-hooks";
 import { Button } from ".";
 import { toolActions } from "../store/actions";
 import {
   selectCommands,
   selectCurrentCommand,
   selectPhase,
-  selectPhases,
 } from "../store/reducers/toolReducer";
-import { Command, Phase, PhaseSlug, State } from "../store/types";
+import { State } from "../store/types";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 
-interface Props {
-  phase: PhaseSlug;
-  setPhase: typeof toolActions.setPhase;
-  command: Command;
-  setCommand: typeof toolActions.setCommand;
-  commands: Command[];
-  phases: Phase[];
-}
-
-const CommandBarBase: React.FunctionComponent<Props> = ({
-  phase,
-  setPhase,
-  command,
-  setCommand,
-  commands,
-}) => {
+export const CommandBar: React.FunctionComponent = () => {
+  const { phase, command, commands } = useMapState((state: State) => {
+    const ph = selectPhase(state);
+    return {
+      phase: ph,
+      command: selectCurrentCommand(state),
+      commands: selectCommands(state, { phase: ph }),
+    };
+  });
+  const { setPhase, setCommand } = useActionCreators(toolActions);
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
       <Box mb={3}>
@@ -78,19 +71,3 @@ const CommandBarBase: React.FunctionComponent<Props> = ({
     </Flex>
   );
 };
-
-export const CommandBar = connect(
-  (state: State) => {
-    const phase = selectPhase(state);
-    return {
-      phase,
-      command: selectCurrentCommand(state),
-      phases: selectPhases(),
-      commands: selectCommands(state, { phase }),
-    };
-  },
-  {
-    setPhase: toolActions.setPhase,
-    setCommand: toolActions.setCommand,
-  },
-)(CommandBarBase);

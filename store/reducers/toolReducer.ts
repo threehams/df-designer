@@ -128,7 +128,7 @@ export const selectCurrentCommand = (state: State) => {
 };
 
 export const selectCommands = createSelector(
-  (_: any, props: { phase: PhaseSlug | null }) => props.phase,
+  (_: unknown, props: { phase: PhaseSlug | null }) => props.phase,
   phase => {
     return Object.values(commandMap).filter(command =>
       phase ? command.phase === phase : true,

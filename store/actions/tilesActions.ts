@@ -57,7 +57,7 @@ export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
 export const setAdjustment = createAction(
   "app/tiles/SET_ADJUSTMENT",
   resolve => {
-    return (id: string, name: AdjustmentKey, value: any) => {
+    return (id: string, name: AdjustmentKey, value: number | string) => {
       return resolve({ id, name, value });
     };
   },

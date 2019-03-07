@@ -27,6 +27,7 @@ export const configureStore = (
     });
   }
   if (!options.isServer) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     store.dispatch<any>(tilesActions.hydrateTiles());
     store.subscribe(() => {
       const state = store.getState();
