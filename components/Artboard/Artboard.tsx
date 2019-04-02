@@ -1,4 +1,4 @@
-import { useActionCreators, useMapState } from "@epeli/redux-hooks";
+import { useActionCreators, useSelect } from "@epeli/redux-hooks";
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
@@ -20,7 +20,7 @@ PIXI.utils.skipHello();
 const LEFT_MOUSE_BUTTON = 1;
 
 const Artboard: React.FunctionComponent = () => {
-  const { chunks, selection, selectionOffset } = useMapState((state: State) => {
+  const { chunks, selection, selectionOffset } = useSelect((state: State) => {
     return {
       chunks: selectChunks(state),
       selection: selectSelection(state),

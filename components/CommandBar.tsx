@@ -1,4 +1,4 @@
-import { useActionCreators, useMapState } from "@epeli/redux-hooks";
+import { useActionCreators, useSelect } from "@epeli/redux-hooks";
 import { Button } from ".";
 import { toolActions } from "../store/actions";
 import {
@@ -11,7 +11,7 @@ import { Box } from "./Box";
 import { Flex } from "./Flex";
 
 export const CommandBar: React.FunctionComponent = () => {
-  const { phase, command, commands } = useMapState((state: State) => {
+  const { phase, command, commands } = useSelect((state: State) => {
     const ph = selectPhase(state);
     return {
       phase: ph,

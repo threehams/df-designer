@@ -226,7 +226,10 @@ export interface Tile {
 export interface TilesMap {
   readonly [coordinates: string]: Tile;
 }
-export interface ZPatch { zLevel: number; patches: Patch[] }
+export interface ZPatch {
+  zLevel: number;
+  patches: Patch[];
+}
 export interface TilesState {
   readonly data: {
     readonly [zLevel: string]: TilesMap;

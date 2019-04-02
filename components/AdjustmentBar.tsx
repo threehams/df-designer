@@ -1,4 +1,4 @@
-import { useActionCreators, useMapState } from "@epeli/redux-hooks";
+import { useActionCreators, useSelect } from "@epeli/redux-hooks";
 import React from "react";
 import { tilesActions } from "../store/actions";
 import { selectCommandMap } from "../store/reducers/toolReducer";
@@ -19,7 +19,7 @@ const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
 };
 
 export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
-  const { name, adjustments } = useMapState((state: State) => {
+  const { name, adjustments } = useSelect((state: State) => {
     const commandMap = selectCommandMap();
     return {
       name: commandMap[tile.item!].name,

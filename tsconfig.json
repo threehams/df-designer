@@ -15,6 +15,6 @@
     "sourceMap": true,
     "strict": true,
     "target": "esnext",
-    "types": ["cypress", "webpack-env"]
+    "types": ["webpack-env", "cypress"]
   }
 }
