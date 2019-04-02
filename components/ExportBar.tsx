@@ -1,4 +1,4 @@
-import { useActionCreators, useMapState } from "@epeli/redux-hooks";
+import { useActionCreators, useSelect } from "@epeli/redux-hooks";
 import React, { useState } from "react";
 import { Button, Flex, Textarea } from ".";
 import { tilesActions, toolActions } from "../store/actions";
@@ -14,7 +14,7 @@ const download = (filename: string, text: string) => {
 };
 
 export const ExportBar: React.FunctionComponent = () => {
-  const { io, exported, phases } = useMapState((state: State) => {
+  const { io, exported, phases } = useSelect((state: State) => {
     return {
       io: state.tool.io,
       exported: state.tool.io === "export" ? selectExported(state) : null,
