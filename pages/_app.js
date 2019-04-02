@@ -1,5 +1,5 @@
 import { HooksProvider } from "@epeli/redux-hooks";
-import "core-js/fn/array/flat-map";
+import "core-js/features/array/flatMap";
 import { setAutoFreeze } from "immer";
 import withRedux from "next-redux-wrapper";
 import App, { Container } from "next/app";
