@@ -1,11 +1,7 @@
 import { useActionCreators, useSelect } from "@epeli/redux-hooks";
 import { Button } from ".";
 import { toolActions } from "../store/actions";
-import {
-  selectCommands,
-  selectCurrentCommand,
-  selectPhase,
-} from "../store/reducers/toolReducer";
+import { selectCommands, selectCurrentCommand, selectPhase } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Box } from "./Box";
 import { Flex } from "./Flex";

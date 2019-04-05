@@ -4,18 +4,8 @@ import * as coordinates from "../../lib/coordinates";
 import { entries } from "../../lib/entries";
 import { keys } from "../../lib/keys";
 import { selectLevelTiles } from "../reducers/tilesReducer";
-import {
-  selectAdjustmentMap,
-  selectCommandMap,
-  selectPhases,
-} from "../reducers/toolReducer";
-import {
-  AdjustmentData,
-  CommandSlug,
-  PhaseSlug,
-  SelectedCoords,
-  State,
-} from "../types";
+import { selectAdjustmentMap, selectCommandMap, selectPhases } from "../reducers/toolReducer";
+import { AdjustmentData, CommandSlug, PhaseSlug, SelectedCoords, State } from "../types";
 import { selectExtents } from "./extentsSelectors";
 
 type Grids = { [key in PhaseSlug]: string[][] | null };

@@ -5,10 +5,7 @@ import React, { memo, useState } from "react";
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
 import { tilesActions } from "../../store/actions";
-import {
-  selectSelection,
-  selectSelectionOffset,
-} from "../../store/reducers/toolReducer";
+import { selectSelection, selectSelectionOffset } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
 import { Coords, SelectedCoords, State, TileSprite } from "../../store/types";
 import { Cursor } from "../Cursor";

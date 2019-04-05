@@ -5,24 +5,8 @@ import { createAction } from "typesafe-actions";
 import { toolActions } from ".";
 import * as coordinates from "../../lib/coordinates";
 import { selectTile } from "../reducers/tilesReducer";
-import {
-  selectAdjustmentMap,
-  selectCommandMap,
-  selectCurrentCommand,
-  selectSelection,
-  selectTool,
-} from "../reducers/toolReducer";
-import {
-  Adjustment,
-  AdjustmentKey,
-  Command,
-  ImportMap,
-  PhaseSlug,
-  SelectedCoords,
-  State,
-  Tile,
-  TilesState,
-} from "../types";
+import { selectAdjustmentMap, selectCommandMap, selectCurrentCommand, selectSelection, selectTool } from "../reducers/toolReducer";
+import { Adjustment, AdjustmentKey, Command, ImportMap, PhaseSlug, SelectedCoords, State, Tile, TilesState } from "../types";
 
 export const hydrateTiles = () => {
   return (dispatch: Dispatch) => {

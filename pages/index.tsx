@@ -1,14 +1,7 @@
 import { Global } from "@emotion/core";
 import { useSelect } from "@epeli/redux-hooks";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  CommandBar,
-  ExportBar,
-  Grid,
-  SelectBar,
-  Toolbar,
-} from "../components/";
+import { Box, CommandBar, ExportBar, Grid, SelectBar, Toolbar } from "../components/";
 import { Hotkeys } from "../components/Hotkeys";
 import { selectTool } from "../store/reducers/toolReducer";
 import { State } from "../store/types";

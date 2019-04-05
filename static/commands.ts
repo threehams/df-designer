@@ -1,6 +1,4 @@
-import { AdjustmentMap, CommandMap } from "../store/types";
-
-export const commandMap: CommandMap = {
+export const commandMap = {
   mine: {
     name: "Mine",
     slug: "mine",
@@ -909,9 +907,9 @@ export const commandMap: CommandMap = {
     type: "item",
     textures: ["stockpileEmpty"],
   },
-};
+} as const;
 
-export const adjustmentMap: AdjustmentMap = {
+export const adjustmentMap = {
   makeBedroom: {
     name: "Make Bedroom",
     slug: "makeBedroom",
@@ -1090,4 +1088,4 @@ export const adjustmentMap: AdjustmentMap = {
     selectCommand: "stockpile",
     selectName: "Stockpile Type",
   },
-};
+} as const;

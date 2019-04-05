@@ -1,26 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  alignSelf,
-  AlignSelfProps,
-  background,
-  BackgroundProps,
-  display,
-  DisplayProps,
-  gridArea,
-  GridAreaProps,
-  height,
-  HeightProps,
-  justifySelf,
-  JustifySelfProps,
-  maxWidth,
-  MaxWidthProps,
-  overflow,
-  OverflowProps,
-  space,
-  SpaceProps,
-  width,
-  WidthProps,
-} from "styled-system";
+import { alignSelf, AlignSelfProps, background, BackgroundProps, display, DisplayProps, gridArea, GridAreaProps, height, HeightProps, justifySelf, JustifySelfProps, maxWidth, MaxWidthProps, overflow, OverflowProps, space, SpaceProps, width, WidthProps } from "styled-system";
 
 export const Box = styled.div<
   BackgroundProps &

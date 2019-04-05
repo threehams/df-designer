@@ -1,16 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  display,
-  DisplayProps,
-  gridTemplateAreas,
-  GridTemplatesAreasProps,
-  height,
-  HeightProps,
-  maxWidth,
-  MaxWidthProps,
-  space,
-  SpaceProps,
-} from "styled-system";
+import { display, DisplayProps, gridTemplateAreas, GridTemplatesAreasProps, height, HeightProps, maxWidth, MaxWidthProps, space, SpaceProps } from "styled-system";
 
 export const Grid = styled.div<
   DisplayProps &

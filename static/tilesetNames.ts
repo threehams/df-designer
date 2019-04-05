@@ -271,7 +271,7 @@ export const tilesetNames = {
   bodyPart: 253, // 253 ² Body parts, vermin remains
   block: 254, // 254 ■ Blocks, minecarts*, vaults on world map, human houses/shops on travel map, progress bars, move indicator frame 3 (adventure mode)
   star: 255, // 255
-};
+} as const;
 
 export const wallMap: { [key: string]: keyof typeof tilesetNames } = {
   0b00000001: "smoothWallSE",
