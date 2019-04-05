@@ -44,6 +44,7 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
   return {
     ...state,
     [to]: state[to].concat([redo as ZPatch]),
+    [from]: state[from].slice(0, state[from].length - 1),
     data: {
       ...state.data,
       [transaction.zLevel]: newTiles,
