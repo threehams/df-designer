@@ -1,44 +1,41 @@
-import { useActionCreators } from "@epeli/redux-hooks";
+import { useReduxDispatch } from "@mrwolfz/react-redux-hooks-poc";
 import { useHotKey, useKeyHandler } from "../lib/useHotKey";
-import { tilesActions, toolActions } from "../store/actions";
+import {
+  redo,
+  removeSelection,
+  undo,
+  zLevelDown,
+  zLevelUp,
+} from "../store/actions/tilesActions";
+import { cancel } from "../store/actions/toolActions";
 
 export const Hotkeys: React.FunctionComponent = () => {
-  const {
-    cancel,
-    redo,
-    removeSelection,
-    undo,
-    zLevelDown,
-    zLevelUp,
-  } = useActionCreators({
-    ...toolActions,
-    ...tilesActions,
-  });
   const keysPressed = useHotKey();
+  const dispatch = useReduxDispatch();
   useKeyHandler(
     key => {
       switch (key) {
         case "delete":
-          removeSelection();
+          dispatch(removeSelection());
           break;
         case "esc":
-          cancel();
+          dispatch(cancel());
           break;
         case ".":
           if (keysPressed.includes("shift")) {
-            zLevelDown();
+            dispatch(zLevelDown());
           }
           break;
         case ",":
           if (keysPressed.includes("shift")) {
-            zLevelUp();
+            dispatch(zLevelUp());
           }
           break;
         case "z":
           if (keysPressed.includes("shift") && keysPressed.includes("ctrl")) {
-            redo();
+            dispatch(redo());
           } else if (keysPressed.includes("ctrl")) {
-            undo();
+            dispatch(undo());
           }
       }
     },

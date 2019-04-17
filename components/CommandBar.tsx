@@ -1,31 +1,40 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
+import {
+  useReduxDispatch,
+  useReduxState,
+} from "@mrwolfz/react-redux-hooks-poc";
 import { Button } from ".";
-import { toolActions } from "../store/actions";
+import { setCommand, setPhase } from "../store/actions/toolActions";
 import {
   selectCommands,
   selectCurrentCommand,
-  selectPhase,
+  selectCommandMap,
 } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
+import memoize from "memoize-state";
 
 export const CommandBar: React.FunctionComponent = () => {
-  const { phase, command, commands } = useSelect((state: State) => {
-    const ph = selectPhase(state);
-    return {
-      phase: ph,
-      command: selectCurrentCommand(state),
-      commands: selectCommands(state, { phase: ph }),
-    };
-  });
-  const { setPhase, setCommand } = useActionCreators(toolActions);
+  const { phase, command, commands } = useReduxState(
+    memoize((state: State) => {
+      const commandMap = selectCommandMap();
+      return {
+        phase: state.tool.phase,
+        command: selectCurrentCommand(state),
+        commands: Object.values(commandMap).filter(comm =>
+          state.tool.phase ? comm.phase === state.tool.phase : true,
+        ),
+        // commands: selectCommands(state, { phase: state.tool.phase }),
+      };
+    }),
+  );
+  const dispatch = useReduxDispatch();
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
       <Box mb={3}>
         <Button
           block
-          onClick={() => setPhase("dig")}
+          onClick={() => dispatch(setPhase("dig"))}
           active={phase === "dig"}
           data-test="phase"
           data-test-item="dig"
@@ -35,7 +44,7 @@ export const CommandBar: React.FunctionComponent = () => {
         </Button>
         <Button
           block
-          onClick={() => setPhase("build")}
+          onClick={() => dispatch(setPhase("build"))}
           active={phase === "build"}
           data-test="phase"
           data-test-item="build"
@@ -45,7 +54,7 @@ export const CommandBar: React.FunctionComponent = () => {
         </Button>
         <Button
           block
-          onClick={() => setPhase("place")}
+          onClick={() => dispatch(setPhase("place"))}
           active={phase === "place"}
           data-test="phase"
           data-test-item="place"
@@ -58,7 +67,7 @@ export const CommandBar: React.FunctionComponent = () => {
           <Button
             key={comm.slug}
             block
-            onClick={() => setCommand(comm.slug)}
+            onClick={() => dispatch(setCommand(comm.slug))}
             active={command.slug === comm.slug}
             data-test="command"
             data-test-item={comm.slug}

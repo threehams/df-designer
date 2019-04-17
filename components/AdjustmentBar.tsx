@@ -1,6 +1,6 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
+import { useReduxDispatch, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import React from "react";
-import { tilesActions } from "../store/actions";
+import { setAdjustment } from "../store/actions/tilesActions";
 import { selectCommandMap } from "../store/reducers/toolReducer";
 import { selectAdjustments } from "../store/selectors";
 import { Adjustment, State, Tile } from "../store/types";
@@ -19,7 +19,7 @@ const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
 };
 
 export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
-  const { name, adjustments } = useSelect((state: State) => {
+  const { name, adjustments } = useReduxState((state: State) => {
     const commandMap = selectCommandMap();
     return {
       name: commandMap[tile.item!].name,
@@ -67,7 +67,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
   value,
   tile,
 }) => {
-  const { setAdjustment } = useActionCreators(tilesActions);
+  const dispatch = useReduxDispatch();
   return (
     <React.Fragment key={adjustment.slug}>
       <Label display="block">
@@ -76,7 +76,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           value={adjustment.slug}
           checked={!!value}
           onChange={() => {
-            setAdjustment(tile.id, adjustment.slug, value ? 0 : 3);
+            dispatch(setAdjustment(tile.id, adjustment.slug, value ? 0 : 3));
           }}
           data-test="adjustment-bar-check"
           data-test-item={adjustment.slug}
@@ -89,7 +89,9 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
             data-test="adjustment-bar-decrement"
             data-test-item={adjustment.slug}
             onClick={() => {
-              setAdjustment(tile.id, adjustment.slug, Math.max(value - 1, 1));
+              dispatch(
+                setAdjustment(tile.id, adjustment.slug, Math.max(value - 1, 1)),
+              );
             }}
           >
             -
@@ -99,7 +101,13 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
             data-test="adjustment-bar-increment"
             data-test-item={adjustment.slug}
             onClick={() => {
-              setAdjustment(tile.id, adjustment.slug, Math.min(value + 1, 12));
+              dispatch(
+                setAdjustment(
+                  tile.id,
+                  adjustment.slug,
+                  Math.min(value + 1, 12),
+                ),
+              );
             }}
           >
             +
@@ -120,14 +128,14 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
   value,
   tile,
 }) => {
-  const { setAdjustment } = useActionCreators(tilesActions);
+  const dispatch = useReduxDispatch();
   return (
     <Label key={adjustment.slug} display="block">
       {adjustment.name}
       <select
         value={value || ""}
         onChange={event => {
-          return setAdjustment(tile.id, adjustment.slug, event.target.value);
+          dispatch(setAdjustment(tile.id, adjustment.slug, event.target.value));
         }}
         data-test="adjustment-bar-check"
         data-test-item={adjustment.slug}

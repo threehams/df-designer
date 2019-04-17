@@ -1,10 +1,15 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
+import {
+  useReduxDispatch,
+  useReduxState,
+} from "@mrwolfz/react-redux-hooks-poc";
 import React, { useState } from "react";
 import { Button, Flex, Textarea } from ".";
-import { tilesActions, toolActions } from "../store/actions";
+import { importAll } from "../store/actions/tilesActions";
+import { setIo } from "../store/actions/toolActions";
 import { selectPhases } from "../store/reducers/toolReducer";
 import { selectExported } from "../store/selectors";
 import { ImportMap, State } from "../store/types";
+import memoize from "memoize-state";
 
 const download = (filename: string, text: string) => {
   const element = document.createElement("a");
@@ -14,17 +19,16 @@ const download = (filename: string, text: string) => {
 };
 
 export const ExportBar: React.FunctionComponent = () => {
-  const { io, exported, phases } = useSelect((state: State) => {
-    return {
-      io: state.tool.io,
-      exported: state.tool.io === "export" ? selectExported(state) : null,
-      phases: selectPhases(),
-    };
-  });
-  const { importAll, setIo } = useActionCreators({
-    ...tilesActions,
-    ...toolActions,
-  });
+  const { io, exported, phases } = useReduxState(
+    memoize((state: State) => {
+      return {
+        io: state.tool.io,
+        exported: state.tool.io === "export" ? selectExported(state) : null,
+        phases: selectPhases(),
+      };
+    }),
+  );
+  const dispatch = useReduxDispatch();
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
@@ -33,7 +37,7 @@ export const ExportBar: React.FunctionComponent = () => {
           mr={1}
           block
           data-test="import"
-          onClick={() => setIo("import")}
+          onClick={() => dispatch(setIo("import"))}
           active={io === "import"}
         >
           Import
@@ -41,7 +45,7 @@ export const ExportBar: React.FunctionComponent = () => {
         <Button
           block
           data-test="export"
-          onClick={() => setIo("export")}
+          onClick={() => dispatch(setIo("export"))}
           active={io === "export"}
         >
           Export
@@ -101,7 +105,7 @@ export const ExportBar: React.FunctionComponent = () => {
           <Button
             data-test="import-all"
             color="primary"
-            onClick={() => importAll(importValue)}
+            onClick={() => dispatch(importAll(importValue))}
           >
             Import All
           </Button>

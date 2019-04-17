@@ -1,14 +1,11 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
+import { useReduxDispatch, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
-import { tilesActions } from "../../store/actions";
-import {
-  selectSelection,
-  selectSelectionOffset,
-} from "../../store/reducers/toolReducer";
+import { clickTile, endClickTile } from "../../store/actions/tilesActions";
+import { selectSelection, selectSelectionOffset } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
 import { Coords, SelectedCoords, State, TileSprite } from "../../store/types";
 import { Cursor } from "../Cursor";
@@ -20,14 +17,14 @@ PIXI.utils.skipHello();
 const LEFT_MOUSE_BUTTON = 1;
 
 const Artboard: React.FunctionComponent = () => {
-  const { chunks, selection, selectionOffset } = useSelect((state: State) => {
+  const { chunks, selection, selectionOffset } = useReduxState((state: State) => {
     return {
       chunks: selectChunks(state),
       selection: selectSelection(state),
       selectionOffset: selectSelectionOffset(state),
     };
   });
-  const { clickTile, endClickTile } = useActionCreators(tilesActions);
+  const dispatch = useReduxDispatch();
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
     startY: 0,
@@ -44,7 +41,7 @@ const Artboard: React.FunctionComponent = () => {
           pointerdown={event => {
             if (event.data.buttons === LEFT_MOUSE_BUTTON) {
               const { x, y } = tilePosition(event.data.global);
-              clickTile(x, y);
+              dispatch(clickTile(x, y));
             }
           }}
           pointermove={event => {
@@ -53,11 +50,11 @@ const Artboard: React.FunctionComponent = () => {
               setCursorPosition({ startX: x, startY: y, endX: x, endY: y });
             }
             if (event.data.buttons === LEFT_MOUSE_BUTTON) {
-              clickTile(x, y);
+              dispatch(clickTile(x, y));
             }
           }}
           pointerup={() => {
-            endClickTile(keysPressed);
+            dispatch(endClickTile(keysPressed));
           }}
           texture={PIXI.Texture.EMPTY}
           width={2048}

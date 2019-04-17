@@ -1,4 +1,4 @@
-import { useSelect } from "@epeli/redux-hooks";
+import { useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import { selectSelectedTile } from "../store/selectors";
 import { State } from "../store/types";
 import { AdjustmentBar } from "./AdjustmentBar";
@@ -7,7 +7,7 @@ import { Flex } from "./Flex";
 import { MultiSelectBar } from "./MultiSelectBar";
 
 export const SelectBar: React.FunctionComponent = () => {
-  const { command, tile, multiSelect } = useSelect((state: State) => {
+  const { command, tile, multiSelect } = useReduxState((state: State) => {
     return selectSelectedTile(state);
   });
   return (

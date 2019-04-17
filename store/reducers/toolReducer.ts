@@ -139,10 +139,6 @@ export const selectCommands = createSelector(
 export const selectCommandMap = () => commandMap;
 export const selectAdjustmentMap = () => adjustmentMap;
 
-export const selectPhase = (state: State) => {
-  return state.tool.phase;
-};
-
 const phaseValues = Object.values(phases);
 
 export const selectPhases = () => {
