@@ -87,7 +87,7 @@ export const toolReducer = (
         draft.dragEnd = null;
         break;
       }
-      case getType(toolActions.setPhase): {
+      case getType(toolActions.setCurrentPhase): {
         const { phaseSlug } = action.payload;
         if (draft.phase !== phaseSlug) {
           draft.phase = phaseSlug;

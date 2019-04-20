@@ -1,15 +1,11 @@
-import {
-  useReduxDispatch,
-  useReduxState,
-} from "@mrwolfz/react-redux-hooks-poc";
+import { useReduxState, useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import React, { useState } from "react";
 import { Button, Flex, Textarea } from ".";
-import { importAll } from "../store/actions/tilesActions";
-import { setIo } from "../store/actions/toolActions";
 import { selectPhases } from "../store/reducers/toolReducer";
 import { selectExported } from "../store/selectors";
 import { ImportMap, State } from "../store/types";
 import memoize from "memoize-state";
+import { toolActions, tilesActions } from "../store/actions";
 
 const download = (filename: string, text: string) => {
   const element = document.createElement("a");
@@ -28,7 +24,10 @@ export const ExportBar: React.FunctionComponent = () => {
       };
     }),
   );
-  const dispatch = useReduxDispatch();
+  const { setIo, importAll } = useReduxActions({
+    ...toolActions,
+    ...tilesActions,
+  });
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
@@ -37,7 +36,7 @@ export const ExportBar: React.FunctionComponent = () => {
           mr={1}
           block
           data-test="import"
-          onClick={() => dispatch(setIo("import"))}
+          onClick={() => setIo("import")}
           active={io === "import"}
         >
           Import
@@ -45,7 +44,7 @@ export const ExportBar: React.FunctionComponent = () => {
         <Button
           block
           data-test="export"
-          onClick={() => dispatch(setIo("export"))}
+          onClick={() => setIo("export")}
           active={io === "export"}
         >
           Export
@@ -105,7 +104,7 @@ export const ExportBar: React.FunctionComponent = () => {
           <Button
             data-test="import-all"
             color="primary"
-            onClick={() => dispatch(importAll(importValue))}
+            onClick={() => importAll(importValue)}
           >
             Import All
           </Button>

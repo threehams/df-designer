@@ -4,7 +4,7 @@ import { CommandSlug, Io, PhaseSlug, Tool } from "../types";
 export const setTool = createAction("app/tool/SET_TOOL", resolve => {
   return (tool: Tool) => resolve({ tool });
 });
-export const setPhase = createAction("app/tool/SET_PHASE", resolve => {
+export const setCurrentPhase = createAction("app/tool/SET_PHASE", resolve => {
   return (phaseSlug: PhaseSlug) => resolve({ phaseSlug });
 });
 export const setCommand = createAction("app/tool/SET_COMMAND", resolve => {

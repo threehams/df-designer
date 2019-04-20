@@ -1,30 +1,27 @@
-import { useReduxDispatch } from "@mrwolfz/react-redux-hooks-poc";
-import { flipSelection, removeSelection } from "../store/actions/tilesActions";
+import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import { Button } from "./";
 import { Flex } from "./Flex";
+import { tilesActions } from "../store/actions";
 
 export const MultiSelectBar: React.FunctionComponent = () => {
-  const dispatch = useReduxDispatch();
+  const { flipSelection, removeSelection } = useReduxActions(tilesActions);
   return (
     <Flex flexDirection="column" flexWrap="nowrap">
       <Button
-        onClick={() => dispatch(flipSelection("horizontal"))}
+        onClick={() => flipSelection("horizontal")}
         mb={1}
         data-test="selection-flip-horizontal"
       >
         Flip Horizontal
       </Button>
       <Button
-        onClick={() => dispatch(flipSelection("vertical"))}
+        onClick={() => flipSelection("vertical")}
         mb={1}
         data-test="selection-flip-vertical"
       >
         Flip Vertical
       </Button>
-      <Button
-        onClick={() => dispatch(removeSelection())}
-        data-test="selection-delete"
-      >
+      <Button onClick={() => removeSelection()} data-test="selection-delete">
         Delete
       </Button>
     </Flex>

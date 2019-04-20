@@ -1,20 +1,10 @@
-import {
-  useReduxDispatch,
-  useReduxState,
-} from "@mrwolfz/react-redux-hooks-poc";
-import {
-  redo,
-  resetBoard,
-  undo,
-  zLevelDown,
-  zLevelUp,
-} from "../store/actions/tilesActions";
-import { setTool } from "../store/actions/toolActions";
+import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import { selectTool } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
+import { toolActions, tilesActions } from "../store/actions";
 
 export const Toolbar: React.FunctionComponent = () => {
   const { tool, undoSteps, redoSteps, zLevel } = useReduxState(
@@ -27,11 +17,18 @@ export const Toolbar: React.FunctionComponent = () => {
       };
     },
   );
-  const dispatch = useReduxDispatch();
+  const {
+    redo,
+    resetBoard,
+    undo,
+    setTool,
+    zLevelDown,
+    zLevelUp,
+  } = useReduxActions({ ...toolActions, ...tilesActions });
   return (
     <Flex p={2} data-test="toolbar">
       <Box mr={3}>
-        <Button onClick={() => dispatch(resetBoard())} data-test="reset">
+        <Button onClick={() => resetBoard()} data-test="reset">
           Reset
         </Button>
       </Box>
@@ -39,16 +36,12 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           disabled={!undoSteps}
           data-test="undo"
-          onClick={() => dispatch(undo())}
+          onClick={() => undo()}
           mr={1}
         >
           Undo
         </Button>
-        <Button
-          disabled={!redoSteps}
-          data-test="redo"
-          onClick={() => dispatch(redo())}
-        >
+        <Button disabled={!redoSteps} data-test="redo" onClick={() => redo()}>
           Redo
         </Button>
       </Box>
@@ -56,7 +49,7 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="select"
-          onClick={() => dispatch(setTool("select"))}
+          onClick={() => setTool("select")}
           active={tool === "select"}
           mr={1}
         >
@@ -65,7 +58,7 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="paint"
-          onClick={() => dispatch(setTool("paint"))}
+          onClick={() => setTool("paint")}
           active={tool === "paint"}
           mr={1}
         >
@@ -74,7 +67,7 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="paint-rectangle"
-          onClick={() => dispatch(setTool("rectangle"))}
+          onClick={() => setTool("rectangle")}
           active={tool === "rectangle"}
           mr={1}
         >
@@ -83,24 +76,20 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="erase"
-          onClick={() => dispatch(setTool("erase"))}
+          onClick={() => setTool("erase")}
           active={tool === "erase"}
         >
           Erase
         </Button>
       </Box>
       <Flex flexWrap="nowrap" alignItems="center">
-        <Button
-          data-test="z-level-down"
-          onClick={() => dispatch(zLevelDown())}
-          mr={1}
-        >
+        <Button data-test="z-level-down" onClick={() => zLevelDown()} mr={1}>
           Down Level
         </Button>
         <Box mr={1} data-test="z-level">
           {zLevel}
         </Box>
-        <Button data-test="z-level-up" onClick={() => dispatch(zLevelUp())}>
+        <Button data-test="z-level-up" onClick={() => zLevelUp()}>
           Up Level
         </Button>
       </Flex>
