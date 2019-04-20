@@ -87,7 +87,7 @@ export const toolReducer = (
         draft.dragEnd = null;
         break;
       }
-      case getType(toolActions.setPhase): {
+      case getType(toolActions.setCurrentPhase): {
         const { phaseSlug } = action.payload;
         if (draft.phase !== phaseSlug) {
           draft.phase = phaseSlug;
@@ -138,10 +138,6 @@ export const selectCommands = createSelector(
 
 export const selectCommandMap = () => commandMap;
 export const selectAdjustmentMap = () => adjustmentMap;
-
-export const selectPhase = (state: State) => {
-  return state.tool.phase;
-};
 
 const phaseValues = Object.values(phases);
 

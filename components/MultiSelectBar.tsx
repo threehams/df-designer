@@ -1,10 +1,10 @@
-import { useActionCreators } from "@epeli/redux-hooks";
-import { tilesActions } from "../store/actions";
+import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import { Button } from "./";
 import { Flex } from "./Flex";
+import { tilesActions } from "../store/actions";
 
 export const MultiSelectBar: React.FunctionComponent = () => {
-  const { flipSelection, removeSelection } = useActionCreators(tilesActions);
+  const { flipSelection, removeSelection } = useReduxActions(tilesActions);
   return (
     <Flex flexDirection="column" flexWrap="nowrap">
       <Button

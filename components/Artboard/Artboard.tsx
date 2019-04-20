@@ -1,10 +1,9 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
+import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
-import { tilesActions } from "../../store/actions";
 import {
   selectSelection,
   selectSelectionOffset,
@@ -13,6 +12,7 @@ import { selectChunks } from "../../store/selectors";
 import { Coords, SelectedCoords, State, TileSprite } from "../../store/types";
 import { Cursor } from "../Cursor";
 import { textures, TILE_SIZE } from "./textures";
+import { tilesActions } from "../../store/actions";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
@@ -20,14 +20,16 @@ PIXI.utils.skipHello();
 const LEFT_MOUSE_BUTTON = 1;
 
 const Artboard: React.FunctionComponent = () => {
-  const { chunks, selection, selectionOffset } = useSelect((state: State) => {
-    return {
-      chunks: selectChunks(state),
-      selection: selectSelection(state),
-      selectionOffset: selectSelectionOffset(state),
-    };
-  });
-  const { clickTile, endClickTile } = useActionCreators(tilesActions);
+  const { chunks, selection, selectionOffset } = useReduxState(
+    (state: State) => {
+      return {
+        chunks: selectChunks(state),
+        selection: selectSelection(state),
+        selectionOffset: selectSelectionOffset(state),
+      };
+    },
+  );
+  const { clickTile, endClickTile } = useReduxActions(tilesActions);
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
     startY: 0,

@@ -24,7 +24,6 @@ module.exports = {
     "@typescript-eslint/no-angle-bracket-type-assertion": "error",
     "@typescript-eslint/no-array-constructor": "error",
     "@typescript-eslint/no-empty-interface": "error",
-    "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-for-in-array": "error",
     "@typescript-eslint/no-inferrable-types": "error",
     "@typescript-eslint/no-namespace": "error",

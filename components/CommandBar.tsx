@@ -1,31 +1,32 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
+import { useReduxState, useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import { Button } from ".";
-import { toolActions } from "../store/actions";
 import {
   selectCommands,
   selectCurrentCommand,
-  selectPhase,
 } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
+import memoize from "memoize-state";
+import { toolActions } from "../store/actions";
 
 export const CommandBar: React.FunctionComponent = () => {
-  const { phase, command, commands } = useSelect((state: State) => {
-    const ph = selectPhase(state);
-    return {
-      phase: ph,
-      command: selectCurrentCommand(state),
-      commands: selectCommands(state, { phase: ph }),
-    };
-  });
-  const { setPhase, setCommand } = useActionCreators(toolActions);
+  const { phase, command, commands } = useReduxState(
+    memoize((state: State) => {
+      return {
+        phase: state.tool.phase,
+        command: selectCurrentCommand(state),
+        commands: selectCommands(state, { phase: state.tool.phase }),
+      };
+    }),
+  );
+  const { setCurrentPhase, setCommand } = useReduxActions(toolActions);
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
       <Box mb={3}>
         <Button
           block
-          onClick={() => setPhase("dig")}
+          onClick={() => setCurrentPhase("dig")}
           active={phase === "dig"}
           data-test="phase"
           data-test-item="dig"
@@ -35,7 +36,7 @@ export const CommandBar: React.FunctionComponent = () => {
         </Button>
         <Button
           block
-          onClick={() => setPhase("build")}
+          onClick={() => setCurrentPhase("build")}
           active={phase === "build"}
           data-test="phase"
           data-test-item="build"
@@ -45,7 +46,7 @@ export const CommandBar: React.FunctionComponent = () => {
         </Button>
         <Button
           block
-          onClick={() => setPhase("place")}
+          onClick={() => setCurrentPhase("place")}
           active={phase === "place"}
           data-test="phase"
           data-test-item="place"

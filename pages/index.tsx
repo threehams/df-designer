@@ -1,5 +1,5 @@
 import { Global } from "@emotion/core";
-import { useSelect } from "@epeli/redux-hooks";
+import { useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import dynamic from "next/dynamic";
 import {
   Box,
@@ -22,7 +22,7 @@ const Artboard = dynamic(import("../components/Artboard"), {
 });
 
 export const Index: React.FunctionComponent = () => {
-  const tool = useSelect((state: State) => selectTool(state));
+  const tool = useReduxState((state: State) => selectTool(state));
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
     <>

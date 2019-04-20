@@ -1,43 +1,47 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
-import { tilesActions, toolActions } from "../store/actions";
+import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import { selectTool } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
+import { toolActions, tilesActions } from "../store/actions";
 
 export const Toolbar: React.FunctionComponent = () => {
-  const { tool, undoSteps, redoSteps, zLevel } = useSelect((state: State) => {
-    return {
-      tool: selectTool(state),
-      undoSteps: state.tiles.past.length,
-      redoSteps: state.tiles.future.length,
-      zLevel: state.tiles.zLevel,
-    };
-  });
+  const { tool, undoSteps, redoSteps, zLevel } = useReduxState(
+    (state: State) => {
+      return {
+        tool: selectTool(state),
+        undoSteps: state.tiles.past.length,
+        redoSteps: state.tiles.future.length,
+        zLevel: state.tiles.zLevel,
+      };
+    },
+  );
   const {
-    undo,
     redo,
-    setTool,
     resetBoard,
+    undo,
+    setTool,
     zLevelDown,
     zLevelUp,
-  } = useActionCreators({
-    ...tilesActions,
-    ...toolActions,
-  });
+  } = useReduxActions({ ...toolActions, ...tilesActions });
   return (
     <Flex p={2} data-test="toolbar">
       <Box mr={3}>
-        <Button onClick={resetBoard} data-test="reset">
+        <Button onClick={() => resetBoard()} data-test="reset">
           Reset
         </Button>
       </Box>
       <Box mr={3}>
-        <Button disabled={!undoSteps} data-test="undo" onClick={undo} mr={1}>
+        <Button
+          disabled={!undoSteps}
+          data-test="undo"
+          onClick={() => undo()}
+          mr={1}
+        >
           Undo
         </Button>
-        <Button disabled={!redoSteps} data-test="redo" onClick={redo}>
+        <Button disabled={!redoSteps} data-test="redo" onClick={() => redo()}>
           Redo
         </Button>
       </Box>
@@ -79,13 +83,13 @@ export const Toolbar: React.FunctionComponent = () => {
         </Button>
       </Box>
       <Flex flexWrap="nowrap" alignItems="center">
-        <Button data-test="z-level-down" onClick={zLevelDown} mr={1}>
+        <Button data-test="z-level-down" onClick={() => zLevelDown()} mr={1}>
           Down Level
         </Button>
         <Box mr={1} data-test="z-level">
           {zLevel}
         </Box>
-        <Button data-test="z-level-up" onClick={zLevelUp}>
+        <Button data-test="z-level-up" onClick={() => zLevelUp()}>
           Up Level
         </Button>
       </Flex>

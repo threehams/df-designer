@@ -22,9 +22,5 @@
     { "language": "typescript", "autoFix": true },
     { "language": "typescriptreact", "autoFix": true }
   ],
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "importCost.bundleSizeDecoration": "gzipped",
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": true
-  }
+  "typescript.updateImportsOnFileMove.enabled": "always"
 }

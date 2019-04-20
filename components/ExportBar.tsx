@@ -1,10 +1,11 @@
-import { useActionCreators, useSelect } from "@epeli/redux-hooks";
+import { useReduxState, useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import React, { useState } from "react";
 import { Button, Flex, Textarea } from ".";
-import { tilesActions, toolActions } from "../store/actions";
 import { selectPhases } from "../store/reducers/toolReducer";
 import { selectExported } from "../store/selectors";
 import { ImportMap, State } from "../store/types";
+import memoize from "memoize-state";
+import { toolActions, tilesActions } from "../store/actions";
 
 const download = (filename: string, text: string) => {
   const element = document.createElement("a");
@@ -14,16 +15,18 @@ const download = (filename: string, text: string) => {
 };
 
 export const ExportBar: React.FunctionComponent = () => {
-  const { io, exported, phases } = useSelect((state: State) => {
-    return {
-      io: state.tool.io,
-      exported: state.tool.io === "export" ? selectExported(state) : null,
-      phases: selectPhases(),
-    };
-  });
-  const { importAll, setIo } = useActionCreators({
-    ...tilesActions,
+  const { io, exported, phases } = useReduxState(
+    memoize((state: State) => {
+      return {
+        io: state.tool.io,
+        exported: state.tool.io === "export" ? selectExported(state) : null,
+        phases: selectPhases(),
+      };
+    }),
+  );
+  const { setIo, importAll } = useReduxActions({
     ...toolActions,
+    ...tilesActions,
   });
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (

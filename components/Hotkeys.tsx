@@ -1,20 +1,17 @@
-import { useActionCreators } from "@epeli/redux-hooks";
+import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import { useHotKey, useKeyHandler } from "../lib/useHotKey";
-import { tilesActions, toolActions } from "../store/actions";
+import { toolActions, tilesActions } from "../store/actions";
 
 export const Hotkeys: React.FunctionComponent = () => {
+  const keysPressed = useHotKey();
   const {
-    cancel,
-    redo,
     removeSelection,
-    undo,
+    cancel,
     zLevelDown,
     zLevelUp,
-  } = useActionCreators({
-    ...toolActions,
-    ...tilesActions,
-  });
-  const keysPressed = useHotKey();
+    redo,
+    undo,
+  } = useReduxActions({ ...toolActions, ...tilesActions });
   useKeyHandler(
     key => {
       switch (key) {
