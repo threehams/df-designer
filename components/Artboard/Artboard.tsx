@@ -1,5 +1,5 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
-import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
+import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
 import * as coordinates from "../../lib/coordinates";
@@ -13,6 +13,7 @@ import { Coords, SelectedCoords, State, TileSprite } from "../../store/types";
 import { Cursor } from "../Cursor";
 import { textures, TILE_SIZE } from "./textures";
 import { tilesActions } from "../../store/actions";
+import { useMemoizedState } from "../../lib/useMemoizedState";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
@@ -20,7 +21,7 @@ PIXI.utils.skipHello();
 const LEFT_MOUSE_BUTTON = 1;
 
 const Artboard: React.FunctionComponent = () => {
-  const { chunks, selection, selectionOffset } = useReduxState(
+  const { chunks, selection, selectionOffset } = useMemoizedState(
     (state: State) => {
       return {
         chunks: selectChunks(state),

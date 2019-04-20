@@ -1,13 +1,14 @@
-import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
+import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import { selectTool } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 import { toolActions, tilesActions } from "../store/actions";
+import { useMemoizedState } from "../lib/useMemoizedState";
 
 export const Toolbar: React.FunctionComponent = () => {
-  const { tool, undoSteps, redoSteps, zLevel } = useReduxState(
+  const { tool, undoSteps, redoSteps, zLevel } = useMemoizedState(
     (state: State) => {
       return {
         tool: selectTool(state),
