@@ -5,6 +5,7 @@ import { selectLevelTiles, selectTile } from "../reducers/tilesReducer";
 import { selectCommandMap, selectSelection } from "../reducers/toolReducer";
 import { SelectedCoords, State, Tile, TilesMap, TileSprite } from "../types";
 import { selectExtents } from "./extentsSelectors";
+import { createSelector } from "reselect";
 
 export const selectSelectedTile = (state: State) => {
   const selection = selectSelection(state);
@@ -37,39 +38,39 @@ export const selectSelectedTile = (state: State) => {
 };
 
 const CHUNK_SIZE = 10;
-export const selectChunks = (state: Pick<State, "tiles">) => {
-  const extents = selectExtents(state);
-  if (!extents) {
-    return [];
-  }
-  // account for walls, and keep consistent 0,0 center
-  const allChunkExtents = {
-    startX: 0,
-    endX: extents.endX + 1,
-    startY: 0,
-    endY: extents.endY + 1,
-  };
-  return range(
-    allChunkExtents.startX,
-    allChunkExtents.endX,
-    CHUNK_SIZE,
-  ).flatMap(x =>
-    range(allChunkExtents.startY, allChunkExtents.endY, CHUNK_SIZE).flatMap(
-      y => {
-        const chunkExtents = {
-          startX: x,
-          endX: x + CHUNK_SIZE - 1,
-          startY: y,
-          endY: y + CHUNK_SIZE - 1,
-        };
-        return {
-          ...chunkExtents,
-          tiles: selectTiles(state, chunkExtents),
-        };
-      },
-    ),
-  );
-};
+export const selectChunks = createSelector(
+  (state: Pick<State, "tiles">) => state.tiles,
+  selectExtents,
+  (tiles, extents) => {
+    // account for walls, and keep consistent 0,0 center
+    const allChunkExtents = {
+      startX: 0,
+      endX: extents.endX + 1,
+      startY: 0,
+      endY: extents.endY + 1,
+    };
+    return range(
+      allChunkExtents.startX,
+      allChunkExtents.endX,
+      CHUNK_SIZE,
+    ).flatMap(x =>
+      range(allChunkExtents.startY, allChunkExtents.endY, CHUNK_SIZE).flatMap(
+        y => {
+          const chunkExtents = {
+            startX: x,
+            endX: x + CHUNK_SIZE - 1,
+            startY: y,
+            endY: y + CHUNK_SIZE - 1,
+          };
+          return {
+            ...chunkExtents,
+            tiles: selectTiles({ tiles }, chunkExtents),
+          };
+        },
+      ),
+    );
+  },
+);
 
 const selectTilesCache: {
   zLevel: number;
