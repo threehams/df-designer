@@ -224,14 +224,17 @@ d,d,d
       setTiles([
         {
           id: "1,1",
+          coordinates: { x: 1, y: 1 },
           designation: "mine",
         },
         {
           id: "2,1",
+          coordinates: { x: 2, y: 1 },
           designation: "mine",
         },
         {
           id: "3,1",
+          coordinates: { x: 3, y: 1 },
           designation: "mine",
         },
       ]);

@@ -3,7 +3,14 @@ import * as coordinates from "../../lib/coordinates";
 import { wallMap } from "../../static/tilesetNames";
 import { selectLevelTiles, selectTile } from "../reducers/tilesReducer";
 import { selectCommandMap, selectSelection } from "../reducers/toolReducer";
-import { SelectedCoords, State, Tile, TilesMap, TileSprite } from "../types";
+import {
+  SelectedCoords,
+  State,
+  Tile,
+  TilesMap,
+  TileSprite,
+  Coords,
+} from "../types";
 import { selectExtents } from "./extentsSelectors";
 import { createSelector } from "reselect";
 
@@ -119,7 +126,7 @@ const createTiles = (
 ): TileSprite[] => {
   const commandMap = selectCommandMap();
   return Object.values(tiles)
-    .filter(tile => coordinates.within(selection, coordinates.fromId(tile.id)))
+    .filter(tile => coordinates.within(selection, tile.coordinates))
     .reduce((result: TileSprite[], tile) => {
       if (tile.designation) {
         result.push({
@@ -137,42 +144,44 @@ const createTiles = (
     }, []);
 };
 
+// TODO performance issues with fromId
 const createWalls = (
   tiles: TilesMap,
   selection: SelectedCoords,
 ): TileSprite[] => {
   const walls = new Set<string>();
-  Object.entries(tiles).forEach(([tileId, tile]) => {
+  Object.values(tiles).forEach(tile => {
     if (exposed(tile)) {
-      for (const id of neighborIds(tileId)) {
+      for (const id of neighborIds(tile.coordinates)) {
         if (!tiles[id]) {
           walls.add(id);
         }
       }
     }
   });
-  return Array.from(walls.values())
-    .filter(wallId => within(wallId, selection))
-    .map(wallId => {
-      const wallNumber = neighborIds(wallId)
-        .filter(id => id !== wallId)
-        .reduce((bits, id, index) => {
-          if (exposed(tiles[id])) {
-            return bits + 2 ** index;
-          }
-          return bits;
-        }, 0);
+  return (
+    Array.from(walls.values())
+      // TODO performance issues with within
+      .filter(wallId => within(coordinates.fromId(wallId), selection))
+      .map(wallId => {
+        const wallNumber = neighborIds(coordinates.fromId(wallId))
+          .filter(id => id !== wallId)
+          .reduce((bits, id, index) => {
+            if (exposed(tiles[id])) {
+              return bits + 2 ** index;
+            }
+            return bits;
+          }, 0);
 
-      return {
-        id: wallId,
-        textureName: wallMap[wallNumber],
-      };
-    });
+        return {
+          id: wallId,
+          textureName: wallMap[wallNumber],
+        };
+      })
+  );
 };
 
-// TODO loops are fun and all
-const neighborIds = (id: string) => {
-  const { x, y } = coordinates.fromId(id);
+const neighborIds = ({ x, y }: Coords) => {
   return [
     coordinates.toId(x - 1, y - 1),
     coordinates.toId(x, y - 1),
@@ -194,7 +203,9 @@ const exposed = (tile: Tile | null) => {
 };
 
 // TODO move to shared place along with tiles/actions version
-const within = (id: string, { startX, endX, startY, endY }: SelectedCoords) => {
-  const { x, y } = coordinates.fromId(id);
+const within = (
+  { x, y }: Coords,
+  { startX, endX, startY, endY }: SelectedCoords,
+) => {
   return startX <= x && x <= endX && startY <= y && y <= endY;
 };

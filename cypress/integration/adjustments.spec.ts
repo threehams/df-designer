@@ -7,6 +7,7 @@ describe("adjustments", () => {
       setTiles([
         {
           id: "1,1",
+          coordinates: { x: 1, y: 1 },
           designation: "mine",
           item: "bed",
         },
@@ -68,6 +69,7 @@ describe("adjustments", () => {
       setTiles([
         {
           id: "1,1",
+          coordinates: { x: 1, y: 1 },
           designation: "mine",
           item: "foodStockpile",
         },

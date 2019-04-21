@@ -133,6 +133,7 @@ export const tilesReducer = (
                 draft[destinationId] = {
                   ...currentTiles[sourceId],
                   id: destinationId,
+                  coordinates: coordinates.fromId(destinationId),
                 };
               } else if (draft[destinationId]) {
                 delete draft[destinationId];
@@ -162,6 +163,7 @@ export const tilesReducer = (
                 draft[destinationId] = {
                   ...currentTiles[sourceId],
                   id: destinationId,
+                  coordinates: coordinates.fromId(destinationId),
                 };
               } else if (draft[destinationId]) {
                 delete draft[destinationId];
@@ -185,6 +187,7 @@ export const tilesReducer = (
                 draft[destinationId] = {
                   ...currentTiles[sourceId],
                   id: destinationId,
+                  coordinates: coordinates.fromId(destinationId),
                 };
               } else if (draft[destinationId]) {
                 delete draft[destinationId];
@@ -283,6 +286,7 @@ const addCommand = (
   if (!current) {
     return {
       id,
+      coordinates: coordinates.fromId(id),
       designation: null,
       item: null,
       adjustments: {},

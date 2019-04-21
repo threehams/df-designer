@@ -222,6 +222,8 @@ export interface Tile {
   readonly item: CommandSlug | null;
   readonly adjustments: AdjustmentData;
   readonly id: string;
+  // performance only, avoid creating in selectors
+  readonly coordinates: Coords;
 }
 export interface TilesMap {
   readonly [coordinates: string]: Tile;

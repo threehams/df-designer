@@ -4,6 +4,7 @@ import * as coordinates from "../../lib/coordinates";
 import { selectLevelTiles } from "../reducers/tilesReducer";
 import { SelectedCoords, State } from "../types";
 
+// TODO custom cache: use state.tiles.updates to determine new extents
 const selectLevelExtents = createSelector(
   selectLevelTiles,
   tiles => {

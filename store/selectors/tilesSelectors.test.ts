@@ -22,6 +22,10 @@ describe("selectChunks", () => {
           item: null,
           adjustments: {},
           id: "1,1",
+          coordinates: {
+            x: 1,
+            y: 1,
+          },
         },
       };
     });
