@@ -238,7 +238,9 @@ export interface Update {
 }
 export interface TilesState {
   readonly data: {
-    readonly [zLevel: string]: TilesMap;
+    readonly [zLevel: string]: {
+      [chunkId: string]: TilesMap;
+    };
   };
   readonly transaction: Patch[];
   readonly updates: Update[];

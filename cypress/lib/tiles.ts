@@ -65,10 +65,12 @@ export const setTiles = (
     const { zLevel } = INITIAL_STATE;
     tiles.forEach(tile => {
       draft[zLevel.toString()][tile.id] = {
-        designation: null,
-        item: null,
-        adjustments: {},
-        ...tile,
+        "1,1": {
+          designation: null,
+          item: null,
+          adjustments: {},
+          ...tile,
+        },
       };
     });
   });

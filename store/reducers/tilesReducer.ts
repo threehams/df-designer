@@ -97,18 +97,22 @@ export const tilesReducer = (
           case getType(tilesActions.updateTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
-            const newTile = addCommand(command, draft[id], id);
+            const newTile = addCommand(command, draft[chunkForId(id)][id], id);
             if (newTile) {
-              draft[id] = newTile;
+              draft[chunkForId(id)][id] = newTile;
             }
             break;
           }
           case getType(tilesActions.fillTiles): {
             const { selection, command } = action.payload;
             coordinates.each(selection, ({ id }) => {
-              const newTile = addCommand(command, draft[id], id);
+              const newTile = addCommand(
+                command,
+                draft[chunkForId(id)][id],
+                id,
+              );
               if (newTile) {
-                draft[id] = newTile;
+                draft[chunkForId(id)][id] = newTile;
               }
             });
             break;
@@ -117,7 +121,7 @@ export const tilesReducer = (
             const { selection } = action.payload;
             coordinates.each(selection, ({ id }) => {
               if (currentTiles[id]) {
-                delete draft[id];
+                delete draft[chunkForId(id)][id];
               }
             });
             break;
@@ -129,14 +133,14 @@ export const tilesReducer = (
                 toX + (x - selection.startX),
                 toY + (y - selection.startY),
               );
-              if (currentTiles[sourceId]) {
-                draft[destinationId] = {
-                  ...currentTiles[sourceId],
+              if (currentTiles[chunkForId(sourceId)][sourceId]) {
+                draft[chunkForId(destinationId)][destinationId] = {
+                  ...currentTiles[chunkForId(sourceId)][sourceId],
                   id: destinationId,
                   coordinates: coordinates.fromId(destinationId),
                 };
-              } else if (draft[destinationId]) {
-                delete draft[destinationId];
+              } else if (draft[chunkForId(destinationId)][destinationId]) {
+                delete draft[chunkForId(destinationId)][destinationId];
               }
             });
             break;
@@ -159,14 +163,14 @@ export const tilesReducer = (
               ) {
                 delete draft[sourceId];
               }
-              if (currentTiles[sourceId]) {
-                draft[destinationId] = {
-                  ...currentTiles[sourceId],
+              if (currentTiles[chunkForId(sourceId)][sourceId]) {
+                draft[chunkForId(destinationId)][destinationId] = {
+                  ...currentTiles[chunkForId(sourceId)][sourceId],
                   id: destinationId,
                   coordinates: coordinates.fromId(destinationId),
                 };
-              } else if (draft[destinationId]) {
-                delete draft[destinationId];
+              } else if (draft[chunkForId(destinationId)][destinationId]) {
+                delete draft[chunkForId(destinationId)][destinationId];
               }
             });
             break;
@@ -183,14 +187,14 @@ export const tilesReducer = (
                   ? selection.endY - (y - selection.startY)
                   : y;
               const destinationId = coordinates.toId(toX, toY);
-              if (currentTiles[sourceId]) {
-                draft[destinationId] = {
-                  ...currentTiles[sourceId],
+              if (currentTiles[chunkForId(sourceId)][sourceId]) {
+                draft[chunkForId(destinationId)][destinationId] = {
+                  ...currentTiles[chunkForId(sourceId)][sourceId],
                   id: destinationId,
                   coordinates: coordinates.fromId(destinationId),
                 };
-              } else if (draft[destinationId]) {
-                delete draft[destinationId];
+              } else if (draft[chunkForId(destinationId)][destinationId]) {
+                delete draft[chunkForId(destinationId)][destinationId];
               }
             });
             break;
@@ -198,23 +202,23 @@ export const tilesReducer = (
           case getType(tilesActions.removeTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
-            const newTile = removeCommand(command, draft[id]);
+            const newTile = removeCommand(command, draft[chunkForId(id)][id]);
             if (newTile) {
-              draft[id] = newTile;
+              draft[chunkForId(id)][id] = newTile;
             } else {
-              delete draft[id];
+              delete draft[chunkForId(id)][id];
             }
             break;
           }
           case getType(tilesActions.setAdjustment): {
             const { id, name, value } = action.payload;
-            draft[id].adjustments[name] = value;
+            draft[chunkForId(id)][id].adjustments[name] = value;
             break;
           }
           case getType(tilesActions.importAll): {
             deleteAll(draft);
             action.payload.imports.forEach(tile => {
-              draft[tile.id] = tile;
+              draft[chunkForId(tile.id)][tile.id] = tile;
             });
             break;
           }
@@ -257,9 +261,9 @@ export const tilesReducer = (
   });
 };
 
-const deleteAll = (draft: Draft<TilesMap>) => {
+const deleteAll = (draft: Draft<{ [chunkId: string]: TilesMap }>) => {
   for (const id of Object.keys(draft)) {
-    delete draft[id];
+    delete draft[chunkForId(id)][id];
   }
 };
 
@@ -297,12 +301,17 @@ const addCommand = (
   return current;
 };
 
+const chunkForId = (id: string): string => {
+  const { x, y } = coordinates.coordinatesFromId(id);
+  return coordinates.idFromCoordinates(Math.floor(x / 10), Math.floor(y / 10));
+};
+
 export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
 ): Tile | null => {
   const id = coordinates.toId(x, y);
-  return state.tiles.data[state.tiles.zLevel][id];
+  return state.tiles.data[state.tiles.zLevel][chunkForId(id)][id];
 };
 
 export const selectLevelTiles = (
