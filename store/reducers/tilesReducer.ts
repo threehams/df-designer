@@ -49,7 +49,12 @@ const changeHistory = (state: TilesState, direction: "undo" | "redo") => {
       ...state.data,
       [transaction.zLevel]: newTiles,
     },
-    updates: transaction.patches.map(patch => patch.path[0] as string),
+    updates: transaction.patches.map(patch => {
+      return {
+        id: patch.path[0] as string,
+        zLevel: transaction.zLevel,
+      };
+    }),
   };
 };
 
@@ -217,7 +222,12 @@ export const tilesReducer = (
         }
       },
       (patches, inversePatches) => {
-        outerDraft.updates = patches.map(patch => patch.path[0] as string);
+        outerDraft.updates = patches.map(patch => {
+          return {
+            id: patch.path[0] as string,
+            zLevel: outerDraft.zLevel,
+          };
+        });
         transactionSteps = inversePatches;
         if (transactionSteps.length) {
           outerDraft.transaction.push(...inversePatches);

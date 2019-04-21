@@ -81,7 +81,7 @@ const selectTilesCache: {
 const selectTiles = (
   state: Pick<State, "tiles">,
   selection: SelectedCoords,
-) => {
+): TileSprite[] => {
   if (selectTilesCache.zLevel !== state.tiles.zLevel) {
     selectTilesCache.zLevel = state.tiles.zLevel;
     selectTilesCache.cache = {};
@@ -91,8 +91,12 @@ const selectTiles = (
     selection.endY
   }`;
   let invalidate = false;
-  for (const id of state.tiles.updates) {
-    const { x, y } = coordinates.fromId(id);
+  for (const update of state.tiles.updates) {
+    const { x, y } = coordinates.fromId(update.id);
+    // ignore updates happening offscreen
+    if (update.zLevel !== state.tiles.zLevel) {
+      continue;
+    }
     if (coordinates.within(coordinates.expand(selection, 1), { x, y })) {
       invalidate = true;
       break;

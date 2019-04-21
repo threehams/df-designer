@@ -1,5 +1,5 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
-import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
+import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
 import * as coordinates from "../../lib/coordinates";
@@ -9,27 +9,32 @@ import {
   selectSelectionOffset,
 } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
-import { Coords, SelectedCoords, State, TileSprite } from "../../store/types";
+import {
+  Coords,
+  SelectedCoords,
+  State,
+  TileSprite,
+  Chunk,
+} from "../../store/types";
 import { Cursor } from "../Cursor";
 import { textures, TILE_SIZE } from "./textures";
 import { tilesActions } from "../../store/actions";
-import { useMemoizedState } from "../../lib/useMemoizedState";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
 
 const LEFT_MOUSE_BUTTON = 1;
 
-const Artboard: React.FunctionComponent = () => {
-  const { chunks, selection, selectionOffset } = useMemoizedState(
-    (state: State) => {
-      return {
-        chunks: selectChunks(state),
-        selection: selectSelection(state),
-        selectionOffset: selectSelectionOffset(state),
-      };
-    },
-  );
+interface ArtboardProps {
+  chunks: Chunk[];
+}
+const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
+  const { selection, selectionOffset } = useReduxState((state: State) => {
+    return {
+      selection: selectSelection(state),
+      selectionOffset: selectSelectionOffset(state),
+    };
+  });
   const { clickTile, endClickTile } = useReduxActions(tilesActions);
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
@@ -110,4 +115,13 @@ const tilePosition = ({ x, y }: Coords) => {
   };
 };
 
-export default Artboard;
+const ArtboardTiles: React.FC = () => {
+  const { chunks } = useReduxState((state: State) => {
+    return {
+      chunks: selectChunks(state),
+    };
+  });
+  return <Artboard chunks={chunks} />;
+};
+
+export default ArtboardTiles;
