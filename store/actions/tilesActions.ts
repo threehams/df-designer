@@ -284,6 +284,7 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
               if (!tileMap[id]) {
                 tileMap[id] = {
                   id,
+                  coordinates: coordinates.fromId(id),
                   designation: null,
                   item: null,
                   adjustments: {},

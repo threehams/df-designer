@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
     "lib": ["dom", "esnext"],
@@ -15,6 +15,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "esnext",
-    "types": ["webpack-env", "cypress"]
-  }
+    "types": ["webpack-env", "jest"]
+  },
+  "exclude": ["node_modules", "./cypress/**/*.ts", "./cypress/**/*.tsx"]
 }

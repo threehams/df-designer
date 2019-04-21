@@ -1,11 +1,14 @@
-import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
+import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import React from "react";
-import { selectCommandMap } from "../store/reducers/toolReducer";
-import { selectAdjustments } from "../store/selectors";
-import { Adjustment, State, Tile } from "../store/types";
+import {
+  selectCommandMap,
+  selectAdjustmentMap,
+} from "../store/reducers/toolReducer";
+import { Adjustment, Tile } from "../store/types";
 import { Button, Label } from "./";
 import { Box } from "./Box";
 import { tilesActions } from "../store/actions";
+import { useMemoizedState } from "../lib/useMemoizedState";
 
 interface Props {
   tile: Tile;
@@ -19,11 +22,15 @@ const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
 };
 
 export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
-  const { name, adjustments } = useReduxState((state: State) => {
+  const { name, adjustments } = useMemoizedState(_ => {
     const commandMap = selectCommandMap();
+    const adjustmentMap = selectAdjustmentMap();
+
     return {
       name: commandMap[tile.item!].name,
-      adjustments: selectAdjustments(state, { item: tile.item }),
+      adjustments: Object.values(adjustmentMap).filter(adjustment => {
+        return adjustment.requires === tile.item;
+      }),
     };
   });
   return (

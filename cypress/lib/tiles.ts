@@ -58,7 +58,9 @@ export const dragTiles = (selection: SelectedCoords) => (
   );
 };
 
-export const setTiles = (tiles: (Partial<Tile> & { id: string })[]) => {
+export const setTiles = (
+  tiles: (Partial<Tile> & { id: string; coordinates: Coords })[],
+) => {
   const storeTiles = produce(INITIAL_STATE.data, draft => {
     const { zLevel } = INITIAL_STATE;
     tiles.forEach(tile => {

@@ -21,4 +21,15 @@ describe("undo/redo", () => {
     cy.getId("redo").click();
     cy.getId("export-text").should("have.value", "#dig\nd,d,d");
   });
+
+  it("handles undo across z-levels", () => {
+    cy.getId({ name: "tool", item: "paint" }).click();
+    cy.getId("export").click();
+    cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
+    cy.getId("z-level-down").click();
+    cy.getId("stage").then(clickTile({ x: 2, y: 1 }));
+    cy.getId("z-level-up").click();
+    cy.getId("undo").click();
+    cy.getId("export-text").should("have.value", "#dig\nd");
+  });
 });

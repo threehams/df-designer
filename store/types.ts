@@ -222,6 +222,8 @@ export interface Tile {
   readonly item: CommandSlug | null;
   readonly adjustments: AdjustmentData;
   readonly id: string;
+  // performance only, avoid creating in selectors
+  readonly coordinates: Coords;
 }
 export interface TilesMap {
   readonly [coordinates: string]: Tile;
@@ -230,12 +232,16 @@ export interface ZPatch {
   zLevel: number;
   patches: Patch[];
 }
+export interface Update {
+  id: string;
+  zLevel: number;
+}
 export interface TilesState {
   readonly data: {
     readonly [zLevel: string]: TilesMap;
   };
   readonly transaction: Patch[];
-  readonly updates: string[];
+  readonly updates: Update[];
   readonly past: ZPatch[];
   readonly future: ZPatch[];
   readonly zLevel: number;
