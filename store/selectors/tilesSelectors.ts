@@ -37,7 +37,7 @@ export const selectSelectedTile = (state: State) => {
 };
 
 const CHUNK_SIZE = 10;
-export const selectChunks = (state: State) => {
+export const selectChunks = (state: Pick<State, "tiles">) => {
   const extents = selectExtents(state);
   if (!extents) {
     return [];
@@ -78,7 +78,10 @@ const selectTilesCache: {
   zLevel: 0,
   cache: {},
 };
-const selectTiles = (state: State, selection: SelectedCoords) => {
+const selectTiles = (
+  state: Pick<State, "tiles">,
+  selection: SelectedCoords,
+) => {
   if (selectTilesCache.zLevel !== state.tiles.zLevel) {
     selectTilesCache.zLevel = state.tiles.zLevel;
     selectTilesCache.cache = {};

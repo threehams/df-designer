@@ -30,7 +30,7 @@ const selectLevelExtents = createSelector(
   },
 );
 
-export const selectExtents = (state: State) => {
+export const selectExtents = (state: Pick<State, "tiles">) => {
   return range(127, -1)
     .map(zLevel => {
       return selectLevelExtents(state, { zLevel });

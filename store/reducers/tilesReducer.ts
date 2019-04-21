@@ -291,6 +291,9 @@ export const selectTile = (
   return state.tiles.data[state.tiles.zLevel][id];
 };
 
-export const selectLevelTiles = (state: State, props: { zLevel: number }) => {
+export const selectLevelTiles = (
+  state: Pick<State, "tiles">,
+  props: { zLevel: number },
+) => {
   return state.tiles.data[props.zLevel];
 };
