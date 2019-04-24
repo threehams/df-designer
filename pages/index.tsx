@@ -8,9 +8,8 @@ import {
   SelectBar,
   Toolbar,
 } from "../components/";
-import { Hotkeys } from "../components/Hotkeys";
+import { useHotkeys } from "../components/useHotkeys";
 import { selectTool } from "../store/reducers/toolReducer";
-import { State } from "../store/types";
 import { useMemoizedState } from "../lib/useMemoizedState";
 
 const Loading = () => <Box width="100vh" height="100vh" background="black" />;
@@ -22,11 +21,11 @@ const Artboard = dynamic(import("../components/Artboard"), {
 });
 
 export const Index: React.FunctionComponent = () => {
-  const tool = useMemoizedState((state: State) => selectTool(state));
+  useHotkeys();
+  const tool = useMemoizedState(state => selectTool(state));
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
     <>
-      <Hotkeys />
       <Global
         styles={`
           body {

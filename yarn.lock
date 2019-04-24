@@ -1283,11 +1283,6 @@
     "@types/istanbul-lib-coverage" "^2.0.0"
     "@types/yargs" "^12.0.9"
 
-"@mrwolfz/react-redux-hooks-poc@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@mrwolfz/react-redux-hooks-poc/-/react-redux-hooks-poc-0.3.0.tgz#75a995154aec1b2debd521a266d24ea5af3dc22f"
-  integrity sha512-cuV+Yqnx8HExbi7mbDA+h+ioplhId81VU5E4rsMeXy/dElrHvbLO2E1bnHLAYApQ1ZX7pUWaXHECMC9JBaDmrw==
-
 "@types/anymatch@*":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.0.tgz#d1d55958d1fccc5527d4aba29fc9c4b942f563ff"
@@ -2801,6 +2796,11 @@ concat-stream@1.6.2, concat-stream@^1.5.0:
     inherits "^2.0.3"
     readable-stream "^2.2.2"
     typedarray "^0.0.6"
+
+conditional-type-checks@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/conditional-type-checks/-/conditional-type-checks-1.0.0.tgz#1cb40e89254e5173e8e8c02a2410f4206e226b3d"
+  integrity sha512-4fvSNAF1LZs6TPiXNO1H6vCjUcSp/IQbhzb7Vr8jhFj0YBn9wagReuBvMGG406lheiFlyxgfcF23RYMZyGvbcQ==
 
 console-browserify@^1.1.0:
   version "1.1.0"
@@ -6819,10 +6819,10 @@ react-reconciler@^0.19.0:
     prop-types "^15.6.2"
     scheduler "^0.13.1"
 
-react-redux@^7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.0.2.tgz#34b280a3482aaf60e7d4a504b1295165cbe6b86a"
-  integrity sha512-uKRuMgQt8dWbcz0U75oFK5tDo3boyAKrqvf/j94vpqRFFZfyDDy4kofUgloFIGyuKTq2Zz51zgK9RzOTFXk5ew==
+react-redux@^7.1.0-alpha.0:
+  version "7.1.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.1.0-alpha.1.tgz#a82e66bbaf89d7e6c98f2b502d33318b5a298afb"
+  integrity sha512-Zxfb8xyoCx6KngsYROhOi4mDqSOFq0iWps4QsOzjbRL0L9Ls9tNpuYnPkrNbvxGJm3PUOL0BMq0buDkXD98J/g==
   dependencies:
     "@babel/runtime" "^7.4.3"
     hoist-non-react-statics "^3.3.0"
@@ -8127,10 +8127,10 @@ typesafe-actions@^4.0.0:
   resolved "https://registry.yarnpkg.com/typesafe-actions/-/typesafe-actions-4.0.0.tgz#b41aca3538dd4cf51ed7c7f4e6ee3b517a1d6dc8"
   integrity sha512-VWIQZpUgEqddDbNi1c9eq5T6nzQVGP01HA74O4PXnyzDrewBL6L6usSigH8ZEpqmM/pw59BKttXeiCu6bF7RNA==
 
-typescript@^3.4.4:
-  version "3.4.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.4.tgz#aac4a08abecab8091a75f10842ffa0631818f785"
-  integrity sha512-xt5RsIRCEaf6+j9AyOBgvVuAec0i92rgCaS3S+UVf5Z/vF2Hvtsw08wtUTJqp4djwznoAgjSxeCcU4r+CcDBJA==
+typescript@^3.4.5:
+  version "3.4.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.4.5.tgz#2d2618d10bb566572b8d7aad5180d84257d70a99"
+  integrity sha512-YycBxUb49UUhdNMU5aJ7z5Ej2XGmaIBL0x34vZ82fn3hGvD+bgrMrVDpatgz2f7YxUMJxMkbWxJZeAvDxVe7Vw==
 
 ua-parser-js@^0.7.18:
   version "0.7.19"

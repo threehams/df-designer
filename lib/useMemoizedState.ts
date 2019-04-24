@@ -1,11 +1,12 @@
 import memoize from "memoize-state";
-import { useReduxState } from "@mrwolfz/react-redux-hooks-poc";
+import { useSelector } from "react-redux";
 import { State } from "../store/types";
 
-type UseReduxState = <TSlice = State>(
-  selector?: (state: State) => TSlice,
-) => TSlice;
+type UseSelector = <TSelected>(
+  selector: (state: State) => TSelected,
+  deps?: ReadonlyArray<any>,
+) => TSelected;
 
-export const useMemoizedState: UseReduxState = mapState => {
-  return useReduxState(memoize(mapState));
+export const useMemoizedState: UseSelector = (mapState, deps) => {
+  return useSelector(memoize(mapState), deps);
 };

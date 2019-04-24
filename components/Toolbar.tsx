@@ -1,4 +1,4 @@
-import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
+import { useActions } from "react-redux";
 import { selectTool } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Button } from "./";
@@ -25,7 +25,7 @@ export const Toolbar: React.FunctionComponent = () => {
     setTool,
     zLevelDown,
     zLevelUp,
-  } = useReduxActions({ ...toolActions, ...tilesActions });
+  } = useActions({ ...toolActions, ...tilesActions });
   return (
     <Flex p={2} data-test="toolbar">
       <Box mr={3}>

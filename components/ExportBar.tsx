@@ -1,9 +1,9 @@
-import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
+import { useActions } from "react-redux";
 import React, { useState } from "react";
 import { Button, Flex, Textarea } from ".";
 import { selectPhases } from "../store/reducers/toolReducer";
 import { selectExported } from "../store/selectors";
-import { ImportMap, State } from "../store/types";
+import { ImportMap } from "../store/types";
 import { toolActions, tilesActions } from "../store/actions";
 import { useMemoizedState } from "../lib/useMemoizedState";
 
@@ -15,14 +15,14 @@ const download = (filename: string, text: string) => {
 };
 
 export const ExportBar: React.FunctionComponent = () => {
-  const { io, exported, phases } = useMemoizedState((state: State) => {
+  const { io, exported, phases } = useMemoizedState(state => {
     return {
       io: state.tool.io,
       exported: state.tool.io === "export" ? selectExported(state) : null,
       phases: selectPhases(),
     };
   });
-  const { setIo, importAll } = useReduxActions({
+  const { setIo, importAll } = useActions({
     ...toolActions,
     ...tilesActions,
   });

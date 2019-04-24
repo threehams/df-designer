@@ -1,5 +1,5 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
-import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
+import { useActions, useSelector } from "react-redux";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
 import * as coordinates from "../../lib/coordinates";
@@ -9,13 +9,7 @@ import {
   selectSelectionOffset,
 } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
-import {
-  Coords,
-  SelectedCoords,
-  State,
-  TileSprite,
-  Chunk,
-} from "../../store/types";
+import { Coords, SelectedCoords, TileSprite, Chunk } from "../../store/types";
 import { Cursor } from "../Cursor";
 import { textures, TILE_SIZE } from "./textures";
 import { tilesActions } from "../../store/actions";
@@ -29,13 +23,13 @@ interface ArtboardProps {
   chunks: Chunk[];
 }
 const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
-  const { selection, selectionOffset } = useReduxState((state: State) => {
+  const { selection, selectionOffset } = useSelector(state => {
     return {
       selection: selectSelection(state),
       selectionOffset: selectSelectionOffset(state),
     };
   });
-  const { clickTile, endClickTile } = useReduxActions(tilesActions);
+  const { clickTile, endClickTile } = useActions(tilesActions);
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
     startY: 0,
@@ -116,7 +110,7 @@ const tilePosition = ({ x, y }: Coords) => {
 };
 
 const ArtboardTiles: React.FC = () => {
-  const { chunks } = useReduxState((state: State) => {
+  const { chunks } = useSelector(state => {
     return {
       chunks: selectChunks(state),
     };

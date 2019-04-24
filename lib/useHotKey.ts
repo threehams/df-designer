@@ -33,10 +33,7 @@ export const useHotKey = () => {
   return keys;
 };
 
-export const useKeyHandler = (
-  handler: (keyPressed: Keycode) => void,
-  watched?: any[], // eslint-disable-line @typescript-eslint/no-explicit-any
-) => {
+export const useKeyHandler = (handler: (keyPressed: Keycode) => void) => {
   useEffect(() => {
     const removeKeydown = addEventListener(
       window,
@@ -51,5 +48,5 @@ export const useKeyHandler = (
     return () => {
       removeKeydown();
     };
-  }, watched);
+  }, [handler]);
 };

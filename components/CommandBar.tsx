@@ -1,24 +1,23 @@
-import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
+import { useActions } from "react-redux";
 import { Button } from ".";
 import {
   selectCommands,
   selectCurrentCommand,
 } from "../store/reducers/toolReducer";
-import { State } from "../store/types";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 import { toolActions } from "../store/actions";
 import { useMemoizedState } from "../lib/useMemoizedState";
 
 export const CommandBar: React.FunctionComponent = () => {
-  const { phase, command, commands } = useMemoizedState((state: State) => {
+  const { phase, command, commands } = useMemoizedState(state => {
     return {
       phase: state.tool.phase,
       command: selectCurrentCommand(state),
       commands: selectCommands(state, { phase: state.tool.phase }),
     };
   });
-  const { setCurrentPhase, setCommand } = useReduxActions(toolActions);
+  const { setCurrentPhase, setCommand } = useActions(toolActions);
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
       <Box mb={3}>

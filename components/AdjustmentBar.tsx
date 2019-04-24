@@ -1,4 +1,4 @@
-import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
+import { useActions } from "react-redux";
 import React from "react";
 import {
   selectCommandMap,
@@ -74,7 +74,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
   value,
   tile,
 }) => {
-  const { setAdjustment } = useReduxActions(tilesActions);
+  const { setAdjustment } = useActions(tilesActions);
   return (
     <React.Fragment key={adjustment.slug}>
       <Label display="block">
@@ -127,7 +127,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
   value,
   tile,
 }) => {
-  const { setAdjustment } = useReduxActions(tilesActions);
+  const { setAdjustment } = useActions(tilesActions);
   return (
     <Label key={adjustment.slug} display="block">
       {adjustment.name}
