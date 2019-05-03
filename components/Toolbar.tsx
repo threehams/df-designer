@@ -1,4 +1,3 @@
-import { useActions } from "react-redux";
 import { selectTool } from "../store/reducers/toolReducer";
 import { State } from "../store/types";
 import { Button } from "./";
@@ -6,6 +5,8 @@ import { Box } from "./Box";
 import { Flex } from "./Flex";
 import { toolActions, tilesActions } from "../store/actions";
 import { useMemoizedState } from "../lib/useMemoizedState";
+import { bindActionCreators } from "redux";
+import { useDispatch } from "react-redux";
 
 export const Toolbar: React.FunctionComponent = () => {
   const { tool, undoSteps, redoSteps, zLevel } = useMemoizedState(
@@ -25,7 +26,7 @@ export const Toolbar: React.FunctionComponent = () => {
     setTool,
     zLevelDown,
     zLevelUp,
-  } = useActions({ ...toolActions, ...tilesActions });
+  } = bindActionCreators({ ...toolActions, ...tilesActions }, useDispatch());
   return (
     <Flex p={2} data-test="toolbar">
       <Box mr={3}>

@@ -1677,10 +1677,10 @@
     "@webassemblyjs/wast-parser" "1.7.11"
     "@xtuc/long" "4.2.1"
 
-"@welldone-software/why-did-you-render@^3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-3.0.6.tgz#84215998b683ee8708bf58c3f752a99de166800c"
-  integrity sha512-mS+CyCigmm4LNFHyUdGN7VFDYCVhinwTozTFqD3i/l9PGE7+tEB4Ikgl0HdGBU1aVMutGmBwW+j2+lRXkIEfmw==
+"@welldone-software/why-did-you-render@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-3.0.7.tgz#930e10c29ed5b07e0b491fab1579337ed1426473"
+  integrity sha512-enkL1Xhd/VEe1JXzw9HwVl9f0RbJ4HVe2T81264642F1nNMR5XqGlnzc9BemB2Xjh9DwSLLWpE+mxaLkzPGbnQ==
   dependencies:
     lodash "^4"
 

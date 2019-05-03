@@ -1,6 +1,7 @@
-import { useActions } from "react-redux";
 import { useHotKey, useKeyHandler } from "../lib/useHotKey";
 import { toolActions, tilesActions } from "../store/actions";
+import { bindActionCreators } from "redux";
+import { useDispatch } from "react-redux";
 
 export const useHotkeys = () => {
   const keysPressed = useHotKey();
@@ -11,7 +12,7 @@ export const useHotkeys = () => {
     zLevelUp,
     redo,
     undo,
-  } = useActions({ ...toolActions, ...tilesActions });
+  } = bindActionCreators({ ...toolActions, ...tilesActions }, useDispatch());
   useKeyHandler(key => {
     switch (key) {
       case "delete":
