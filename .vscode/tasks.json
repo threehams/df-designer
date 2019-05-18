@@ -9,10 +9,18 @@
       "problemMatcher": []
     },
     {
-      "label": "TSCompileAll",
+      "label": "Monitor TS Errors",
+      "command": "./node_modules/.bin/tsc",
       "type": "shell",
-      "command": "./node_modules/.bin/tsc --watch --noEmit --project .",
-      "problemMatcher": ["$tsc-watch"]
+      "args": ["--watch", "--project", "."],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch"
     }
   ]
 }

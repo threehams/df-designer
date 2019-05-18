@@ -23,12 +23,8 @@ interface ArtboardProps {
   chunks: Chunk[];
 }
 const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
-  const { selection, selectionOffset } = useSelector(state => {
-    return {
-      selection: selectSelection(state),
-      selectionOffset: selectSelectionOffset(state),
-    };
-  });
+  const selection = useSelector(selectSelection);
+  const selectionOffset = useSelector(selectSelectionOffset);
   const dispatch = useDispatch();
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
@@ -109,6 +105,7 @@ const tilePosition = ({ x, y }: Coords) => {
   };
 };
 
+// separated to avoid per-frame recalculations
 const ArtboardTiles: React.FC = () => {
   const { chunks } = useSelector(state => {
     return {
