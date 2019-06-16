@@ -95,9 +95,7 @@ const selectTiles = (
     selectTilesCache.cache = {};
   }
   const tiles = selectLevelTiles(state, { zLevel: state.tiles.zLevel });
-  const key = `${selection.startX},${selection.startY},${selection.endX},${
-    selection.endY
-  }`;
+  const key = `${selection.startX},${selection.startY},${selection.endX},${selection.endY}`;
   let invalidate = false;
   for (const update of state.tiles.updates) {
     const { x, y } = coordinates.fromId(update.id);

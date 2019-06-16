@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "format:all": "prettier --write \"{components,cypress,lib,pages,static,store,types}/**/*.{js,ts,tsx}\"",
     "dev": "next",
     "build": "next build",
     "start": "next start -p 3000",
@@ -75,7 +76,7 @@
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-react-hooks": "^1.6.0",
     "jest": "^24.8.0",
-    "prettier": "^1.17.0",
+    "prettier": "^1.18.2",
     "ts-jest": "^24.0.2"
   }
 }
