@@ -7,6 +7,6 @@ type UseSelector = <TSelected>(
   deps?: ReadonlyArray<any>,
 ) => TSelected;
 
-export const useMemoizedState: UseSelector = (mapState, deps) => {
-  return useSelector(memoize(mapState), deps);
+export const useMemoizedState: UseSelector = mapState => {
+  return useSelector(memoize(mapState));
 };
