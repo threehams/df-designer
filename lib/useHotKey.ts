@@ -29,7 +29,7 @@ export const useHotKey = () => {
       removeKeydown();
       removeKeyup();
     };
-  }, [keys]);
+  });
   return keys;
 };
 
