@@ -4,7 +4,6 @@ import { State } from "../store/types";
 
 type UseSelector = <TSelected>(
   selector: (state: State) => TSelected,
-  deps?: ReadonlyArray<any>,
 ) => TSelected;
 
 export const useMemoizedState: UseSelector = mapState => {
