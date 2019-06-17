@@ -22,7 +22,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
       exported: state.tool.io === "export" ? selectExported(state) : null,
       phases: selectPhases(),
     };
-  }, []);
+  });
   const { setIo, importAll } = bindActionCreators(
     {
       ...toolActions,

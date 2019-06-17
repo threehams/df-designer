@@ -16,7 +16,7 @@ export const CommandBar: React.FunctionComponent = () => {
       command: selectCurrentCommand(state),
       commands: selectCommands(state, { phase: state.tool.phase }),
     };
-  }, []);
+  });
   const dispatch = useDispatch();
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
