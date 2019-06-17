@@ -1,4 +1,3 @@
-import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import React from "react";
 import {
   selectCommandMap,
@@ -9,6 +8,8 @@ import { Button, Label } from "./";
 import { Box } from "./Box";
 import { tilesActions } from "../store/actions";
 import { useMemoizedState } from "../lib/useMemoizedState";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 
 interface Props {
   tile: Tile;
@@ -74,7 +75,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
   value,
   tile,
 }) => {
-  const { setAdjustment } = useReduxActions(tilesActions);
+  const { setAdjustment } = bindActionCreators(tilesActions, useDispatch());
   return (
     <React.Fragment key={adjustment.slug}>
       <Label display="block">
@@ -127,7 +128,7 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
   value,
   tile,
 }) => {
-  const { setAdjustment } = useReduxActions(tilesActions);
+  const { setAdjustment } = bindActionCreators(tilesActions, useDispatch());
   return (
     <Label key={adjustment.slug} display="block">
       {adjustment.name}

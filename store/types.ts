@@ -214,7 +214,7 @@ export interface Phase {
 }
 
 export type AdjustmentData = {
-  [Key in AdjustmentKey]?: number | boolean | string
+  [Key in AdjustmentKey]?: number | boolean | string;
 };
 export type ImportMap = { [Key in PhaseSlug]?: string };
 export interface Tile {

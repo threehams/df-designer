@@ -71,9 +71,7 @@ Cypress.Commands.add(
             return `[data-test=${locator}]`;
           }
           if (locator.item !== undefined) {
-            return `[data-test=${locator.name}][data-test-item=${
-              locator.item
-            }]`;
+            return `[data-test=${locator.name}][data-test-item=${locator.item}]`;
           }
           return `[data-test=${locator.name}]:eq(${locator.index})`;
         })

@@ -1,5 +1,5 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
-import { useReduxActions, useReduxState } from "@mrwolfz/react-redux-hooks-poc";
+import { useSelector, useDispatch } from "react-redux";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
 import * as coordinates from "../../lib/coordinates";
@@ -9,13 +9,7 @@ import {
   selectSelectionOffset,
 } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
-import {
-  Coords,
-  SelectedCoords,
-  State,
-  TileSprite,
-  Chunk,
-} from "../../store/types";
+import { Coords, SelectedCoords, TileSprite, Chunk } from "../../store/types";
 import { Cursor } from "../Cursor";
 import { textures, TILE_SIZE } from "./textures";
 import { tilesActions } from "../../store/actions";
@@ -29,13 +23,9 @@ interface ArtboardProps {
   chunks: Chunk[];
 }
 const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
-  const { selection, selectionOffset } = useReduxState((state: State) => {
-    return {
-      selection: selectSelection(state),
-      selectionOffset: selectSelectionOffset(state),
-    };
-  });
-  const { clickTile, endClickTile } = useReduxActions(tilesActions);
+  const selection = useSelector(selectSelection);
+  const selectionOffset = useSelector(selectSelectionOffset);
+  const dispatch = useDispatch();
   const [cursorPosition, setCursorPosition] = useState<SelectedCoords>({
     startX: 0,
     startY: 0,
@@ -52,7 +42,7 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
           pointerdown={event => {
             if (event.data.buttons === LEFT_MOUSE_BUTTON) {
               const { x, y } = tilePosition(event.data.global);
-              clickTile(x, y);
+              dispatch(tilesActions.clickTile(x, y));
             }
           }}
           pointermove={event => {
@@ -61,11 +51,11 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
               setCursorPosition({ startX: x, startY: y, endX: x, endY: y });
             }
             if (event.data.buttons === LEFT_MOUSE_BUTTON) {
-              clickTile(x, y);
+              dispatch(tilesActions.clickTile(x, y));
             }
           }}
           pointerup={() => {
-            endClickTile(keysPressed);
+            dispatch(tilesActions.endClickTile(keysPressed));
           }}
           texture={PIXI.Texture.EMPTY}
           width={2048}
@@ -115,8 +105,9 @@ const tilePosition = ({ x, y }: Coords) => {
   };
 };
 
+// separated to avoid per-frame recalculations
 const ArtboardTiles: React.FC = () => {
-  const { chunks } = useReduxState((state: State) => {
+  const { chunks } = useSelector(state => {
     return {
       chunks: selectChunks(state),
     };

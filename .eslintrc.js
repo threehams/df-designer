@@ -38,6 +38,7 @@ module.exports = {
     "no-sequences": "error",
     "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
     "react/react-in-jsx-scope": "off",
     "react/no-unknown-property": "error",
     "react/jsx-boolean-value": ["error", "never"],

@@ -1,11 +1,12 @@
-import { useReduxActions } from "@mrwolfz/react-redux-hooks-poc";
 import React, { useState } from "react";
 import { Button, Flex, Textarea } from ".";
 import { selectPhases } from "../store/reducers/toolReducer";
 import { selectExported } from "../store/selectors";
-import { ImportMap, State } from "../store/types";
+import { ImportMap } from "../store/types";
 import { toolActions, tilesActions } from "../store/actions";
 import { useMemoizedState } from "../lib/useMemoizedState";
+import { bindActionCreators } from "redux";
+import { useDispatch } from "react-redux";
 
 const download = (filename: string, text: string) => {
   const element = document.createElement("a");
@@ -14,18 +15,21 @@ const download = (filename: string, text: string) => {
   element.click();
 };
 
-export const ExportBar: React.FunctionComponent = () => {
-  const { io, exported, phases } = useMemoizedState((state: State) => {
+export const ExportBar: React.FunctionComponent = React.memo(() => {
+  const { io, exported, phases } = useMemoizedState(state => {
     return {
       io: state.tool.io,
       exported: state.tool.io === "export" ? selectExported(state) : null,
       phases: selectPhases(),
     };
   });
-  const { setIo, importAll } = useReduxActions({
-    ...toolActions,
-    ...tilesActions,
-  });
+  const { setIo, importAll } = bindActionCreators(
+    {
+      ...toolActions,
+      ...tilesActions,
+    },
+    useDispatch(),
+  );
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
@@ -110,4 +114,4 @@ export const ExportBar: React.FunctionComponent = () => {
       )}
     </Flex>
   );
-};
+});
