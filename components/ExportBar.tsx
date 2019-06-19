@@ -5,7 +5,6 @@ import { selectExported } from "../store/selectors";
 import { ImportMap } from "../store/types";
 import { toolActions, tilesActions } from "../store/actions";
 import { useMemoizedState } from "../lib/useMemoizedState";
-import { bindActionCreators } from "redux";
 import { useDispatch } from "react-redux";
 
 const download = (filename: string, text: string) => {
@@ -23,13 +22,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
       phases: selectPhases(),
     };
   });
-  const { setIo, importAll } = bindActionCreators(
-    {
-      ...toolActions,
-      ...tilesActions,
-    },
-    useDispatch(),
-  );
+  const dispatch = useDispatch();
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
@@ -38,7 +31,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
           mr={1}
           block
           data-test="import"
-          onClick={() => setIo("import")}
+          onClick={() => dispatch(toolActions.setIo("import"))}
           active={io === "import"}
         >
           Import
@@ -46,7 +39,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
         <Button
           block
           data-test="export"
-          onClick={() => setIo("export")}
+          onClick={() => dispatch(toolActions.setIo("export"))}
           active={io === "export"}
         >
           Export
@@ -106,7 +99,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
           <Button
             data-test="import-all"
             color="primary"
-            onClick={() => importAll(importValue)}
+            onClick={() => dispatch(tilesActions.importAll(importValue))}
           >
             Import All
           </Button>
