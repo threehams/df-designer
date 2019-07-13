@@ -3,7 +3,7 @@ import {
   display,
   DisplayProps,
   gridTemplateAreas,
-  GridTemplatesAreasProps,
+  GridTemplateAreasProps,
   height,
   HeightProps,
   maxWidth,
@@ -17,7 +17,7 @@ export const Grid = styled.div<
     MaxWidthProps &
     SpaceProps &
     HeightProps &
-    GridTemplatesAreasProps
+    GridTemplateAreasProps
 >`
   ${gridTemplateAreas}
   ${display}

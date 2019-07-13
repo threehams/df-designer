@@ -10,10 +10,9 @@ module.exports = phase => {
       /* production only config */
     };
   }
-  const withTypescript = require("@zeit/next-typescript");
   const TerserPlugin = require("terser-webpack-plugin");
 
-  return withTypescript({
+  return {
     webpack(config) {
       config.devtool = "source-map";
       config.optimization.minimizer = [
@@ -31,5 +30,5 @@ module.exports = phase => {
       ];
       return config;
     },
-  });
+  };
 };
