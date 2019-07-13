@@ -1,6 +1,6 @@
 import { range } from "lodash";
 import * as coordinates from "../../lib/coordinates";
-import { wallMap } from "../../static/tilesetNames";
+import { wallMap } from "../../static";
 import { selectLevelTiles, selectTile } from "../reducers/tilesReducer";
 import { selectCommandMap, selectSelection } from "../reducers/toolReducer";
 import {

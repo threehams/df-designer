@@ -1,6 +1,5 @@
 import { Patch } from "immer";
-import { adjustmentMap, commandMap } from "../static/commands";
-import { tilesetNames } from "../static/tilesetNames";
+import { adjustmentMap, commandMap, phases, tilesetNames } from "../static";
 
 export type Tool = "select" | "paint" | "erase" | "rectangle";
 export type CommandSlug = keyof typeof commandMap;
@@ -19,7 +18,7 @@ export interface SelectedCoords {
 }
 
 export type Io = "export" | "import";
-export type PhaseSlug = "dig" | "designate" | "build" | "place" | "query";
+export type PhaseSlug = keyof typeof phases;
 export type Type = "designation" | "item";
 export type CommandMap = typeof commandMap;
 export type AdjustmentMap = typeof adjustmentMap;
@@ -64,11 +63,7 @@ export interface SelectAdjustment {
 
 export type Adjustment = SelectAdjustment | ResizeAdjustment;
 
-export interface Phase {
-  name: string;
-  slug: PhaseSlug;
-}
-
+export type Phase = typeof phases;
 export type AdjustmentData = {
   [Key in AdjustmentKey]?: number | boolean | string;
 };

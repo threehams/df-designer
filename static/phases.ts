@@ -1,6 +1,4 @@
-import { Phase, PhaseSlug } from "../store/types";
-
-export const phases: { [Key in PhaseSlug]: Phase } = {
+export const phases = {
   dig: {
     name: "Dig",
     slug: "dig",
@@ -21,4 +19,4 @@ export const phases: { [Key in PhaseSlug]: Phase } = {
     name: "Adjust",
     slug: "query",
   },
-};
+} as const;
