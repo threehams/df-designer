@@ -1,145 +1,9 @@
 import { Patch } from "immer";
-import { tilesetNames } from "../static/tilesetNames";
+import { adjustmentMap, commandMap, phases, tilesetNames } from "../static";
 
 export type Tool = "select" | "paint" | "erase" | "rectangle";
-export type CommandSlug =
-  | "armorStand"
-  | "bed"
-  | "channel"
-  | "door"
-  | "downStair"
-  | "engrave"
-  | "floodgate"
-  | "floorGrate"
-  | "floorHatch"
-  | "fortification"
-  | "mine"
-  | "seat"
-  | "smooth"
-  | "tomb"
-  | "upDownStair"
-  | "upRamp"
-  | "upStair"
-  | "verticalBars"
-  | "wallGrate"
-  | "cabinet"
-  | "container"
-  | "kennel"
-  | "farmPlot"
-  | "weaponRack"
-  | "statue"
-  | "table"
-  | "pavedRoad"
-  | "dirtRoad"
-  | "bridge"
-  | "well"
-  // siege engines
-  | "ballista"
-  | "catapult"
-  // workshops
-  | "leatherWorks"
-  | "quern"
-  | "millstone"
-  | "loom"
-  | "clothiersShop"
-  | "bowyersWorkshop"
-  | "carpentersWorkshop"
-  | "metalsmithsForge"
-  | "magmaForge"
-  | "jewelersWorkshop"
-  | "masonsWorkshop"
-  | "butchersShop"
-  | "tannersShop"
-  | "craftsdwarfsWorkshop"
-  | "siegeWorkshop"
-  | "mechanicsWorkshop"
-  | "still"
-  | "farmersWorkshop"
-  | "kitchen"
-  | "fishery"
-  | "ashery"
-  | "dyersShop"
-  | "soapMakersWorkshop"
-  // furnaces
-  | "woodFurnace"
-  | "smelter"
-  | "glassFurnace"
-  | "kiln"
-  | "magmaSmelter"
-  | "magmaGlassFurnace"
-  | "magmaKiln"
-  // done
-  | "glassWindow"
-  | "gemWindow"
-  // constructions
-  | "constructWall"
-  | "constructFloor"
-  | "constructRamp"
-  | "constructUpStair"
-  | "constructDownStair"
-  | "constructUpDownStair"
-  | "constructFortification"
-  // done
-  | "tradeDepot"
-  // traps/levers
-  | "stoneFallTrap"
-  | "weaponTrap"
-  | "lever"
-  | "pressurePlate"
-  | "cageTrap"
-  | "uprightSpearSpike"
-  // machine components
-  | "screwPump"
-  | "waterWheel"
-  | "windmill"
-  | "gearAssembly"
-  | "horizontalAxle"
-  | "verticalAxle"
-  // done
-  | "support"
-  | "animalTrap"
-  | "restraint"
-  | "cage"
-  | "archeryTarget"
-  | "tractionBench"
-  // stockpiles
-  | "animalStockpile"
-  | "foodStockpile"
-  | "furnitureStorageStockpile"
-  | "graveyardStockpile"
-  | "refuseStockpile"
-  | "stoneStockpile"
-  | "woodStockpile"
-  | "gemStockpile"
-  | "barBlockStockpile"
-  | "clothStockpile"
-  | "leatherStockpile"
-  | "ammoStockpile"
-  | "coinsStockpile"
-  | "finishedGoodsStockpile"
-  | "weaponsStockpile"
-  | "armorStockpile";
-// quickfort stockpiles
-
-export type AdjustmentKey =
-  | "makeBedroom"
-  | "makeDiningRoom"
-  | "seedsStockpile"
-  | "noseedsStockpile"
-  | "boozeStockpile"
-  | "edibleFoodStockpile"
-  | "plantsStockpile"
-  | "corpsesStockpile"
-  | "bonesStockpile"
-  | "rawhidesStockpile"
-  | "tannedhidesStockpile"
-  | "metalStockpile"
-  | "nometalStockpile"
-  | "bauxiteStockpile"
-  | "nobauxiteStockpile"
-  | "artifactsStockpile"
-  | "noartifactsStockpile"
-  | "junkgoodsStockpile";
+export type CommandSlug = keyof typeof commandMap;
+export type AdjustmentKey = keyof typeof adjustmentMap;
 
 // abbreviation prevents shadowing a global geolocation type
 export interface Coords {
@@ -152,13 +16,12 @@ export interface SelectedCoords {
   startX: number;
   startY: number;
 }
-type TilesetName = keyof typeof tilesetNames;
 
 export type Io = "export" | "import";
-export type PhaseSlug = "dig" | "designate" | "build" | "place" | "query";
+export type PhaseSlug = keyof typeof phases;
 export type Type = "designation" | "item";
-export type CommandMap = { [Key in CommandSlug]: Command };
-export type AdjustmentMap = { [Key in AdjustmentKey]: Adjustment };
+export type CommandMap = typeof commandMap;
+export type AdjustmentMap = typeof adjustmentMap;
 export interface ToolState {
   readonly command: CommandSlug;
   readonly current: Tool;
@@ -174,45 +37,33 @@ export interface ToolState {
   readonly selectionStart: Coords | undefined;
 }
 
-export interface Command {
-  slug: CommandSlug;
-  height?: number;
-  name: string;
-  phase: PhaseSlug;
-  shortcut: string;
-  textures: TilesetName[];
-  type: "designation" | "item";
-  width?: number;
-}
+type ValueOf<T> = T[keyof T];
+export type Command = ValueOf<typeof commandMap>;
 
 export interface ResizeAdjustment {
-  type: "resize";
-  slug: AdjustmentKey;
-  name: string;
-  phase: PhaseSlug;
-  shortcut: string;
-  requires: CommandSlug;
-  initialSize: number;
+  readonly type: "resize";
+  readonly slug: AdjustmentKey;
+  readonly name: string;
+  readonly phase: PhaseSlug;
+  readonly shortcut: string;
+  readonly requires: CommandSlug;
+  readonly initialSize: number;
 }
 
 export interface SelectAdjustment {
-  type: "select";
-  slug: AdjustmentKey;
-  name: string;
-  phase: PhaseSlug;
-  shortcut: string;
-  requires: CommandSlug;
-  selectCommand: string;
-  selectName: string;
+  readonly type: "select";
+  readonly slug: AdjustmentKey;
+  readonly name: string;
+  readonly phase: PhaseSlug;
+  readonly shortcut: string;
+  readonly requires: CommandSlug;
+  readonly selectCommand: string;
+  readonly selectName: string;
 }
 
 export type Adjustment = SelectAdjustment | ResizeAdjustment;
 
-export interface Phase {
-  name: string;
-  slug: PhaseSlug;
-}
-
+export type Phase = typeof phases;
 export type AdjustmentData = {
   [Key in AdjustmentKey]?: number | boolean | string;
 };

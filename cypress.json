@@ -1,4 +1,8 @@
 {
   "projectId": "64ugpg",
-  "baseUrl": "http://localhost:3000"
+  "baseUrl": "http://localhost:3000",
+  "trashAssetsBeforeRuns": true,
+  "screenshotsFolder": ".cypress/screenshots",
+  "videosFolder": ".cypress/videos",
+  "videoUploadOnPasses": false
 }

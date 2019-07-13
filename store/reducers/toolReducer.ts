@@ -1,10 +1,9 @@
 import produce from "immer";
 import { createSelector } from "reselect";
 import { ActionType, getType } from "typesafe-actions";
-import { adjustmentMap, commandMap } from "../../static/commands";
-import { phases } from "../../static/phases";
+import { adjustmentMap, commandMap, phases } from "../../static";
 import { tilesActions, toolActions } from "../actions";
-import { PhaseSlug, State, ToolState } from "../types";
+import { PhaseSlug, State, ToolState, Command } from "../types";
 
 const INITIAL_STATE: ToolState = {
   command: "mine",
@@ -123,7 +122,7 @@ export const selectTool = (state: State) => {
   return state.tool.current;
 };
 
-export const selectCurrentCommand = (state: State) => {
+export const selectCurrentCommand = (state: State): Command => {
   return commandMap[state.tool.command];
 };
 
