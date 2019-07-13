@@ -18,9 +18,9 @@ export const selectSelectedTile = (state: State) => {
   const selection = selectSelection(state);
   if (!selection) {
     return {
-      command: null,
+      command: undefined,
       multiSelect: false,
-      tile: null,
+      tile: undefined,
     };
   }
   const commandMap = selectCommandMap();
@@ -30,15 +30,16 @@ export const selectSelectedTile = (state: State) => {
     selection.startY !== selection.endY
   ) {
     return {
-      command: null,
+      command: undefined,
       multiSelect: true,
-      tile: null,
+      tile: undefined,
     };
   }
   const tile =
-    selectTile(state, { x: selection.startX, y: selection.startY }) || null;
+    selectTile(state, { x: selection.startX, y: selection.startY }) ||
+    undefined;
   return {
-    command: tile && tile.item ? commandMap[tile.item] : null,
+    command: tile && tile.item ? commandMap[tile.item] : undefined,
     tile,
     multiSelect: false,
   };
@@ -193,7 +194,7 @@ const neighborIds = ({ x, y }: Coords) => {
   ];
 };
 
-const exposed = (tile: Tile | null) => {
+const exposed = (tile: Tile | undefined) => {
   if (!tile) {
     return false;
   }

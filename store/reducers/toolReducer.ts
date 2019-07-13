@@ -9,16 +9,16 @@ import { PhaseSlug, State, ToolState } from "../types";
 const INITIAL_STATE: ToolState = {
   command: "mine",
   current: "paint",
-  dragEnd: null,
+  dragEnd: undefined,
   dragging: false,
-  dragStart: null,
+  dragStart: undefined,
   export: false,
-  io: null,
-  last: null,
+  io: undefined,
+  last: undefined,
   phase: "dig",
   selecting: false,
-  selectionEnd: null,
-  selectionStart: null,
+  selectionEnd: undefined,
+  selectionStart: undefined,
 };
 
 export const toolReducer = (
@@ -32,8 +32,8 @@ export const toolReducer = (
           draft.last = state.current;
           draft.current = action.payload.tool;
           if (action.payload.tool !== "select") {
-            draft.selectionStart = null;
-            draft.selectionEnd = null;
+            draft.selectionStart = undefined;
+            draft.selectionEnd = undefined;
           }
         }
         break;
@@ -68,8 +68,8 @@ export const toolReducer = (
       case getType(toolActions.cancel):
       case getType(tilesActions.fillTiles):
         draft.selecting = false;
-        draft.selectionStart = null;
-        draft.selectionEnd = null;
+        draft.selectionStart = undefined;
+        draft.selectionEnd = undefined;
         break;
       case getType(tilesActions.cloneTiles):
       case getType(tilesActions.moveTiles): {
@@ -83,8 +83,8 @@ export const toolReducer = (
           x: toX + (selection.endX - selection.startX),
           y: toY + (selection.endY - selection.startY),
         };
-        draft.dragStart = null;
-        draft.dragEnd = null;
+        draft.dragStart = undefined;
+        draft.dragEnd = undefined;
         break;
       }
       case getType(toolActions.setCurrentPhase): {
@@ -128,7 +128,7 @@ export const selectCurrentCommand = (state: State) => {
 };
 
 export const selectCommands = createSelector(
-  (_: unknown, props: { phase: PhaseSlug | null }) => props.phase,
+  (_: unknown, props: { phase: PhaseSlug | undefined }) => props.phase,
   phase => {
     return Object.values(commandMap).filter(command =>
       phase ? command.phase === phase : true,
@@ -165,7 +165,7 @@ export const selectSelection = createSelector(
   (state: State) => state.tool.selectionEnd,
   (start, end) => {
     if (!start || !end) {
-      return null;
+      return undefined;
     }
     return {
       startX: Math.min(start.x, end.x),

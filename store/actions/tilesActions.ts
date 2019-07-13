@@ -182,7 +182,7 @@ export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
         return dispatch(fillTiles(selection, command));
       }
       case "select": {
-        // get rid of all the nulls right away
+        // get rid of all the undefineds right away
         if (!state.tool.dragging) {
           return dispatch(toolActions.endSelection());
         }
@@ -285,8 +285,8 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
                 tileMap[id] = {
                   id,
                   coordinates: coordinates.fromId(id),
-                  designation: null,
-                  item: null,
+                  designation: undefined,
+                  item: undefined,
                   adjustments: {},
                 };
               }
@@ -313,7 +313,7 @@ const adjustmentData = (adjustment: Adjustment, shortcut: string) => {
   }
 };
 
-const shouldUpdate = (tile: Tile | null, command: Command) => {
+const shouldUpdate = (tile: Tile | undefined, command: Command) => {
   if (!tile) {
     return true;
   }

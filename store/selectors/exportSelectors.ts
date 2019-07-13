@@ -18,7 +18,7 @@ import {
 } from "../types";
 import { selectExtents } from "./extentsSelectors";
 
-type Grids = { [key in PhaseSlug]: string[][] | null };
+type Grids = { [key in PhaseSlug]: string[][] | undefined };
 type GridsResult = { [key in PhaseSlug]: string };
 
 const createGrid = (dimensions: SelectedCoords): string[][] => {
@@ -56,11 +56,11 @@ const selectExportedLevel = createSelector(
   selectLevelTiles,
   (adjustmentMap, commandMap, phases, extents, tiles) => {
     if (!extents) {
-      return null;
+      return undefined;
     }
     const grids = phases.reduce(
       (result, phase) => {
-        result[phase.slug] = null;
+        result[phase.slug] = undefined;
         return result;
       },
       {} as Grids,
@@ -70,7 +70,7 @@ const selectExportedLevel = createSelector(
         continue;
       }
       const { x, y } = coordinates.fromId(id);
-      const exportCommand = (commandSlug: CommandSlug | null) => {
+      const exportCommand = (commandSlug: CommandSlug | undefined) => {
         if (!commandSlug) {
           return;
         }
