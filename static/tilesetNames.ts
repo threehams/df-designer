@@ -529,4 +529,4 @@ export const wallMap: { [key: string]: keyof typeof tilesetNames } = {
   0b11111101: "smoothWallCross",
   0b11111110: "smoothWallCross",
   0b11111111: "smoothWallCross",
-};
+} as const;

@@ -1,4 +1,5 @@
 node_modules
+.cypress
 .next
 .vscode
 yarn-error.log
