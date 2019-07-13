@@ -3,7 +3,10 @@
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "jsx": "preserve",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -15,7 +18,23 @@
     "sourceMap": true,
     "strict": true,
     "target": "esnext",
-    "types": ["webpack-env", "jest"]
+    "types": [
+      "webpack-env",
+      "jest"
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
-  "exclude": ["node_modules", "./cypress/**/*.ts", "./cypress/**/*.tsx"]
+  "exclude": [
+    "node_modules",
+    "./cypress/**/*.ts",
+    "./cypress/**/*.tsx"
+  ],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }

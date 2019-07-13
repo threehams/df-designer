@@ -7,8 +7,7 @@
         "useBuiltIns": "usage"
       }
     ],
-    "next/babel",
-    "@zeit/next-typescript/babel"
+    "next/babel"
   ],
   "plugins": ["emotion"]
 }
