@@ -18,7 +18,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
   const { io, exported, phases } = useMemoizedState(state => {
     return {
       io: state.tool.io,
-      exported: state.tool.io === "export" ? selectExported(state) : null,
+      exported: state.tool.io === "export" ? selectExported(state) : undefined,
       phases: selectPhases(),
     };
   });

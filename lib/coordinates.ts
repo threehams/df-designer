@@ -29,7 +29,10 @@ export const offset = (selection: SelectedCoords, offsetCoords: Coords) => {
   };
 };
 
-export const within = (selection: SelectedCoords | null, current: Coords) => {
+export const within = (
+  selection: SelectedCoords | undefined,
+  current: Coords,
+) => {
   if (!selection) {
     return false;
   }
@@ -41,7 +44,10 @@ export const within = (selection: SelectedCoords | null, current: Coords) => {
   );
 };
 
-export const match = (previous: Coords | null, current: Coords | null) => {
+export const match = (
+  previous: Coords | undefined,
+  current: Coords | undefined,
+) => {
   if (!current || !previous) {
     return false;
   }

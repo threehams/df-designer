@@ -14,7 +14,7 @@ interface Props {
   tile: Tile;
 }
 
-const tileValue = (tile: Tile | null, adjustment: Adjustment) => {
+const tileValue = (tile: Tile | undefined, adjustment: Adjustment) => {
   if (!tile) {
     return false;
   }
@@ -66,7 +66,7 @@ export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
 
 interface ResizeInputProps {
   adjustment: Adjustment;
-  value: number | void;
+  value: number | undefined;
   tile: Tile;
 }
 const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
@@ -137,7 +137,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
 
 interface SelectInputProps {
   adjustment: Adjustment;
-  value: string | null | void;
+  value: string | undefined;
   tile: Tile;
 }
 const SelectInput: React.FunctionComponent<SelectInputProps> = ({

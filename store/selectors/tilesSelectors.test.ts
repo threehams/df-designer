@@ -19,7 +19,7 @@ describe("selectChunks", () => {
       draft.data["1"] = {
         "1,1": {
           designation: "mine",
-          item: null,
+          item: undefined,
           adjustments: {},
           id: "1,1",
           coordinates: {

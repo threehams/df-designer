@@ -25,7 +25,7 @@ const selectLevelExtents = createSelector(
       },
     );
     if (dimensions.startX === Infinity || dimensions.startY === Infinity) {
-      return null;
+      return undefined;
     }
     return dimensions;
   },

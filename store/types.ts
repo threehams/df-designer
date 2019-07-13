@@ -162,16 +162,16 @@ export type AdjustmentMap = { [Key in AdjustmentKey]: Adjustment };
 export interface ToolState {
   readonly command: CommandSlug;
   readonly current: Tool;
-  readonly dragEnd: Coords | null;
+  readonly dragEnd: Coords | undefined;
   readonly dragging: boolean;
-  readonly dragStart: Coords | null;
+  readonly dragStart: Coords | undefined;
   readonly export: boolean;
-  readonly io: Io | null;
-  readonly last: Tool | null;
+  readonly io: Io | undefined;
+  readonly last: Tool | undefined;
   readonly phase: PhaseSlug;
   readonly selecting: boolean;
-  readonly selectionEnd: Coords | null;
-  readonly selectionStart: Coords | null;
+  readonly selectionEnd: Coords | undefined;
+  readonly selectionStart: Coords | undefined;
 }
 
 export interface Command {
@@ -218,8 +218,8 @@ export type AdjustmentData = {
 };
 export type ImportMap = { [Key in PhaseSlug]?: string };
 export interface Tile {
-  readonly designation: CommandSlug | null;
-  readonly item: CommandSlug | null;
+  readonly designation: CommandSlug | undefined;
+  readonly item: CommandSlug | undefined;
   readonly adjustments: AdjustmentData;
   readonly id: string;
   // performance only, avoid creating in selectors

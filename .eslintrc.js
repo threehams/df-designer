@@ -52,6 +52,14 @@ module.exports = {
     ],
     "mocha/no-exclusive-tests": "error",
     "no-unused-expressions": "error",
+    "no-null/no-null": "error",
   },
-  plugins: ["@typescript-eslint", "react", "react-hooks", "jsx-a11y", "mocha"],
+  plugins: [
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "jsx-a11y",
+    "mocha",
+    "no-null",
+  ],
 };

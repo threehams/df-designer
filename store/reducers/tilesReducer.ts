@@ -265,30 +265,30 @@ const deleteAll = (draft: Draft<TilesMap>) => {
 
 const removeCommand = (
   command: Command,
-  current: Draft<Tile> | null,
-): Tile | null => {
+  current: Draft<Tile> | undefined,
+): Tile | undefined => {
   if (!current || command.type === "designation") {
-    return null;
+    return undefined;
   }
-  current[command.type] = null;
+  current[command.type] = undefined;
   return current;
 };
 
 // Replace a command from the same phase, while keeping the rest.
 const addCommand = (
   command: Command,
-  current: Draft<Tile> | null,
+  current: Draft<Tile> | undefined,
   id: string,
-): Tile | null => {
+): Tile | undefined => {
   if (command.type !== "designation" && (!current || !current.designation)) {
-    return null;
+    return undefined;
   }
   if (!current) {
     return {
       id,
       coordinates: coordinates.fromId(id),
-      designation: null,
-      item: null,
+      designation: undefined,
+      item: undefined,
       adjustments: {},
       [command.type]: command.slug,
     };
@@ -300,7 +300,7 @@ const addCommand = (
 export const selectTile = (
   state: State,
   { x, y }: { x: number; y: number },
-): Tile | null => {
+): Tile | undefined => {
   const id = coordinates.toId(x, y);
   return state.tiles.data[state.tiles.zLevel][id];
 };
