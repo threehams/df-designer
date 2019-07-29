@@ -1,18 +1,18 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
-import { useSelector, useDispatch } from "react-redux";
 import * as PIXI from "pixi.js";
 import React, { memo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
+import { tilesActions } from "../../store/actions";
 import {
   selectSelection,
   selectSelectionOffset,
 } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
-import { Coords, SelectedCoords, TileSprite, Chunk } from "../../store/types";
+import { Chunk, Coords, SelectedCoords, TileSprite } from "../../store/types";
 import { Cursor } from "../Cursor";
 import { textures, TILE_SIZE } from "./textures";
-import { tilesActions } from "../../store/actions";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.utils.skipHello();
@@ -107,11 +107,7 @@ const tilePosition = ({ x, y }: Coords) => {
 
 // separated to avoid per-frame recalculations
 const ArtboardTiles: React.FC = () => {
-  const { chunks } = useSelector(state => {
-    return {
-      chunks: selectChunks(state),
-    };
-  });
+  const chunks = useSelector(selectChunks);
   return <Artboard chunks={chunks} />;
 };
 

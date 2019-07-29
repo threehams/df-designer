@@ -1,21 +1,18 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from ".";
+import { toolActions } from "../store/actions";
 import {
   selectCommands,
   selectCurrentCommand,
 } from "../store/reducers/toolReducer";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
-import { toolActions } from "../store/actions";
-import { useMemoizedState } from "../lib/useMemoizedState";
-import { useDispatch } from "react-redux";
 
 export const CommandBar: React.FunctionComponent = () => {
-  const { phase, command, commands } = useMemoizedState(state => {
-    return {
-      phase: state.tool.phase,
-      command: selectCurrentCommand(state),
-      commands: selectCommands(state, { phase: state.tool.phase }),
-    };
+  const phase = useSelector(state => state.tool.phase);
+  const command = useSelector(selectCurrentCommand);
+  const commands = useSelector(state => {
+    return selectCommands(state, { phase: state.tool.phase });
   });
   const dispatch = useDispatch();
   return (

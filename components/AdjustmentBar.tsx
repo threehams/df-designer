@@ -1,14 +1,13 @@
 import React from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { tilesActions } from "../store/actions";
 import {
-  selectCommandMap,
   selectAdjustmentMap,
+  selectCommandMap,
 } from "../store/reducers/toolReducer";
 import { Adjustment, Tile } from "../store/types";
 import { Button, Label } from "./";
 import { Box } from "./Box";
-import { tilesActions } from "../store/actions";
-import { useMemoizedState } from "../lib/useMemoizedState";
-import { useDispatch } from "react-redux";
 
 interface Props {
   tile: Tile;
@@ -22,7 +21,7 @@ const tileValue = (tile: Tile | undefined, adjustment: Adjustment) => {
 };
 
 export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
-  const { name, adjustments } = useMemoizedState(_ => {
+  const { name, adjustments } = useSelector(_ => {
     const commandMap = selectCommandMap();
     const adjustmentMap = selectAdjustmentMap();
 
@@ -32,7 +31,7 @@ export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
         return adjustment.requires === tile.item;
       }),
     };
-  });
+  }, shallowEqual);
   return (
     <Box>
       <Box data-test="adjustment-bar-item-name">{name}</Box>

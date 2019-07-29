@@ -1,18 +1,18 @@
 import { range } from "lodash";
+import { createSelector } from "reselect";
 import * as coordinates from "../../lib/coordinates";
 import { wallMap } from "../../static";
 import { selectLevelTiles, selectTile } from "../reducers/tilesReducer";
 import { selectCommandMap, selectSelection } from "../reducers/toolReducer";
 import {
+  Coords,
   SelectedCoords,
   State,
   Tile,
   TilesMap,
   TileSprite,
-  Coords,
 } from "../types";
 import { selectExtents } from "./extentsSelectors";
-import { createSelector } from "reselect";
 
 export const selectSelectedTile = (state: State) => {
   const selection = selectSelection(state);

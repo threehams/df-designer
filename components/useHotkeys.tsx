@@ -1,6 +1,6 @@
-import { useHotKey, useKeyHandler } from "../lib/useHotKey";
-import { toolActions, tilesActions } from "../store/actions";
 import { useDispatch } from "react-redux";
+import { useHotKey, useKeyHandler } from "../lib/useHotKey";
+import { tilesActions, toolActions } from "../store/actions";
 
 export const useHotkeys = () => {
   const keysPressed = useHotKey();

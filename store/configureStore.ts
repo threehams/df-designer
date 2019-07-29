@@ -5,13 +5,6 @@ import { tilesActions } from "./actions";
 import { rootReducer } from "./reducers";
 import { State } from "./types";
 
-// if (typeof localStorage !== "undefined") {
-// }
-// be as defensive as possible here
-// const initialState = (): TilesState => {
-//   return INITIAL_STATE;
-// };
-
 export const configureStore = (
   initialState: DeepPartial<State> | undefined,
   options: { isServer: boolean },
