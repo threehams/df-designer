@@ -1,23 +1,15 @@
+import { useDispatch, useSelector } from "react-redux";
+import { tilesActions, toolActions } from "../store/actions";
 import { selectTool } from "../store/reducers/toolReducer";
-import { State } from "../store/types";
 import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
-import { toolActions, tilesActions } from "../store/actions";
-import { useMemoizedState } from "../lib/useMemoizedState";
-import { useDispatch } from "react-redux";
 
 export const Toolbar: React.FunctionComponent = () => {
-  const { tool, undoSteps, redoSteps, zLevel } = useMemoizedState(
-    (state: State) => {
-      return {
-        tool: selectTool(state),
-        undoSteps: state.tiles.past.length,
-        redoSteps: state.tiles.future.length,
-        zLevel: state.tiles.zLevel,
-      };
-    },
-  );
+  const tool = useSelector(selectTool);
+  const undoSteps = useSelector(state => state.tiles.past.length);
+  const redoSteps = useSelector(state => state.tiles.future.length);
+  const zLevel = useSelector(state => state.tiles.zLevel);
   const dispatch = useDispatch();
   return (
     <Flex p={2} data-test="toolbar">

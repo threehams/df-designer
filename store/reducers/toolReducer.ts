@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 import { ActionType, getType } from "typesafe-actions";
 import { adjustmentMap, commandMap, phases } from "../../static";
 import { tilesActions, toolActions } from "../actions";
-import { PhaseSlug, State, ToolState, Command } from "../types";
+import { Command, PhaseSlug, State, ToolState } from "../types";
 
 const INITIAL_STATE: ToolState = {
   command: "mine",

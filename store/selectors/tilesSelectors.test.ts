@@ -1,6 +1,6 @@
-import { selectChunks } from "./tilesSelectors";
-import { INITIAL_STATE } from "../reducers/tilesReducer";
 import produce from "immer";
+import { INITIAL_STATE } from "../reducers/tilesReducer";
+import { selectChunks } from "./tilesSelectors";
 
 describe("selectChunks", () => {
   it("returns nothing when there are no tiles", () => {

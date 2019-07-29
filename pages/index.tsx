@@ -1,5 +1,6 @@
 import { Global } from "@emotion/core";
 import dynamic from "next/dynamic";
+import { useSelector } from "react-redux";
 import {
   Box,
   CommandBar,
@@ -10,7 +11,6 @@ import {
 } from "../components/";
 import { useHotkeys } from "../components/useHotkeys";
 import { selectTool } from "../store/reducers/toolReducer";
-import { useMemoizedState } from "../lib/useMemoizedState";
 
 const Loading = () => <Box width="100vh" height="100vh" background="black" />;
 
@@ -22,7 +22,7 @@ const Artboard = dynamic(import("../components/Artboard"), {
 
 export const Index: React.FunctionComponent = () => {
   useHotkeys();
-  const tool = useMemoizedState(state => selectTool(state));
+  const tool = useSelector(selectTool);
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
     <>

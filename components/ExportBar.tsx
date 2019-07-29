@@ -1,11 +1,10 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Flex, Textarea } from ".";
+import { tilesActions, toolActions } from "../store/actions";
 import { selectPhases } from "../store/reducers/toolReducer";
 import { selectExported } from "../store/selectors";
 import { ImportMap } from "../store/types";
-import { toolActions, tilesActions } from "../store/actions";
-import { useMemoizedState } from "../lib/useMemoizedState";
-import { useDispatch } from "react-redux";
 
 const download = (filename: string, text: string) => {
   const element = document.createElement("a");
@@ -15,13 +14,11 @@ const download = (filename: string, text: string) => {
 };
 
 export const ExportBar: React.FunctionComponent = React.memo(() => {
-  const { io, exported, phases } = useMemoizedState(state => {
-    return {
-      io: state.tool.io,
-      exported: state.tool.io === "export" ? selectExported(state) : undefined,
-      phases: selectPhases(),
-    };
-  });
+  const io = useSelector(state => state.tool.io);
+  const exported = useSelector(state =>
+    state.tool.io === "export" ? selectExported(state) : undefined,
+  );
+  const phases = useSelector(selectPhases);
   const dispatch = useDispatch();
   const [importValue, setImportValue] = useState<ImportMap>({});
   return (

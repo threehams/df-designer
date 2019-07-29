@@ -1,7 +1,7 @@
+import { useDispatch } from "react-redux";
+import { tilesActions } from "../store/actions";
 import { Button } from "./";
 import { Flex } from "./Flex";
-import { tilesActions } from "../store/actions";
-import { useDispatch } from "react-redux";
 
 export const MultiSelectBar: React.FunctionComponent = () => {
   const dispatch = useDispatch();
