@@ -1,4 +1,4 @@
-import "core-js/fn/array/flat-map";
+import "core-js/stable";
 import { setAutoFreeze } from "immer";
 import withRedux from "next-redux-wrapper";
 import App, { Container } from "next/app";
