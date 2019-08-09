@@ -1,5 +1,5 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
-import * as PIXI from "pixi.js";
+import { settings, utils, SCALE_MODES, Texture } from "pixi.js";
 import React, { memo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as coordinates from "../../lib/coordinates";
@@ -14,8 +14,8 @@ import { Chunk, Coords, SelectedCoords, TileSprite } from "../../store/types";
 import { Cursor } from "../Cursor";
 import { textures, TILE_SIZE } from "./textures";
 
-PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-PIXI.utils.skipHello();
+settings.SCALE_MODE = SCALE_MODES.NEAREST;
+utils.skipHello();
 
 const LEFT_MOUSE_BUTTON = 1;
 
@@ -57,7 +57,7 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
           pointerup={() => {
             dispatch(tilesActions.endClickTile(keysPressed));
           }}
-          texture={PIXI.Texture.EMPTY}
+          texture={Texture.EMPTY}
           width={2048}
         />
         {chunks.map(chunk => {

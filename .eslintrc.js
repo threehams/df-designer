@@ -17,8 +17,8 @@ module.exports = {
   rules: {
     "no-shadow": "error",
     // Too many bugs for now
-    // "no-unused-vars": "error",
-    // "@typescript-eslint/no-unused-vars": "error",
+    "no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/class-name-casing": "error",
     "@typescript-eslint/array-type": ["error", "array"],
     "@typescript-eslint/no-angle-bracket-type-assertion": "error",
