@@ -85,5 +85,9 @@ describe("adjustments", () => {
         "Food Stockpile",
       );
     });
+
+    it("fails", () => {
+      cy.getId("adjustment-bar-item-name").should("not.exist");
+    });
   });
 });
