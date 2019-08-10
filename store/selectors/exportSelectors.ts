@@ -29,7 +29,7 @@ const createGrid = (dimensions: SelectedCoords): string[][] => {
   );
 };
 
-export const selectExported = (state: State) => {
+export const selectExported = (state: State): GridsResult => {
   return range(127, -1)
     .map(zLevel => {
       return selectExportedLevel(state, { zLevel });
@@ -54,7 +54,13 @@ const selectExportedLevel = createSelector(
   selectPhases,
   selectExtents,
   selectLevelTiles,
-  (adjustmentMap, commandMap, phases, extents, tiles) => {
+  (
+    adjustmentMap,
+    commandMap,
+    phases,
+    extents,
+    tiles,
+  ): GridsResult | undefined => {
     if (!extents) {
       return undefined;
     }
