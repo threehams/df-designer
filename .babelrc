@@ -1,4 +1,14 @@
 {
-  "presets": [["@babel/env"], "next/babel"],
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "modules": false,
+        "useBuiltIns": "usage",
+        "corejs": 3
+      }
+    ],
+    "next/babel"
+  ],
   "plugins": ["emotion"]
 }
