@@ -1,3 +1,4 @@
+import React from "react";
 import { useDispatch } from "react-redux";
 import { tilesActions } from "../store/actions";
 import { Button } from "./";

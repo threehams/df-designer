@@ -1,3 +1,4 @@
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { tilesActions, toolActions } from "../store/actions";
 import { selectTool } from "../store/reducers/toolReducer";

@@ -1,5 +1,6 @@
 import { Sprite } from "@inlet/react-pixi";
 import { Texture } from "pixi.js";
+import React from "react";
 
 const TILE_SIZE = 16;
 

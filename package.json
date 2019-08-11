@@ -26,7 +26,6 @@
   "dependencies": {
     "@cypress/webpack-preprocessor": "^4.1.0",
     "@emotion/core": "^10.0.15",
-    "@emotion/css": "^10.0.14",
     "@emotion/styled": "^10.0.15",
     "@inlet/react-pixi": "^1.0.4",
     "babel-plugin-emotion": "^10.0.15",
@@ -34,9 +33,9 @@
     "core-js": "^3.2.0",
     "cross-env": "^5.2.0",
     "cypress": "^3.4.1",
-    "emotion": "^10.0.14",
     "immer": "^3.2.0",
     "keycode": "^2.2.0",
+    "lodash": "^4.17.15",
     "next": "^9.0.3",
     "next-redux-wrapper": "^3.0.0-alpha.3",
     "pixi.js": "^5.1.1",
@@ -48,10 +47,8 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "seedrandom": "^3.0.3",
-    "start-server-and-test": "^1.10.0",
     "styled-system": "^5.0.21",
-    "typesafe-actions": "^4.4.2",
-    "typescript": "^3.5.3"
+    "typesafe-actions": "^4.4.2"
   },
   "devDependencies": {
     "@types/core-js": "^2.5.2",
@@ -75,6 +72,8 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2"
+    "start-server-and-test": "^1.10.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.3"
   }
 }
