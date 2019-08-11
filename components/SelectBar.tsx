@@ -1,3 +1,4 @@
+import React from "react";
 import { useSelector } from "react-redux";
 import { selectSelectedTile } from "../store/selectors";
 import { AdjustmentBar } from "./AdjustmentBar";

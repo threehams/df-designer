@@ -11,10 +11,10 @@ import {
 } from "../components/";
 import { useHotkeys } from "../components/useHotkeys";
 import { selectTool } from "../store/reducers/toolReducer";
+import React from "react";
 
 const Loading = () => <Box width="100vh" height="100vh" background="black" />;
 
-// @ts-ignore I have no idea how to make react-loadable and next.js agree
 const Artboard = dynamic(import("../components/Artboard"), {
   ssr: false,
   loading: Loading,
@@ -25,7 +25,7 @@ export const Index: React.FunctionComponent = () => {
   const tool = useSelector(selectTool);
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
-    <>
+    <React.StrictMode>
       <Global
         styles={`
           body {
@@ -59,7 +59,7 @@ export const Index: React.FunctionComponent = () => {
           <ExportBar />
         </Box>
       </Grid>
-    </>
+    </React.StrictMode>
   );
 };
 

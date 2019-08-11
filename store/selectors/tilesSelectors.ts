@@ -149,15 +149,25 @@ const createWalls = (
   selection: SelectedCoords,
 ): TileSprite[] => {
   const walls = new Set<string>();
-  Object.values(tiles).forEach(tile => {
+
+  function addWalls(tile: Tile): void {
     if (exposed(tile)) {
-      for (const id of neighborIds(tile.coordinates)) {
-        if (!tiles[id]) {
-          walls.add(id);
+      // for loop for performance over for...of :O
+      for (let offsetY = -1; offsetY <= 1; offsetY++) {
+        for (let offsetX = -1; offsetX <= 1; offsetX++) {
+          if (offsetY === 0 && offsetX === 0) {
+            continue;
+          }
+          const { x, y } = tile.coordinates;
+          const id = `${x + offsetX},${y + offsetY}`;
+          if (!tiles[id]) {
+            walls.add(id);
+          }
         }
       }
     }
-  });
+  }
+  Object.values(tiles).forEach(addWalls);
   return (
     Array.from(walls.values())
       // TODO performance issues with within

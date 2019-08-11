@@ -21,16 +21,14 @@ const tileValue = (tile: Tile | undefined, adjustment: Adjustment) => {
 };
 
 export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
-  const { name, adjustments } = useSelector(_ => {
-    const commandMap = selectCommandMap();
-    const adjustmentMap = selectAdjustmentMap();
+  const commandMap = selectCommandMap();
+  const adjustmentMap = selectAdjustmentMap();
+  const name = commandMap[tile.item!].name;
 
-    return {
-      name: commandMap[tile.item!].name,
-      adjustments: Object.values(adjustmentMap).filter(adjustment => {
-        return adjustment.requires === tile.item;
-      }),
-    };
+  const adjustments = useSelector(() => {
+    return Object.values(adjustmentMap).filter(adjustment => {
+      return adjustment.requires === tile.item;
+    });
   }, shallowEqual);
   return (
     <Box>
