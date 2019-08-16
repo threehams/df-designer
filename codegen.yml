@@ -1,0 +1,14 @@
+overwrite: true
+schema: "./schema.graphql"
+generates:
+  server/types.tsx:
+    plugins:
+      - add: "/* eslint-disable */"
+      - "typescript"
+      - "typescript-resolvers"
+    config:
+      defaultMapper: any
+
+  ./graphql.schema.json:
+    plugins:
+      - "introspection"

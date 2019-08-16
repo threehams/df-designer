@@ -1,0 +1,24 @@
+type Design {
+  id: ID!
+  name: String!
+  author: User!
+  authorId: ID!
+}
+
+type User {
+  id: ID!
+  name: String!
+  designs: [Design!]!
+  designIds: [ID!]!
+  friends: [User!]!
+  friendIds: [ID!]!
+  starRating: Int
+}
+
+type Query {
+  "Get user by ID"
+  user(id: ID!): User!
+  "Get design by ID"
+  design(id: ID!): Design!
+  designs(authorId: ID!): [Design!]!
+}
