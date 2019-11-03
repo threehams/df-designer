@@ -81,11 +81,11 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           checked={!!value}
           onChange={() => {
             dispatch(
-              tilesActions.setAdjustment(
-                tile.id,
-                adjustment.slug,
-                value ? 0 : 3,
-              ),
+              tilesActions.setAdjustment({
+                id: tile.id,
+                name: adjustment.slug,
+                value: value ? 0 : 3,
+              }),
             );
           }}
           data-test="adjustment-bar-check"
@@ -100,11 +100,11 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
             data-test-item={adjustment.slug}
             onClick={() => {
               dispatch(
-                tilesActions.setAdjustment(
-                  tile.id,
-                  adjustment.slug,
-                  Math.max(value - 1, 1),
-                ),
+                tilesActions.setAdjustment({
+                  id: tile.id,
+                  name: adjustment.slug,
+                  value: Math.max(value - 1, 1),
+                }),
               );
             }}
           >
@@ -116,11 +116,11 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
             data-test-item={adjustment.slug}
             onClick={() => {
               dispatch(
-                tilesActions.setAdjustment(
-                  tile.id,
-                  adjustment.slug,
-                  Math.min(value + 1, 12),
-                ),
+                tilesActions.setAdjustment({
+                  id: tile.id,
+                  name: adjustment.slug,
+                  value: Math.min(value + 1, 12),
+                }),
               );
             }}
           >
@@ -150,11 +150,11 @@ const SelectInput: React.FunctionComponent<SelectInputProps> = ({
         value={value || ""}
         onChange={event => {
           dispatch(
-            tilesActions.setAdjustment(
-              tile.id,
-              adjustment.slug,
-              event.target.value,
-            ),
+            tilesActions.setAdjustment({
+              id: tile.id,
+              name: adjustment.slug,
+              value: event.target.value,
+            }),
           );
         }}
         data-test="adjustment-bar-check"

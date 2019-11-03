@@ -6,13 +6,10 @@ import { tilesActions } from "../actions";
 import { Command, State, Tile, TilesMap, TilesState, ZPatch } from "../types";
 
 export const INITIAL_STATE: TilesState = {
-  data: range(0, 128).reduce(
-    (result, zIndex) => {
-      result[zIndex] = {};
-      return result;
-    },
-    {} as Draft<State["tiles"]["data"]>,
-  ),
+  data: range(0, 128).reduce((result, zIndex) => {
+    result[zIndex] = {};
+    return result;
+  }, {} as Draft<State["tiles"]["data"]>),
   transaction: [],
   past: [],
   future: [],
@@ -96,6 +93,7 @@ export const tilesReducer = (
         switch (action.type) {
           case getType(tilesActions.updateTile): {
             const { x, y, command } = action.payload;
+            console.log(x, y, command);
             const id = coordinates.toId(x, y);
             const newTile = addCommand(command, draft[id], id);
             if (newTile) {

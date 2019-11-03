@@ -43,7 +43,7 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="select"
-          onClick={() => dispatch(toolActions.setTool("select"))}
+          onClick={() => dispatch(toolActions.setTool({ tool: "select" }))}
           active={tool === "select"}
           mr={1}
         >
@@ -52,7 +52,7 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="paint"
-          onClick={() => dispatch(toolActions.setTool("paint"))}
+          onClick={() => dispatch(toolActions.setTool({ tool: "paint" }))}
           active={tool === "paint"}
           mr={1}
         >
@@ -61,7 +61,7 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="paint-rectangle"
-          onClick={() => dispatch(toolActions.setTool("rectangle"))}
+          onClick={() => dispatch(toolActions.setTool({ tool: "rectangle" }))}
           active={tool === "rectangle"}
           mr={1}
         >
@@ -70,7 +70,7 @@ export const Toolbar: React.FunctionComponent = () => {
         <Button
           data-test="tool"
           data-test-item="erase"
-          onClick={() => dispatch(toolActions.setTool("erase"))}
+          onClick={() => dispatch(toolActions.setTool({ tool: "erase" }))}
           active={tool === "erase"}
         >
           Erase

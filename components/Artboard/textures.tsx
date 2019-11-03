@@ -1,10 +1,10 @@
 import { keys } from "../../lib/keys";
-import { tilesetNames } from "../../static";
+import { tilesetNames } from "../../public";
 import { BaseTexture, Texture, Rectangle } from "pixi.js";
 
 export const TILE_SIZE = 16;
 
-const spriteSheet = BaseTexture.from("/static/phoebus.png");
+const spriteSheet = BaseTexture.from("/public/phoebus.png");
 export type TilesetMap = { [key in keyof typeof tilesetNames]: Texture };
 export const textures = keys(tilesetNames).reduce(
   (result: TilesetMap, name) => {

@@ -22,6 +22,7 @@ import {
   State,
   Tile,
   TilesState,
+  Coords,
 } from "../types";
 
 export const hydrateTiles = () => {
@@ -33,134 +34,127 @@ export const hydrateTiles = () => {
       }
       const tiles = JSON.parse(json);
       if (tiles) {
-        dispatch(setTilesState(tiles));
+        dispatch(setTilesState({ tiles }));
       }
     } catch (err) {
       // nothing available or privacy settings disallow localStorage
     }
   };
 };
-export const setTilesState = createAction(
-  "app/tiles/SET_TILES_STATE",
-  resolve => {
-    return (tiles: TilesState["data"]) => {
-      return resolve({ tiles });
-    };
-  },
-);
+export const setTilesState = createAction("app/tiles/SET_TILES_STATE")<{
+  tiles: TilesState["data"];
+}>();
 
-export const updateTile = createAction("app/tiles/UPDATE_TILE", resolve => {
-  return (x: number, y: number, command: Command) => {
-    return resolve({ x, y, command });
-  };
-});
-export const setAdjustment = createAction(
-  "app/tiles/SET_ADJUSTMENT",
-  resolve => {
-    return (id: string, name: AdjustmentKey, value: number | string) => {
-      return resolve({ id, name, value });
-    };
-  },
-);
-export const fillTiles = createAction("app/tiles/UPDATE_TILES", resolve => {
-  return (selection: SelectedCoords, command: Command) => {
-    return resolve({ selection, command });
-  };
-});
-export const cloneTiles = createAction("app/tiles/CLONE_TILES", resolve => {
-  return (selection: SelectedCoords, toX: number, toY: number) => {
-    return resolve({ selection, toX, toY });
-  };
-});
-export const moveTiles = createAction("app/tiles/MOVE_TILES", resolve => {
-  return (selection: SelectedCoords, toX: number, toY: number) => {
-    return resolve({ selection, toX, toY });
-  };
-});
-export const removeTile = createAction("app/tiles/REMOVE_TILE", resolve => {
-  return (x: number, y: number, command: Command) => resolve({ x, y, command });
-});
-export const removeTiles = createAction("app/tiles/REMOVE_TILES", resolve => {
-  return (selection: SelectedCoords) => resolve({ selection });
-});
-export const resetBoard = createAction("app/tiles/RESET_BOARD");
-export const undo = createAction("app/tiles/UNDO");
-export const redo = createAction("app/tiles/REDO");
-export const endUpdate = createAction("app/tiles/END_UPDATE");
+export const updateTile = createAction("app/tiles/UPDATE_TILE")<{
+  x: number;
+  y: number;
+  command: Command;
+}>();
+export const setAdjustment = createAction("app/tiles/SET_ADJUSTMENT")<{
+  id: string;
+  name: AdjustmentKey;
+  value: number | string;
+}>();
+export const fillTiles = createAction("app/tiles/UPDATE_TILES")<{
+  selection: SelectedCoords;
+  command: Command;
+}>();
+export const cloneTiles = createAction("app/tiles/CLONE_TILES")<{
+  selection: SelectedCoords;
+  toX: number;
+  toY: number;
+}>();
+export const moveTiles = createAction("app/tiles/MOVE_TILES")<{
+  selection: SelectedCoords;
+  toX: number;
+  toY: number;
+}>();
+export const removeTile = createAction("app/tiles/REMOVE_TILE")<{
+  x: number;
+  y: number;
+  command: Command;
+}>();
+export const removeTiles = createAction("app/tiles/REMOVE_TILES")<{
+  selection: SelectedCoords;
+}>();
+export const resetBoard = createAction("app/tiles/RESET_BOARD")();
+export const undo = createAction("app/tiles/UNDO")();
+export const redo = createAction("app/tiles/REDO")();
+export const endUpdate = createAction("app/tiles/END_UPDATE")();
 export const removeSelection = () => {
   return (dispatch: Dispatch, getState: () => State) => {
     const selection = selectSelection(getState());
     if (selection) {
-      return dispatch(removeTiles(selection));
+      return dispatch(removeTiles({ selection }));
     }
   };
 };
-export const flipTiles = createAction("app/tiles/FLIP_TILES", resolve => {
-  return (selection: SelectedCoords, direction: "horizontal" | "vertical") =>
-    resolve({ selection, direction });
-});
+export const flipTiles = createAction("app/tiles/FLIP_TILES")<{
+  selection: SelectedCoords;
+  direction: "horizontal" | "vertical";
+}>();
 export const flipSelection = (direction: "horizontal" | "vertical") => {
   return (dispatch: Dispatch, getState: () => State) => {
     const selection = selectSelection(getState());
     if (selection) {
-      return dispatch(flipTiles(selection, direction));
+      return dispatch(flipTiles({ selection, direction }));
     }
   };
 };
-export const zLevelUp = createAction("app/tool/Z_LEVEL_UP");
-export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN");
-export const clickTile = (x: number, y: number) => {
+export const zLevelUp = createAction("app/tool/Z_LEVEL_UP")();
+export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN")();
+export const clickTile = (coords: Coords) => {
   return (dispatch: Dispatch, getState: () => State) => {
-    if (x < 1 || y < 1) {
+    if (coords.x < 1 || coords.y < 1) {
       return;
     }
     const state = getState();
     const tool = selectTool(state);
     const command = selectCurrentCommand(state);
-    const tile = selectTile(state, { x, y });
+    const tile = selectTile(state, coords);
     const selection = selectSelection(state);
     switch (tool) {
       case "rectangle":
         if (
           state.tool.selecting &&
-          !coordinates.match(state.tool.selectionEnd, { x, y })
+          !coordinates.match(state.tool.selectionEnd, coords)
         ) {
-          return dispatch(toolActions.updateSelection(x, y));
+          return dispatch(toolActions.updateSelection(coords));
         }
         if (!state.tool.selecting) {
-          return dispatch(toolActions.startSelection(x, y));
+          return dispatch(toolActions.startSelection(coords));
         }
         break;
       case "select":
         if (
           (state.tool.selecting || state.tool.dragging) &&
-          coordinates.match(state.tool.selectionEnd, { x, y })
+          coordinates.match(state.tool.selectionEnd, coords)
         ) {
           // don't bother dispatching action - prevents noise in devtools
           return;
         }
 
         if (state.tool.selecting) {
-          return dispatch(toolActions.updateSelection(x, y));
+          return dispatch(toolActions.updateSelection(coords));
         }
         if (state.tool.dragging) {
-          return dispatch(toolActions.updateDrag(x, y));
+          return dispatch(toolActions.updateDrag(coords));
         }
-        if (!state.tool.dragging && coordinates.within(selection, { x, y })) {
-          return dispatch(toolActions.startDrag(x, y));
+        if (!state.tool.dragging && coordinates.within(selection, coords)) {
+          return dispatch(toolActions.startDrag(coords));
         }
         if (!state.tool.selecting) {
-          return dispatch(toolActions.startSelection(x, y));
+          return dispatch(toolActions.startSelection(coords));
         }
         break;
       case "paint":
         if (shouldUpdate(tile, command)) {
-          return dispatch(updateTile(x, y, command));
+          return dispatch(updateTile({ ...coords, command }));
         }
         break;
       case "erase":
         if (tile) {
-          return dispatch(removeTile(x, y, command));
+          return dispatch(removeTile({ ...coords, command }));
         }
         break;
     }
@@ -179,7 +173,7 @@ export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
         if (!selection) {
           return;
         }
-        return dispatch(fillTiles(selection, command));
+        return dispatch(fillTiles({ selection, command }));
       }
       case "select": {
         // get rid of all the undefineds right away
@@ -194,9 +188,9 @@ export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
         const toY =
           state.tool.dragEnd.y - (state.tool.dragStart.y - selection.startY);
         if (keysPressed.includes("shift")) {
-          return dispatch(cloneTiles(selection, toX, toY));
+          return dispatch(cloneTiles({ selection, toX, toY }));
         } else {
-          return dispatch(moveTiles(selection, toX, toY));
+          return dispatch(moveTiles({ selection, toX, toY }));
         }
       }
       default:
@@ -204,9 +198,10 @@ export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
     }
   };
 };
-export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
-  const tileMap: { [key: string]: Draft<Tile> } = {};
-  return (importMap: ImportMap) => {
+export const importAll = createAction(
+  "app/tool/IMPORT_ALL",
+  ({ importMap }: { importMap: ImportMap }) => {
+    const tileMap: { [key: string]: Draft<Tile> } = {};
     const commandMap = selectCommandMap();
     const adjustmentMap = selectAdjustmentMap();
     const phases: PhaseSlug[] = ["dig", "designate", "build", "place", "query"];
@@ -297,9 +292,9 @@ export const importAll = createAction("app/tool/IMPORT_ALL", resolve => {
             });
           });
       });
-    return resolve({ imports: Object.values(tileMap) });
-  };
-});
+    return { imports: Object.values(tileMap) };
+  },
+)();
 
 const adjustmentData = (adjustment: Adjustment, shortcut: string) => {
   if (adjustment.type === "resize") {

@@ -1,5 +1,5 @@
 import { Patch } from "immer";
-import { adjustmentMap, commandMap, phases, tilesetNames } from "../static";
+import { adjustmentMap, commandMap, phases, tilesetNames } from "../public";
 
 export type Tool = "select" | "paint" | "erase" | "rectangle";
 export type CommandSlug = keyof typeof commandMap;

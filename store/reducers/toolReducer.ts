@@ -1,7 +1,7 @@
 import produce from "immer";
 import { createSelector } from "reselect";
 import { ActionType, getType } from "typesafe-actions";
-import { adjustmentMap, commandMap, phases } from "../../static";
+import { adjustmentMap, commandMap, phases } from "../../public";
 import { tilesActions, toolActions } from "../actions";
 import { Command, PhaseSlug, State, ToolState } from "../types";
 
