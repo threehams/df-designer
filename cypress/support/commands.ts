@@ -21,7 +21,7 @@ declare global {
        * cy.getId("print-button")
        */
       getId<T = Locators>(
-        id: Locator<T> | Locator<T>[],
+        id: Locator<T> | Array<Locator<T>>,
         options?: Partial<Loggable & Timeoutable>,
       ): Chainable<JQuery<HTMLElement>>;
     }
@@ -59,7 +59,7 @@ Cypress.SelectorPlayground.defaults({
 Cypress.Commands.add(
   "getId",
   <T = Locators>(
-    locators: Locator<T> | Locator<T>[],
+    locators: Locator<T> | Array<Locator<T>>,
     options: Partial<Cypress.Loggable & Cypress.Timeoutable> = {},
   ) => {
     locators = Array.isArray(locators) ? locators : [locators];

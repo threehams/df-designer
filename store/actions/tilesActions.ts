@@ -161,7 +161,7 @@ export const clickTile = (coords: Coords) => {
   };
 };
 
-export const endClickTile = (keysPressed: (keyof typeof keycode.codes)[]) => {
+export const endClickTile = (keysPressed: Array<keyof typeof keycode.codes>) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
