@@ -28,7 +28,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
           mr={1}
           block
           data-test="import"
-          onClick={() => dispatch(toolActions.setIo("import"))}
+          onClick={() => dispatch(toolActions.setIo({ io: "import" }))}
           active={io === "import"}
         >
           Import
@@ -36,7 +36,7 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
         <Button
           block
           data-test="export"
-          onClick={() => dispatch(toolActions.setIo("export"))}
+          onClick={() => dispatch(toolActions.setIo({ io: "export" }))}
           active={io === "export"}
         >
           Export
@@ -96,7 +96,9 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
           <Button
             data-test="import-all"
             color="primary"
-            onClick={() => dispatch(tilesActions.importAll(importValue))}
+            onClick={() =>
+              dispatch(tilesActions.importAll({ importMap: importValue }))
+            }
           >
             Import All
           </Button>

@@ -3,4 +3,4 @@ export const entries = Object.entries as <
   K extends keyof T
 >(
   o: T,
-) => [keyof T, T[K]][];
+) => Array<[keyof T, T[K]]>;

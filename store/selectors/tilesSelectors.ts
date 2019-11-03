@@ -1,7 +1,7 @@
 import { range } from "lodash";
 import { createSelector } from "reselect";
 import * as coordinates from "../../lib/coordinates";
-import { wallMap } from "../../static";
+import { wallMap } from "../../public";
 import { selectLevelTiles, selectTile } from "../reducers/tilesReducer";
 import { selectCommandMap, selectSelection } from "../reducers/toolReducer";
 import {

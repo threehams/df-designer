@@ -1,7 +1,7 @@
 import "core-js/stable";
 import { setAutoFreeze } from "immer";
 import withRedux from "next-redux-wrapper";
-import App, { Container } from "next/app";
+import App from "next/app";
 import Head from "next/head";
 import React from "react";
 import { Provider } from "react-redux";
@@ -13,7 +13,7 @@ class MyApp extends App {
   render() {
     const { Component, pageProps, store } = this.props;
     return (
-      <Container>
+      <>
         <Head>
           <link
             href="https://fonts.googleapis.com/css?family=Open+Sans"
@@ -23,7 +23,7 @@ class MyApp extends App {
         <Provider store={store}>
           <Component {...pageProps} store={store} />
         </Provider>
-      </Container>
+      </>
     );
   }
 }

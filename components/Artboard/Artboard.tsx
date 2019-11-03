@@ -41,8 +41,8 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
           interactive
           pointerdown={event => {
             if (event.data.buttons === LEFT_MOUSE_BUTTON) {
-              const { x, y } = tilePosition(event.data.global);
-              dispatch(tilesActions.clickTile(x, y));
+              const coords = tilePosition(event.data.global);
+              dispatch(tilesActions.clickTile(coords));
             }
           }}
           pointermove={event => {
@@ -51,7 +51,7 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
               setCursorPosition({ startX: x, startY: y, endX: x, endY: y });
             }
             if (event.data.buttons === LEFT_MOUSE_BUTTON) {
-              dispatch(tilesActions.clickTile(x, y));
+              dispatch(tilesActions.clickTile({ x, y }));
             }
           }}
           pointerup={() => {
