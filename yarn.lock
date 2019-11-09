@@ -972,7 +972,7 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@inlet/react-pixi@^1.1.8":
+"@inlet/react-pixi@^1.1.7":
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/@inlet/react-pixi/-/react-pixi-1.1.8.tgz#cb3d392c77afed10f03b3df0aa20aed66be20a88"
   integrity sha512-yqHCq6rY2daHngEVC4sGH0u8cXe85BS7zULzze5YLOBDhycvx/LEhVifMYulmMi7EuxcZj1uU9EwzoHx+siKWw==
