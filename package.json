@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": ">= 12.13"
+  },
   "name": "df-designer",
   "version": "1.0.0",
   "description": "",
