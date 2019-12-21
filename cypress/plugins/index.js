@@ -13,6 +13,14 @@
 const webpack = require("@cypress/webpack-preprocessor");
 
 module.exports = on => {
+  on("before:browser:launch", (browser = {}, args) => {
+    if (browser.name === "chromium") {
+      const newArgs = args.filter(arg => arg !== "--disable-gpu");
+      newArgs.push("--ignore-gpu-blacklist");
+      return newArgs;
+    }
+  });
+
   on(
     "file:preprocessor",
     webpack({

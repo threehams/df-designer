@@ -17,6 +17,7 @@ import {
   State,
 } from "../types";
 import { selectExtents } from "./extentsSelectors";
+import { nonNull } from "../../lib/nonNull";
 
 type Grids = { [key in PhaseSlug]: string[][] | undefined };
 type GridsResult = { [key in PhaseSlug]: string };
@@ -34,18 +35,15 @@ export const selectExported = (state: State): GridsResult => {
     .map(zLevel => {
       return selectExportedLevel(state, { zLevel });
     })
-    .filter(Boolean)
-    .reduce(
-      (result: GridsResult, exported) => {
-        entries(exported!).forEach(([phase, string]) => {
-          result[phase] = result[phase]
-            ? `${result[phase]}\n#>\n${string}`
-            : string;
-        });
-        return result;
-      },
-      {} as GridsResult,
-    );
+    .filter(nonNull)
+    .reduce((result: GridsResult, exported) => {
+      entries(exported).forEach(([phase, string]) => {
+        result[phase] = result[phase]
+          ? `${result[phase]}\n#>\n${string}`
+          : string;
+      });
+      return result;
+    }, {} as GridsResult);
 };
 
 const selectExportedLevel = createSelector(
@@ -64,13 +62,10 @@ const selectExportedLevel = createSelector(
     if (!extents) {
       return undefined;
     }
-    const grids = phases.reduce(
-      (result, phase) => {
-        result[phase.slug] = undefined;
-        return result;
-      },
-      {} as Grids,
-    );
+    const grids = phases.reduce((result, phase) => {
+      result[phase.slug] = undefined;
+      return result;
+    }, {} as Grids);
     for (const [id, tile] of Object.entries(tiles)) {
       if (!tile) {
         continue;
@@ -82,9 +77,9 @@ const selectExportedLevel = createSelector(
         }
         const command = commandMap[commandSlug];
         const phase = command.phase;
-        if (!grids[phase]) {
-          grids[phase] = createGrid(extents);
-        }
+        grids[phase] = grids[phase] || createGrid(extents);
+        // unsure how to write this
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         grids[phase]![y - extents.startY][x - extents.startX] =
           commandMap[commandSlug].shortcut;
       };
@@ -116,14 +111,12 @@ const selectExportedLevel = createSelector(
       exportCommand(tile.item);
       exportAdjustments(tile.adjustments);
     }
-    return keys(grids).reduce(
-      (result, phase) => {
-        if (grids[phase]) {
-          result[phase] = grids[phase]!.map(x => x.join(",")).join("\n");
-        }
-        return result;
-      },
-      {} as GridsResult,
-    );
+    return keys(grids).reduce((result, phase) => {
+      const grid = grids[phase];
+      if (grid) {
+        result[phase] = grid.map(x => x.join(",")).join("\n");
+      }
+      return result;
+    }, {} as GridsResult);
   },
 );

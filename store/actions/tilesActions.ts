@@ -161,7 +161,9 @@ export const clickTile = (coords: Coords) => {
   };
 };
 
-export const endClickTile = (keysPressed: Array<keyof typeof keycode.codes>) => {
+export const endClickTile = (
+  keysPressed: Array<keyof typeof keycode.codes>,
+) => {
   return (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     const tool = selectTool(state);
@@ -205,93 +207,94 @@ export const importAll = createAction(
     const commandMap = selectCommandMap();
     const adjustmentMap = selectAdjustmentMap();
     const phases: PhaseSlug[] = ["dig", "designate", "build", "place", "query"];
-    phases
-      .filter(phase => !!importMap[phase])
-      .forEach(phase => {
-        const string = importMap[phase]!;
-        string
-          .split("\n")
-          .filter(line => !line.startsWith("#"))
-          .forEach((line, y) => {
-            line.split(",").forEach((shortcut, x) => {
-              if (!shortcut || ["~"].includes(shortcut)) {
+    phases.forEach(phase => {
+      const string = importMap[phase];
+      if (!string) {
+        return;
+      }
+      string
+        .split("\n")
+        .filter(line => !line.startsWith("#"))
+        .forEach((line, y) => {
+          line.split(",").forEach((shortcut, x) => {
+            if (!shortcut || ["~"].includes(shortcut)) {
+              return;
+            }
+            const id = coordinates.toId(x + 1, y + 1);
+            let newTile;
+            if (phase === "query") {
+              if (!tileMap[id]) {
+                // tslint:disable-next-line no-console
+                console.warn(
+                  `cannot add an adjustment to a tile with no item: ${shortcut}, phase: ${phase} at ${id}`,
+                );
                 return;
               }
-              const id = coordinates.toId(x + 1, y + 1);
-              let newTile;
-              if (phase === "query") {
-                if (!tileMap[id]) {
-                  // tslint:disable-next-line no-console
-                  console.warn(
-                    `cannot add an adjustment to a tile with no item: ${shortcut}, phase: ${phase} at ${id}`,
-                  );
-                  return;
-                }
-                const commandSlug = tileMap[id].item;
-                if (!commandSlug) {
-                  // tslint:disable-next-line no-console
-                  console.warn(
-                    `received an adjustment with no matching command: ${shortcut}, phase: ${phase} at ${id}`,
-                  );
-                  return;
-                }
-                const adjustment = Object.values(adjustmentMap).find(
-                  adj => adj.shortcut === shortcut[0] && adj.phase === phase,
+              const commandSlug = tileMap[id].item;
+              if (!commandSlug) {
+                // tslint:disable-next-line no-console
+                console.warn(
+                  `received an adjustment with no matching command: ${shortcut}, phase: ${phase} at ${id}`,
                 );
-                if (!adjustment || adjustment.requires !== commandSlug) {
-                  // tslint:disable-next-line no-console
-                  console.warn(
-                    `unknown adjustment for shortcut: ${shortcut} for command: ${commandSlug}, phase: ${phase} at ${id}`,
-                  );
-                  return;
-                }
-                newTile = {
-                  adjustments: {
-                    ...(tileMap[id] || {}).adjustments,
-                    ...adjustmentData(adjustment, shortcut),
-                  },
-                };
-              } else {
-                const command = Object.values(commandMap).find(
-                  comm => comm.shortcut === shortcut && comm.phase === phase,
+                return;
+              }
+              const adjustment = Object.values(adjustmentMap).find(
+                adj => adj.shortcut === shortcut[0] && adj.phase === phase,
+              );
+              if (!adjustment || adjustment.requires !== commandSlug) {
+                // tslint:disable-next-line no-console
+                console.warn(
+                  `unknown adjustment for shortcut: ${shortcut} for command: ${commandSlug}, phase: ${phase} at ${id}`,
                 );
-                if (!command) {
-                  // tslint:disable-next-line no-console
-                  console.warn(
-                    `unknown command for shortcut: ${shortcut}, phase: ${phase} at ${id}`,
-                  );
-                  return;
-                }
-                if (
-                  command.type === "item" &&
-                  (!tileMap[id] || tileMap[id].designation !== "mine")
-                ) {
-                  // tslint:disable-next-line no-console
-                  console.warn(
-                    `cannot add an item to a space which is not mined: ${shortcut}, phase: ${phase} at ${id}`,
-                  );
-                  return;
-                }
-                newTile = {
-                  [command.type]: command.slug,
-                };
+                return;
               }
-              if (!tileMap[id]) {
-                tileMap[id] = {
-                  id,
-                  coordinates: coordinates.fromId(id),
-                  designation: undefined,
-                  item: undefined,
-                  adjustments: {},
-                };
-              }
-              tileMap[id] = {
-                ...tileMap[id],
-                ...newTile,
+              newTile = {
+                adjustments: {
+                  ...(tileMap[id] || {}).adjustments,
+                  ...adjustmentData(adjustment, shortcut),
+                },
               };
-            });
+            } else {
+              const command = Object.values(commandMap).find(
+                comm => comm.shortcut === shortcut && comm.phase === phase,
+              );
+              if (!command) {
+                // tslint:disable-next-line no-console
+                console.warn(
+                  `unknown command for shortcut: ${shortcut}, phase: ${phase} at ${id}`,
+                );
+                return;
+              }
+              if (
+                command.type === "item" &&
+                (!tileMap[id] || tileMap[id].designation !== "mine")
+              ) {
+                // tslint:disable-next-line no-console
+                console.warn(
+                  `cannot add an item to a space which is not mined: ${shortcut}, phase: ${phase} at ${id}`,
+                );
+                return;
+              }
+              newTile = {
+                [command.type]: command.slug,
+              };
+            }
+            if (!tileMap[id]) {
+              tileMap[id] = {
+                id,
+                coordinates: coordinates.fromId(id),
+                designation: undefined,
+                item: undefined,
+                adjustments: {},
+              };
+            }
+            tileMap[id] = {
+              ...tileMap[id],
+              ...newTile,
+            };
           });
-      });
+        });
+    });
     return { imports: Object.values(tileMap) };
   },
 )();

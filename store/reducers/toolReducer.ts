@@ -54,13 +54,16 @@ export const toolReducer = (
         break;
       }
       case getType(toolActions.endSelection):
+        if (!state.selectionStart || !state.selectionEnd) {
+          break;
+        }
         draft.selectionStart = {
-          x: Math.min(state.selectionStart!.x, state.selectionEnd!.x),
-          y: Math.min(state.selectionStart!.y, state.selectionEnd!.y),
+          x: Math.min(state.selectionStart.x, state.selectionEnd.x),
+          y: Math.min(state.selectionStart.y, state.selectionEnd.y),
         };
         draft.selectionEnd = {
-          x: Math.max(state.selectionStart!.x, state.selectionEnd!.x),
-          y: Math.max(state.selectionStart!.y, state.selectionEnd!.y),
+          x: Math.max(state.selectionStart.x, state.selectionEnd.x),
+          y: Math.max(state.selectionStart.y, state.selectionEnd.y),
         };
         draft.selecting = false;
         break;

@@ -1,16 +1,15 @@
 import { range } from "lodash";
 import { Coords, SelectedCoords } from "../store/types";
 
-export const coordinatesFromId = (id: string) => {
+export const fromId = (id: string) => {
   const [x, y] = id.split(",");
   return { x: +x, y: +y };
 };
 
-export const idFromCoordinates = (x: number, y: number) => {
+export const toId = (x: number, y: number) => {
   return `${x},${y}`;
 };
-export const fromId = coordinatesFromId;
-export const toId = idFromCoordinates;
+
 export const expand = (selection: SelectedCoords, amount: number) => {
   return {
     startX: Math.max(selection.startX - amount, 0),
