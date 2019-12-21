@@ -25,7 +25,7 @@ export const Index: React.FunctionComponent = () => {
   const tool = useSelector(selectTool);
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;
   return (
-    <React.StrictMode>
+    <>
       <Global
         styles={`
           body {
@@ -59,7 +59,7 @@ export const Index: React.FunctionComponent = () => {
           <ExportBar />
         </Box>
       </Grid>
-    </React.StrictMode>
+    </>
   );
 };
 

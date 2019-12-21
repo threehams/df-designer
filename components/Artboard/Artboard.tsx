@@ -34,7 +34,7 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
   });
   const keysPressed = useHotKey();
   return (
-    <Stage width={2048} height={2048} data-test="stage">
+    <Stage width={2048} height={2048} data-test="stage" options={{ forceCanvas: true }}>
       <Container>
         <Sprite
           height={2048}
