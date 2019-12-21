@@ -17,6 +17,7 @@ module.exports = {
     },
   },
   rules: {
+    "no-console": warnOnLocal,
     "@typescript-eslint/array-type": ["error", { default: "array-simple" }],
     "@typescript-eslint/class-name-casing": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],

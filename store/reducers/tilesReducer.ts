@@ -93,7 +93,6 @@ export const tilesReducer = (
         switch (action.type) {
           case getType(tilesActions.updateTile): {
             const { x, y, command } = action.payload;
-            console.log(x, y, command);
             const id = coordinates.toId(x, y);
             const newTile = addCommand(command, draft[id], id);
             if (newTile) {
