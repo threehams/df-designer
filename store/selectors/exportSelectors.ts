@@ -17,6 +17,7 @@ import {
   State,
 } from "../types";
 import { selectExtents } from "./extentsSelectors";
+import { nonNull } from "../../lib/nonNull";
 
 type Grids = { [key in PhaseSlug]: string[][] | undefined };
 type GridsResult = { [key in PhaseSlug]: string };
@@ -28,8 +29,6 @@ const createGrid = (dimensions: SelectedCoords): string[][] => {
     },
   );
 };
-
-const nonNull = <T>(x: T): x is NonNullable<T> => !!x;
 
 export const selectExported = (state: State): GridsResult => {
   return range(127, -1)
