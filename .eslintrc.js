@@ -1,10 +1,12 @@
+const warnOnLocal = process.env.LINT_ERRORS ? "error" : "warn";
+
 module.exports = {
   extends: ["plugin:react/recommended"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 6,
     sourceType: "module",
-    project: "./tsconfig.json",
+    project: ["./tsconfig.json", "./cypress/tsconfig.json"],
     ecmaFeatures: {
       modules: true,
     },
@@ -28,6 +30,7 @@ module.exports = {
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/prefer-function-type": "error",
     "@typescript-eslint/restrict-plus-operands": "error",
+    "@typescript-eslint/no-non-null-assertion": "error",
     "jsx-a11y/accessible-emoji": "error",
     "jsx-a11y/alt-text": "error",
     "jsx-a11y/anchor-has-content": "error",
@@ -67,8 +70,21 @@ module.exports = {
     "no-null/no-null": "error",
     "no-sequences": "error",
     "no-shadow": "error",
-    "no-unused-expressions": "error",
-    "no-unused-vars": "error",
+    "no-unused-expressions": warnOnLocal,
+    "no-unused-vars": warnOnLocal,
+    "padding-line-between-statements": [
+      warnOnLocal,
+      {
+        blankLine: "always",
+        prev: "import",
+        next: "*",
+      },
+      {
+        blankLine: "never",
+        prev: "import",
+        next: "import",
+      },
+    ],
     "react-hooks/exhaustive-deps": "error",
     "react-hooks/rules-of-hooks": "error",
     "react/display-name": "off",

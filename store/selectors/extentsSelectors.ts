@@ -5,31 +5,28 @@ import { selectLevelTiles } from "../reducers/tilesReducer";
 import { SelectedCoords, State } from "../types";
 
 // TODO custom cache: use state.tiles.updates to determine new extents
-const selectLevelExtents = createSelector(
-  selectLevelTiles,
-  tiles => {
-    const dimensions = Object.entries(tiles).reduce(
-      (result, [id]) => {
-        const { x, y } = coordinates.fromId(id);
-        result.startX = x < result.startX ? x : result.startX;
-        result.startY = y < result.startY ? y : result.startY;
-        result.endX = x + 1 > result.endX ? x + 1 : result.endX;
-        result.endY = y + 1 > result.endY ? y + 1 : result.endY;
-        return result;
-      },
-      {
-        startX: Infinity,
-        startY: Infinity,
-        endX: 0,
-        endY: 0,
-      },
-    );
-    if (dimensions.startX === Infinity || dimensions.startY === Infinity) {
-      return undefined;
-    }
-    return dimensions;
-  },
-);
+const selectLevelExtents = createSelector(selectLevelTiles, tiles => {
+  const dimensions = Object.entries(tiles).reduce(
+    (result, [id]) => {
+      const { x, y } = coordinates.fromId(id);
+      result.startX = x < result.startX ? x : result.startX;
+      result.startY = y < result.startY ? y : result.startY;
+      result.endX = x + 1 > result.endX ? x + 1 : result.endX;
+      result.endY = y + 1 > result.endY ? y + 1 : result.endY;
+      return result;
+    },
+    {
+      startX: Infinity,
+      startY: Infinity,
+      endX: 0,
+      endY: 0,
+    },
+  );
+  if (dimensions.startX === Infinity || dimensions.startY === Infinity) {
+    return undefined;
+  }
+  return dimensions;
+});
 
 export const selectExtents = (state: Pick<State, "tiles">) => {
   return range(127, -1)
