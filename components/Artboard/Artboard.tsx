@@ -1,6 +1,6 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
 import { settings, utils, SCALE_MODES, Texture } from "pixi.js";
-import React, { memo, useState } from "react";
+import React, { memo, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
@@ -19,18 +19,6 @@ utils.skipHello();
 
 const LEFT_MOUSE_BUTTON = 1;
 
-const webGlSupported = () => {
-  try {
-    var canvas = document.createElement("canvas");
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-    );
-  } catch (e) {
-    return false;
-  }
-};
-
 interface ArtboardProps {
   chunks: Chunk[];
 }
@@ -45,13 +33,24 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
     endY: 0,
   });
   const keysPressed = useHotKey();
+  const webGlSupported = useMemo(() => {
+    try {
+      var canvas = document.createElement("canvas");
+      return !!(
+        window.WebGLRenderingContext &&
+        (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+      );
+    } catch (e) {
+      return false;
+    }
+  }, []);
 
   return (
     <Stage
       width={2048}
       height={2048}
       data-test="stage"
-      options={{ forceCanvas: !webGlSupported() }}
+      options={{ forceCanvas: !webGlSupported }}
     >
       <Container>
         <Sprite
