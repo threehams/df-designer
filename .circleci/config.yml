@@ -21,9 +21,9 @@ jobs:
             #   yarn cache dir
             #   npx print-cachedir Cypress
             - ~/.cache
+      - run: yarn cy:test
       - run: yarn tsc
       - run: yarn lint
-      - run: yarn cy:test
       # store videos and screenshots (if any) as CI artifacts
       - store_artifacts:
           path: cypress/videos

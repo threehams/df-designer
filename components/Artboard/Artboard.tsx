@@ -19,6 +19,18 @@ utils.skipHello();
 
 const LEFT_MOUSE_BUTTON = 1;
 
+const webGlSupported = () => {
+  try {
+    var canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch (e) {
+    return false;
+  }
+};
+
 interface ArtboardProps {
   chunks: Chunk[];
 }
@@ -33,8 +45,14 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
     endY: 0,
   });
   const keysPressed = useHotKey();
+
   return (
-    <Stage width={2048} height={2048} data-test="stage" options={{ forceCanvas: true }}>
+    <Stage
+      width={2048}
+      height={2048}
+      data-test="stage"
+      options={{ forceCanvas: !webGlSupported() }}
+    >
       <Container>
         <Sprite
           height={2048}
