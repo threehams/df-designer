@@ -89,6 +89,8 @@ export const tilesReducer = (
     outerDraft.data[state.zLevel] = produce(
       state.data[state.zLevel],
       draft => {
+        // Save a reference to the current state of things as we
+        // mutate the draft
         const currentTiles = state.data[state.zLevel];
         switch (action.type) {
           case getType(tilesActions.updateTile): {
@@ -199,12 +201,7 @@ export const tilesReducer = (
           case getType(tilesActions.removeTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
-            const newTile = removeCommand(command, draft[id]);
-            if (newTile) {
-              draft[id] = newTile;
-            } else {
-              delete draft[id];
-            }
+            removeTile(id, draft, currentTiles, command);
             break;
           }
           case getType(tilesActions.setAdjustment): {
@@ -258,6 +255,42 @@ export const tilesReducer = (
   });
 };
 
+const removeTile = (
+  id: string,
+  draft: Draft<TilesMap>,
+  currentTiles: TilesMap,
+  command: Command,
+): void => {
+  if (currentTiles[id]) {
+    if (currentTiles[id]?.multitileOrigin) {
+      removeTile(
+        currentTiles[id]?.multitileOrigin,
+        draft,
+        currentTiles,
+        command,
+      );
+    } else if ("width" in command && "height" in command) {
+      coordinates
+        .neighborIds(coordinates.fromId(id), {
+          startX: 0,
+          startY: 0,
+          endX: command.width - 1,
+          endY: command.height - 1,
+        })
+        .forEach(neighborId => {
+          draft[neighborId][command.type] = undefined;
+        });
+    }
+  }
+
+  const newTile = removeCommand(command, draft[id]);
+  if (newTile) {
+    draft[id] = newTile;
+  } else {
+    delete draft[id];
+  }
+};
+
 const deleteAll = (draft: Draft<TilesMap>) => {
   for (const id of Object.keys(draft)) {
     delete draft[id];
@@ -305,9 +338,11 @@ const addMultiCommand = (
   id: string,
   draft: Draft<TilesMap>,
 ): void => {
-  const neighborIds = coordinates.neighborIds(coordinates.fromId(id), 1, {
-    x: 1,
-    y: 1,
+  const neighborIds = coordinates.neighborIds(coordinates.fromId(id), {
+    startX: 0,
+    startY: 0,
+    endX: command.width - 1,
+    endY: command.height - 1,
   });
   const available = neighborIds.every(neighborId => {
     return canPlace(command, draft[neighborId]);
@@ -318,18 +353,20 @@ const addMultiCommand = (
 
   neighborIds.forEach(neighborId => {
     const current = draft[neighborId];
+    const multitileOrigin = neighborId !== id ? id : undefined;
     if (!current) {
       draft[neighborId] = {
         id,
         coordinates: coordinates.fromId(id),
         designation: undefined,
         item: undefined,
-        multitileOrigin: undefined,
+        multitileOrigin,
         adjustments: {},
         [command.type]: command.slug,
       };
     } else {
       current[command.type] = command.slug;
+      current.multitileOrigin = multitileOrigin;
     }
   });
 };

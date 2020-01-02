@@ -26,6 +26,7 @@ describe("selectChunks", () => {
         "1,1": {
           designation: "mine",
           item: undefined,
+          multitileOrigin: undefined,
           adjustments: {},
           id: "1,1",
           coordinates: {
@@ -49,6 +50,7 @@ describe("selectChunks", () => {
             designation: "mine",
             item: undefined,
             adjustments: {},
+            multitileOrigin: undefined,
             id: "1,1",
             coordinates: {
               x: 1,
@@ -58,6 +60,7 @@ describe("selectChunks", () => {
           "1,2": {
             designation: "mine",
             item: undefined,
+            multitileOrigin: undefined,
             adjustments: {},
             id: "1,2",
             coordinates: {
@@ -88,6 +91,7 @@ describe("selectChunks", () => {
           "0,0": {
             designation: "mine",
             item: undefined,
+            multitileOrigin: undefined,
             adjustments: {},
             id: "0,0",
             coordinates: {
@@ -98,6 +102,7 @@ describe("selectChunks", () => {
           "9,9": {
             designation: "mine",
             item: undefined,
+            multitileOrigin: undefined,
             adjustments: {},
             id: "9,9",
             coordinates: {

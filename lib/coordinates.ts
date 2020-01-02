@@ -65,17 +65,10 @@ export const each = (selection: SelectedCoords, func: Mapper) => {
 
 export const neighborIds = (
   coords: Coords,
-  distance = 1,
-  originOffset: Partial<Coords> = {},
+  offsets: Partial<SelectedCoords> = {},
 ) => {
-  return range(
-    -distance + (originOffset.y ?? 0),
-    distance + (originOffset.y ?? 0) + 1,
-  ).flatMap(y => {
-    return range(
-      -distance + (originOffset.x ?? 0),
-      distance + (originOffset.x ?? 0) + 1,
-    ).flatMap(x => {
+  return range(offsets.startY ?? -1, (offsets.endY ?? 1) + 1).flatMap(y => {
+    return range(offsets.startX ?? -1, (offsets.endX ?? 1) + 1).flatMap(x => {
       return toId(coords.x + x, coords.y + y);
     });
   });
