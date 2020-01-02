@@ -61,6 +61,15 @@ export interface SelectAdjustment {
   readonly selectName: string;
 }
 
+type MultitileCommandMap = {
+  [Key in keyof CommandMap]: CommandMap[Key] extends {
+    width: number;
+    height: number;
+  }
+    ? CommandMap[Key]
+    : never;
+};
+export type MultitileCommand = ValueOf<MultitileCommandMap>;
 export type Adjustment = SelectAdjustment | ResizeAdjustment;
 
 export type Phase = typeof phases;

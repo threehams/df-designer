@@ -3,7 +3,15 @@ import { range } from "lodash";
 import { ActionType, getType } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
 import { tilesActions } from "../actions";
-import { Command, State, Tile, TilesMap, TilesState, ZPatch } from "../types";
+import {
+  Command,
+  State,
+  Tile,
+  TilesMap,
+  TilesState,
+  ZPatch,
+  MultitileCommand,
+} from "../types";
 
 export const INITIAL_STATE: TilesState = {
   data: range(0, 128).reduce((result, zIndex) => {
@@ -334,7 +342,7 @@ const addCommand = (
 
 // Add
 const addMultiCommand = (
-  command: Command,
+  command: MultitileCommand,
   id: string,
   draft: Draft<TilesMap>,
 ): void => {
@@ -359,7 +367,6 @@ const addMultiCommand = (
         id,
         coordinates: coordinates.fromId(id),
         designation: undefined,
-        item: undefined,
         multitileOrigin,
         adjustments: {},
         [command.type]: command.slug,
