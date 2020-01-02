@@ -71,6 +71,7 @@ export type ImportMap = { [Key in PhaseSlug]?: string };
 export interface Tile {
   readonly designation: CommandSlug | undefined;
   readonly item: CommandSlug | undefined;
+  readonly multitileOrigin: string | undefined;
   readonly adjustments: AdjustmentData;
   readonly id: string;
   // performance only, avoid creating in selectors

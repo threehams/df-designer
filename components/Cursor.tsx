@@ -5,17 +5,12 @@ import React from "react";
 const TILE_SIZE = 16;
 
 interface CursorProps {
-  endX?: number;
-  endY?: number;
+  endX: number | undefined;
+  endY: number | undefined;
   startX: number;
   startY: number;
 }
-export const Cursor: React.FunctionComponent<CursorProps> = ({
-  startX,
-  startY,
-  endX,
-  endY,
-}) => {
+export const Cursor = ({ startX, startY, endX, endY }: CursorProps) => {
   return (
     <Sprite
       alpha={0.5}

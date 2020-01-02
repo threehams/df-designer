@@ -8,6 +8,7 @@ import { tilesActions } from "../../store/actions";
 import {
   selectSelection,
   selectSelectionOffset,
+  selectCurrentCommand,
 } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
 import { Chunk, Coords, SelectedCoords, TileSprite } from "../../store/types";
@@ -22,7 +23,7 @@ const LEFT_MOUSE_BUTTON = 1;
 interface ArtboardProps {
   chunks: Chunk[];
 }
-const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
+const Artboard = ({ chunks }: ArtboardProps) => {
   const selection = useSelector(selectSelection);
   const selectionOffset = useSelector(selectSelectionOffset);
   const dispatch = useDispatch();
@@ -31,6 +32,13 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
     startY: 0,
     endX: 0,
     endY: 0,
+  });
+  const cursorSize = useSelector(state => {
+    const command = selectCurrentCommand(state);
+    if ("width" in command && "height" in command) {
+      return { width: command.width, height: command.height };
+    }
+    return { width: 1, height: 1 };
   });
   const keysPressed = useHotKey();
   const webGlSupported = useMemo(() => {
@@ -81,7 +89,13 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
           const key = `${chunk.startX},${chunk.endY}`;
           return <ChunkTiles key={key} tiles={chunk.tiles} />;
         })}
-        <Cursor {...cursorPosition} />
+        <Cursor
+          startX={cursorPosition.startX}
+          startY={cursorPosition.startY}
+          endX={cursorPosition.startX + (cursorSize.width - 1)}
+          endY={cursorPosition.startY + (cursorSize.height - 1)}
+          {...cursorSize}
+        />
         {selection && (
           <Cursor {...coordinates.offset(selection, selectionOffset)} />
         )}
@@ -93,7 +107,7 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
 interface ChunkProps {
   tiles: TileSprite[];
 }
-const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
+const ChunkTiles = memo(({ tiles }: ChunkProps) => {
   return (
     <>
       {tiles.map(tile => {

@@ -94,9 +94,13 @@ export const tilesReducer = (
           case getType(tilesActions.updateTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
-            const newTile = addCommand(command, draft[id], id);
-            if (newTile) {
-              draft[id] = newTile;
+            if ("width" in command && "height" in command) {
+              addMultiCommand(command, id, draft);
+            } else {
+              const newTile = addCommand(command, draft[id], id);
+              if (newTile) {
+                draft[id] = newTile;
+              }
             }
             break;
           }
@@ -277,7 +281,7 @@ const addCommand = (
   current: Draft<Tile> | undefined,
   id: string,
 ): Tile | undefined => {
-  if (command.type !== "designation" && (!current || !current.designation)) {
+  if (!canPlace(command, current)) {
     return undefined;
   }
   if (!current) {
@@ -286,12 +290,55 @@ const addCommand = (
       coordinates: coordinates.fromId(id),
       designation: undefined,
       item: undefined,
+      multitileOrigin: undefined,
       adjustments: {},
       [command.type]: command.slug,
     };
   }
   current[command.type] = command.slug;
   return current;
+};
+
+// Add
+const addMultiCommand = (
+  command: Command,
+  id: string,
+  draft: Draft<TilesMap>,
+): void => {
+  const neighborIds = coordinates.neighborIds(coordinates.fromId(id), 1, {
+    x: 1,
+    y: 1,
+  });
+  const available = neighborIds.every(neighborId => {
+    return canPlace(command, draft[neighborId]);
+  });
+  if (!available) {
+    return;
+  }
+
+  neighborIds.forEach(neighborId => {
+    const current = draft[neighborId];
+    if (!current) {
+      draft[neighborId] = {
+        id,
+        coordinates: coordinates.fromId(id),
+        designation: undefined,
+        item: undefined,
+        multitileOrigin: undefined,
+        adjustments: {},
+        [command.type]: command.slug,
+      };
+    } else {
+      current[command.type] = command.slug;
+    }
+  });
+};
+
+const canPlace = (command: Command, current: Draft<Tile> | undefined) => {
+  return !(
+    command.type !== "designation" &&
+    (!current || !current.designation)
+  );
 };
 
 export const selectTile = (

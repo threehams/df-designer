@@ -173,7 +173,8 @@ const createWalls = (
       // TODO performance issues with within
       .filter(wallId => within(coordinates.fromId(wallId), selection))
       .map(wallId => {
-        const wallNumber = neighborIds(coordinates.fromId(wallId))
+        const wallNumber = coordinates
+          .neighborIds(coordinates.fromId(wallId))
           .filter(id => id !== wallId)
           .reduce((bits, id, index) => {
             if (exposed(tiles[id])) {
@@ -188,20 +189,6 @@ const createWalls = (
         };
       })
   );
-};
-
-const neighborIds = ({ x, y }: Coords) => {
-  return [
-    coordinates.toId(x - 1, y - 1),
-    coordinates.toId(x, y - 1),
-    coordinates.toId(x + 1, y - 1),
-    coordinates.toId(x - 1, y),
-    coordinates.toId(x, y),
-    coordinates.toId(x + 1, y),
-    coordinates.toId(x - 1, y + 1),
-    coordinates.toId(x, y + 1),
-    coordinates.toId(x + 1, y + 1),
-  ];
 };
 
 const exposed = (tile: Tile | undefined) => {

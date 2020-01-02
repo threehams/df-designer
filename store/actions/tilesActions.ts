@@ -103,6 +103,7 @@ export const flipSelection = (direction: "horizontal" | "vertical") => {
 };
 export const zLevelUp = createAction("app/tool/Z_LEVEL_UP")();
 export const zLevelDown = createAction("app/tool/Z_LEVEL_DOWN")();
+
 export const clickTile = (coords: Coords) => {
   return (dispatch: Dispatch, getState: () => State) => {
     if (coords.x < 1 || coords.y < 1) {
@@ -224,7 +225,7 @@ export const importAll = createAction(
             let newTile;
             if (phase === "query") {
               if (!tileMap[id]) {
-                // tslint:disable-next-line no-console
+                // eslint-disable-next-line no-console
                 console.warn(
                   `cannot add an adjustment to a tile with no item: ${shortcut}, phase: ${phase} at ${id}`,
                 );
@@ -232,7 +233,7 @@ export const importAll = createAction(
               }
               const commandSlug = tileMap[id].item;
               if (!commandSlug) {
-                // tslint:disable-next-line no-console
+                // eslint-disable-next-line no-console
                 console.warn(
                   `received an adjustment with no matching command: ${shortcut}, phase: ${phase} at ${id}`,
                 );
@@ -242,7 +243,7 @@ export const importAll = createAction(
                 adj => adj.shortcut === shortcut[0] && adj.phase === phase,
               );
               if (!adjustment || adjustment.requires !== commandSlug) {
-                // tslint:disable-next-line no-console
+                // eslint-disable-next-line no-console
                 console.warn(
                   `unknown adjustment for shortcut: ${shortcut} for command: ${commandSlug}, phase: ${phase} at ${id}`,
                 );
@@ -259,7 +260,7 @@ export const importAll = createAction(
                 comm => comm.shortcut === shortcut && comm.phase === phase,
               );
               if (!command) {
-                // tslint:disable-next-line no-console
+                // eslint-disable-next-line no-console
                 console.warn(
                   `unknown command for shortcut: ${shortcut}, phase: ${phase} at ${id}`,
                 );
@@ -269,7 +270,7 @@ export const importAll = createAction(
                 command.type === "item" &&
                 (!tileMap[id] || tileMap[id].designation !== "mine")
               ) {
-                // tslint:disable-next-line no-console
+                // eslint-disable-next-line no-console
                 console.warn(
                   `cannot add an item to a space which is not mined: ${shortcut}, phase: ${phase} at ${id}`,
                 );
@@ -281,11 +282,12 @@ export const importAll = createAction(
             }
             if (!tileMap[id]) {
               tileMap[id] = {
-                id,
+                adjustments: {},
                 coordinates: coordinates.fromId(id),
                 designation: undefined,
+                id,
                 item: undefined,
-                adjustments: {},
+                multitileOrigin: undefined,
               };
             }
             tileMap[id] = {
@@ -321,7 +323,6 @@ const shouldUpdate = (tile: Tile | undefined, command: Command) => {
     return false;
   }
   // need to dig before placing
-  // TODO only "dig" is likely valid here, but check
   if (command.type === "item" && tile.designation !== "mine") {
     return false;
   }

@@ -62,3 +62,21 @@ export const each = (selection: SelectedCoords, func: Mapper) => {
     }
   }
 };
+
+export const neighborIds = (
+  coords: Coords,
+  distance = 1,
+  originOffset: Partial<Coords> = {},
+) => {
+  return range(
+    -distance + (originOffset.y ?? 0),
+    distance + (originOffset.y ?? 0) + 1,
+  ).flatMap(y => {
+    return range(
+      -distance + (originOffset.x ?? 0),
+      distance + (originOffset.x ?? 0) + 1,
+    ).flatMap(x => {
+      return toId(coords.x + x, coords.y + y);
+    });
+  });
+};
