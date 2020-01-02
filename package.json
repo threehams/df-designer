@@ -20,8 +20,8 @@
     "cy:dev": "start-server-and-test dev http://localhost:3000 cy:open",
     "cy:prod": "start-server-and-test build:start http://localhost:3000 cy:open",
     "export": "next export",
-    "lint": "eslint ./ --ext .ts,.tsx",
-    "lint:fix": "eslint ./ --fix --ext .ts,.tsx",
+    "lint": "cross-env LINT_ERRORS=true eslint ./ --ext .ts,.tsx",
+    "lint:fix": "cross-env LINT_ERRORS=true eslint ./ --fix --ext .ts,.tsx",
     "tsc": "tsc --project ./tsconfig.json && tsc --project ./cypress/tsconfig.json"
   },
   "keywords": [],
