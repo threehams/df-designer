@@ -1,4 +1,5 @@
 import { dragTiles, clickTile } from "../lib/tiles";
+import { template } from "../lib/template";
 
 describe("z-levels", () => {
   beforeEach(() => {
@@ -19,10 +20,11 @@ describe("z-levels", () => {
     cy.getId("export").click();
     cy.getId({ name: "export-text", item: "build" }).should(
       "have.value",
-      `#build
-ww,ww,ww
-ww,ww,ww
-ww,ww,ww`,
+      template(`
+        #build
+        ww,ww,ww
+        ww,ww,ww
+        ww,ww,ww`),
     );
   });
 
@@ -40,10 +42,11 @@ ww,ww,ww`,
     cy.getId("export").click();
     cy.getId({ name: "export-text", item: "build" }).should(
       "have.value",
-      `#build
-ww,ww,ww
-ww,ww,ww
-ww,ww,ww`,
+      template(`
+        #build
+        ww,ww,ww
+        ww,ww,ww
+        ww,ww,ww`),
     );
     cy.getId({ name: "tool", item: "erase" }).click();
     cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
@@ -64,10 +67,11 @@ ww,ww,ww`,
     cy.getId("export").click();
     cy.getId({ name: "export-text", item: "build" }).should(
       "have.value",
-      `#build
-ww,ww,ww
-ww,ww,ww
-ww,ww,ww`,
+      template(`
+        #build
+        ww,ww,ww
+        ww,ww,ww
+        ww,ww,ww`),
     );
     cy.getId({ name: "tool", item: "erase" }).click();
     cy.getId("stage").then(clickTile({ x: 3, y: 3 }));

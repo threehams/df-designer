@@ -1,5 +1,6 @@
 import { triggerHotkeys } from "../lib/hotkeys";
 import { clickTile } from "../lib/tiles";
+import { template } from "../lib/template";
 
 describe("z-levels", () => {
   beforeEach(() => {
@@ -58,10 +59,11 @@ describe("z-levels", () => {
     cy.getId("stage").then(clickTile({ x: 2, y: 1 }));
     cy.getId({ name: "export-text", item: "dig" }).should(
       "have.value",
-      `#dig
-~,d
-#>
-d,~`,
+      template(`
+        #dig
+        ~,d
+        #>
+        d,~`),
     );
   });
 });

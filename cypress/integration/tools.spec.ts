@@ -1,13 +1,6 @@
 import { triggerHotkeys } from "../lib/hotkeys";
 import { clickTile, dragTiles, setTiles } from "../lib/tiles";
-
-const template = (string: string) => {
-  return string
-    .trim()
-    .split("\n")
-    .map(part => part.trim())
-    .join("\n");
-};
+import { template } from "../lib/template";
 
 describe("tools", () => {
   describe("paint tools", () => {
@@ -142,10 +135,11 @@ describe("tools", () => {
       );
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        template(`#dig
-        d,d,d
-        d,d,d
-        d,d,d`),
+        template(`
+          #dig
+          d,d,d
+          d,d,d
+          d,d,d`),
       );
       cy.getId("stage").then(
         dragTiles({
@@ -167,19 +161,21 @@ describe("tools", () => {
       cy.getId("undo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-d,d,d
-d,d,d`,
+        template(`
+          #dig
+          d,d,d
+          d,d,d
+          d,d,d`),
       );
       cy.getId("redo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-d,d,d
-d,d,d
-~,d,d`,
+        template(`
+          #dig
+          d,d,d
+          d,d,d
+          d,d,d
+          ~,d,d`),
       );
     });
 
@@ -265,9 +261,10 @@ d,d,d
         );
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,~,~
-~,d,d`,
+        template(`
+          #dig
+          d,~,~
+          ~,d,d`),
       );
       cy.getId("undo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
@@ -277,9 +274,10 @@ d,~,~
       cy.getId("redo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,~,~
-~,d,d`,
+        template(`
+          #dig
+          d,~,~
+          ~,d,d`),
       );
     });
 
@@ -306,9 +304,10 @@ d,~,~
 
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-~,d,d`,
+        template(`
+          #dig
+          d,d,d
+          ~,d,d`),
       );
       cy.getId("undo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
@@ -318,9 +317,10 @@ d,d,d
       cy.getId("redo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-~,d,d`,
+        template(`
+          #dig
+          d,d,d
+          ~,d,d`),
       );
     });
 
@@ -374,50 +374,56 @@ d,d,d
       cy.getId("selection-flip-horizontal").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-d,~,~
-d,~,~`,
+        template(`
+          #dig
+          d,d,d
+          d,~,~
+          d,~,~`),
       );
       cy.getId("undo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-~,~,d
-~,~,d`,
+        template(`
+          #dig
+          d,d,d
+          ~,~,d
+          ~,~,d`),
       );
       cy.getId("redo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-d,~,~
-d,~,~`,
+        template(`
+          #dig
+          d,d,d
+          d,~,~
+          d,~,~`),
       );
       cy.getId("selection-flip-vertical").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,~,~
-d,~,~
-d,d,d`,
+        template(`
+          #dig
+          d,~,~
+          d,~,~
+          d,d,d`),
       );
       cy.getId("undo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,d,d
-d,~,~
-d,~,~`,
+        template(`
+          #dig
+          d,d,d
+          d,~,~
+          d,~,~`),
       );
       cy.getId("redo").click();
       cy.getId({ name: "export-text", item: "dig" }).should(
         "have.value",
-        `#dig
-d,~,~
-d,~,~
-d,d,d`,
+        template(`
+          #dig
+          d,~,~
+          d,~,~
+          d,d,d`),
       );
     });
   });

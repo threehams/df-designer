@@ -13,8 +13,7 @@ describe("z-levels", () => {
     cy.getId("export").click();
     cy.getId({ name: "export-text", item: "dig" }).should(
       "have.value",
-      `#dig
-d,d`,
+      "#dig\nd,d",
     );
   });
 });
