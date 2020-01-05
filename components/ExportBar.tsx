@@ -27,7 +27,6 @@ export const ExportBar = React.memo(() => {
         <Button
           mr={1}
           block
-          data-test="import"
           onClick={() => dispatch(toolActions.setIo({ io: "import" }))}
           active={io === "import"}
         >
@@ -35,7 +34,6 @@ export const ExportBar = React.memo(() => {
         </Button>
         <Button
           block
-          data-test="export"
           onClick={() => dispatch(toolActions.setIo({ io: "export" }))}
           active={io === "export"}
         >
@@ -49,8 +47,6 @@ export const ExportBar = React.memo(() => {
               <label>
                 <div>{phase}</div>
                 <Textarea
-                  data-test="export-text"
-                  data-test-item={phase}
                   rows={20}
                   key={phase}
                   value={`#${phase}\n${csv}`}
@@ -60,7 +56,6 @@ export const ExportBar = React.memo(() => {
             </React.Fragment>
           ))}
           <Button
-            data-test="export-download-all"
             color="primary"
             onClick={() => {
               Object.entries(exported).forEach(([phase, csv]) => {
@@ -81,8 +76,6 @@ export const ExportBar = React.memo(() => {
                 <label>
                   <div>{phase.slug}</div>
                   <Textarea
-                    data-test="import-text"
-                    data-test-item={phase.slug}
                     rows={20}
                     value={importValue[phase.slug]}
                     onChange={event => {
@@ -97,7 +90,6 @@ export const ExportBar = React.memo(() => {
             );
           })}
           <Button
-            data-test="import-all"
             color="primary"
             onClick={() =>
               dispatch(tilesActions.importAll({ importMap: importValue }))

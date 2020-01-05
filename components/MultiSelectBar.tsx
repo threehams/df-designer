@@ -11,21 +11,16 @@ export const MultiSelectBar = () => {
       <Button
         onClick={() => dispatch(tilesActions.flipSelection("horizontal"))}
         mb={1}
-        data-test="selection-flip-horizontal"
       >
         Flip Horizontal
       </Button>
       <Button
         onClick={() => dispatch(tilesActions.flipSelection("vertical"))}
         mb={1}
-        data-test="selection-flip-vertical"
       >
         Flip Vertical
       </Button>
-      <Button
-        onClick={() => dispatch(tilesActions.removeSelection())}
-        data-test="selection-delete"
-      >
+      <Button onClick={() => dispatch(tilesActions.removeSelection())}>
         Delete
       </Button>
     </Flex>

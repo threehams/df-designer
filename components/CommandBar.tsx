@@ -25,8 +25,6 @@ export const CommandBar = () => {
             dispatch(toolActions.setCurrentPhase({ phaseSlug: "dig" }))
           }
           active={phase === "dig"}
-          data-test="phase"
-          data-test-item="dig"
           mb={1}
         >
           Dig
@@ -37,8 +35,6 @@ export const CommandBar = () => {
             dispatch(toolActions.setCurrentPhase({ phaseSlug: "build" }))
           }
           active={phase === "build"}
-          data-test="phase"
-          data-test-item="build"
           mb={1}
         >
           Build
@@ -49,8 +45,6 @@ export const CommandBar = () => {
             dispatch(toolActions.setCurrentPhase({ phaseSlug: "place" }))
           }
           active={phase === "place"}
-          data-test="phase"
-          data-test-item="place"
         >
           Place Stockpiles
         </Button>
@@ -64,8 +58,6 @@ export const CommandBar = () => {
               dispatch(toolActions.setCommand({ commandSlug: comm.slug }))
             }
             active={command.slug === comm.slug}
-            data-test="command"
-            data-test-item={comm.slug}
             mb={1}
           >
             {comm.name}

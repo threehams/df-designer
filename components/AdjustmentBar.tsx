@@ -87,8 +87,6 @@ const ResizeInput = ({ adjustment, value, tile }: ResizeInputProps) => {
               }),
             );
           }}
-          data-test="adjustment-bar-check"
-          data-test-item={adjustment.slug}
         />{" "}
         {adjustment.name}
       </Label>
@@ -150,8 +148,6 @@ const SelectInput = ({ adjustment, value, tile }: SelectInputProps) => {
             }),
           );
         }}
-        data-test="adjustment-bar-check"
-        data-test-item={adjustment.slug}
       >
         <option value="1">1</option>
         <option value="2">2</option>

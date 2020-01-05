@@ -10,9 +10,7 @@ export const SelectBar = () => {
   const { command, tile, multiSelect } = useSelector(selectSelectedTile);
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">
-      {tile && !command && (
-        <Box data-test="adjustment-bar-no-item">No item selected.</Box>
-      )}
+      {tile && !command && <Box>No item selected.</Box>}
       {tile && command && <AdjustmentBar tile={tile} />}
       {multiSelect && <MultiSelectBar />}
     </Flex>

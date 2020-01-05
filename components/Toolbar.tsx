@@ -13,19 +13,15 @@ export const Toolbar = () => {
   const zLevel = useSelector(state => state.tiles.zLevel);
   const dispatch = useDispatch();
   return (
-    <Flex p={2} data-test="toolbar">
+    <Flex p={2}>
       <Box mr={3}>
-        <Button
-          onClick={() => dispatch(tilesActions.resetBoard())}
-          data-test="reset"
-        >
+        <Button onClick={() => dispatch(tilesActions.resetBoard())}>
           Reset
         </Button>
       </Box>
       <Box mr={3}>
         <Button
           disabled={!undoSteps}
-          data-test="undo"
           onClick={() => dispatch(tilesActions.undo())}
           mr={1}
         >
@@ -33,7 +29,6 @@ export const Toolbar = () => {
         </Button>
         <Button
           disabled={!redoSteps}
-          data-test="redo"
           onClick={() => dispatch(tilesActions.redo())}
         >
           Redo
@@ -41,8 +36,6 @@ export const Toolbar = () => {
       </Box>
       <Box mr={3}>
         <Button
-          data-test="tool"
-          data-test-item="select"
           onClick={() => dispatch(toolActions.setTool({ tool: "select" }))}
           active={tool === "select"}
           mr={1}
@@ -50,8 +43,6 @@ export const Toolbar = () => {
           Select
         </Button>
         <Button
-          data-test="tool"
-          data-test-item="paint"
           onClick={() => dispatch(toolActions.setTool({ tool: "paint" }))}
           active={tool === "paint"}
           mr={1}
@@ -59,8 +50,6 @@ export const Toolbar = () => {
           Paint
         </Button>
         <Button
-          data-test="tool"
-          data-test-item="paint-rectangle"
           onClick={() => dispatch(toolActions.setTool({ tool: "rectangle" }))}
           active={tool === "rectangle"}
           mr={1}
@@ -68,8 +57,6 @@ export const Toolbar = () => {
           Paint Rectangle
         </Button>
         <Button
-          data-test="tool"
-          data-test-item="erase"
           onClick={() => dispatch(toolActions.setTool({ tool: "erase" }))}
           active={tool === "erase"}
         >
