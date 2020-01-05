@@ -9,7 +9,7 @@ import {
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 
-export const CommandBar: React.FunctionComponent = () => {
+export const CommandBar = () => {
   const phase = useSelector(state => state.tool.phase);
   const command = useSelector(selectCurrentCommand);
   const commands = useSelector(state => {

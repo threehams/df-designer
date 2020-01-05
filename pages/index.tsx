@@ -20,7 +20,7 @@ const Artboard = dynamic(import("../components/Artboard"), {
   loading: Loading,
 });
 
-export const Index: React.FunctionComponent = () => {
+export const Index = () => {
   useHotkeys();
   const tool = useSelector(selectTool);
   const MainSidebar = tool === "select" ? SelectBar : CommandBar;

@@ -3,7 +3,6 @@ import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import { MouseEventHandler } from "react";
 import { space, SpaceProps } from "styled-system";
-import { Locators } from "../cypress/locators";
 
 // eslint-disable-next-line no-unused-expressions
 jsx; // tslint:disable-line
@@ -15,8 +14,6 @@ interface Props {
   className?: string;
   color?: "primary" | "secondary";
   disabled?: boolean;
-
-  "data-test": Locators;
 }
 
 export const Button = styled.button<Props & SpaceProps>`

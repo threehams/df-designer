@@ -6,7 +6,7 @@ import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 
-export const Toolbar: React.FunctionComponent = () => {
+export const Toolbar = () => {
   const tool = useSelector(selectTool);
   const undoSteps = useSelector(state => state.tiles.past.length);
   const redoSteps = useSelector(state => state.tiles.future.length);
@@ -77,20 +77,13 @@ export const Toolbar: React.FunctionComponent = () => {
         </Button>
       </Box>
       <Flex flexWrap="nowrap" alignItems="center">
-        <Button
-          data-test="z-level-down"
-          onClick={() => dispatch(tilesActions.zLevelDown())}
-          mr={1}
-        >
+        <Button onClick={() => dispatch(tilesActions.zLevelDown())} mr={1}>
           Down Level
         </Button>
-        <Box mr={1} data-test="z-level">
+        <Box mr={1} title="Z Level">
           {zLevel}
         </Box>
-        <Button
-          data-test="z-level-up"
-          onClick={() => dispatch(tilesActions.zLevelUp())}
-        >
+        <Button onClick={() => dispatch(tilesActions.zLevelUp())}>
           Up Level
         </Button>
       </Flex>

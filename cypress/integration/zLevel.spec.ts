@@ -8,56 +8,49 @@ describe("z-levels", () => {
   });
 
   it("paints with undo/redo across z-levels", () => {
-    cy.getId("export").click();
-    cy.getId({ name: "tool", item: "paint" }).click();
-    cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
-    cy.getId("stage").then(clickTile({ x: 2, y: 1 }));
-    cy.getId({ name: "export-text", item: "dig" }).should(
+    cy.findByText("Export").click();
+    cy.findByText("Paint").click();
+    cy.findByTestId("stage").then(clickTile({ x: 1, y: 1 }));
+    cy.findByTestId("stage").then(clickTile({ x: 2, y: 1 }));
+    cy.findByLabelText("dig").should(
       "have.value",
-      "#dig\nd,d",
+      template(`
+        #dig
+        d,d`),
     );
-    cy.getId("z-level-up").click();
-    cy.getId("z-level").should("have.text", "65");
-    cy.getId("undo").click();
-    cy.getId("z-level-down").click();
-    cy.getId("z-level").should("have.text", "64");
-    cy.getId({ name: "export-text", item: "dig" }).should(
-      "have.value",
-      "#dig\nd",
-    );
-    cy.getId("z-level-up").click();
-    cy.getId("z-level").should("have.text", "65");
-    cy.getId("redo").click();
-    cy.getId("z-level-down").click();
-    cy.getId("z-level").should("have.text", "64");
-    cy.getId({ name: "export-text", item: "dig" }).should(
-      "have.value",
-      "#dig\nd,d",
-    );
+    cy.findByText("Up Level").click();
+    cy.findByTitle("Z Level").should("have.text", "65");
+    cy.findByText("Undo").click();
+    cy.findByText("Down Level").click();
+    cy.findByTitle("Z Level").should("have.text", "64");
+    cy.findByLabelText("dig").should("have.value", "#dig\nd");
+    cy.findByText("Up Level").click();
+    cy.findByTitle("Z Level").should("have.text", "65");
+    cy.findByText("Redo").click();
+    cy.findByText("Down Level").click();
+    cy.findByTitle("Z Level").should("have.text", "64");
+    cy.findByLabelText("dig").should("have.value", "#dig\nd,d");
   });
 
   it("allows hotkeys for changing z-levels", () => {
-    cy.getId("export").click();
-    cy.getId({ name: "tool", item: "paint" }).click();
-    cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
-    cy.getId({ name: "export-text", item: "dig" }).should(
-      "have.value",
-      "#dig\nd",
-    );
-    cy.getId("stage").then(triggerHotkeys(["shift", "."]));
-    cy.getId("z-level").should("have.text", "63");
-    cy.getId("stage").then(triggerHotkeys(["shift", ","]));
-    cy.getId("z-level").should("have.text", "64");
+    cy.findByText("Export").click();
+    cy.findByText("Paint").click();
+    cy.findByTestId("stage").then(clickTile({ x: 1, y: 1 }));
+    cy.findByLabelText("dig").should("have.value", "#dig\nd");
+    cy.findByTestId("stage").then(triggerHotkeys(["shift", "."]));
+    cy.findByTitle("Z Level").should("have.text", "63");
+    cy.findByTestId("stage").then(triggerHotkeys(["shift", ","]));
+    cy.findByTitle("Z Level").should("have.text", "64");
   });
 
   it("exports across z-levels", () => {
-    cy.getId("export").click();
-    cy.getId({ name: "tool", item: "paint" }).click();
-    cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
-    cy.getId("z-level-up").click();
-    cy.getId("z-level").should("have.text", "65");
-    cy.getId("stage").then(clickTile({ x: 2, y: 1 }));
-    cy.getId({ name: "export-text", item: "dig" }).should(
+    cy.findByText("Export").click();
+    cy.findByText("Paint").click();
+    cy.findByTestId("stage").then(clickTile({ x: 1, y: 1 }));
+    cy.findByText("Up Level").click();
+    cy.findByTitle("Z Level").should("have.text", "65");
+    cy.findByTestId("stage").then(clickTile({ x: 2, y: 1 }));
+    cy.findByLabelText("dig").should(
       "have.value",
       template(`
         #dig

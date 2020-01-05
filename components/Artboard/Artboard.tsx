@@ -137,7 +137,7 @@ const tilePosition = ({ x, y }: Coords) => {
 };
 
 // separated to avoid per-frame recalculations
-const ArtboardTiles: React.FC = () => {
+const ArtboardTiles = () => {
   const chunks = useSelector(selectChunks);
   return <Artboard chunks={chunks} />;
 };

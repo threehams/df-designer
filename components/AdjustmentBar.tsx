@@ -20,7 +20,7 @@ const tileValue = (tile: Tile | undefined, adjustment: Adjustment) => {
   return tile.adjustments[adjustment.slug];
 };
 
-export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
+export const AdjustmentBar = ({ tile }: Props) => {
   const commandMap = selectCommandMap();
   const adjustmentMap = selectAdjustmentMap();
   // we implicitly know this is non-null based on it being rendered
@@ -34,8 +34,8 @@ export const AdjustmentBar: React.FunctionComponent<Props> = ({ tile }) => {
     });
   }, shallowEqual);
   return (
-    <Box>
-      <Box data-test="adjustment-bar-item-name">{name}</Box>
+    <Box data-test="adjustment-bar">
+      <Box mb={2}>{name}</Box>
       {adjustments &&
         adjustments.map(adjustment => {
           const value = tileValue(tile, adjustment);
@@ -69,11 +69,7 @@ interface ResizeInputProps {
   value: number | undefined;
   tile: Tile;
 }
-const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
-  adjustment,
-  value,
-  tile,
-}) => {
+const ResizeInput = ({ adjustment, value, tile }: ResizeInputProps) => {
   const dispatch = useDispatch();
   return (
     <React.Fragment key={adjustment.slug}>
@@ -99,8 +95,7 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
       {value && (
         <Box>
           <Button
-            data-test="adjustment-bar-decrement"
-            data-test-item={adjustment.slug}
+            aria-label={`Decrement ${adjustment.name} Size`}
             onClick={() => {
               dispatch(
                 tilesActions.setAdjustment({
@@ -113,10 +108,9 @@ const ResizeInput: React.FunctionComponent<ResizeInputProps> = ({
           >
             -
           </Button>{" "}
-          {value}{" "}
+          <span title={`${adjustment.name} Size`}>{value} </span>
           <Button
-            data-test="adjustment-bar-increment"
-            data-test-item={adjustment.slug}
+            aria-label={`Increment ${adjustment.name} Size`}
             onClick={() => {
               dispatch(
                 tilesActions.setAdjustment({
@@ -140,11 +134,7 @@ interface SelectInputProps {
   value: string | undefined;
   tile: Tile;
 }
-const SelectInput: React.FunctionComponent<SelectInputProps> = ({
-  adjustment,
-  value,
-  tile,
-}) => {
+const SelectInput = ({ adjustment, value, tile }: SelectInputProps) => {
   const dispatch = useDispatch();
   return (
     <Label key={adjustment.slug} display="block">

@@ -4,7 +4,7 @@ import { tilesActions } from "../store/actions";
 import { Button } from "./";
 import { Flex } from "./Flex";
 
-export const MultiSelectBar: React.FunctionComponent = () => {
+export const MultiSelectBar = () => {
   const dispatch = useDispatch();
   return (
     <Flex flexDirection="column" flexWrap="nowrap">

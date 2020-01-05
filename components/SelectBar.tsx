@@ -6,7 +6,7 @@ import { Box } from "./Box";
 import { Flex } from "./Flex";
 import { MultiSelectBar } from "./MultiSelectBar";
 
-export const SelectBar: React.FunctionComponent = () => {
+export const SelectBar = () => {
   const { command, tile, multiSelect } = useSelector(selectSelectedTile);
   return (
     <Flex p={2} flexDirection="column" flexWrap="nowrap">

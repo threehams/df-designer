@@ -13,7 +13,7 @@ const download = (filename: string, text: string) => {
   element.click();
 };
 
-export const ExportBar: React.FunctionComponent = React.memo(() => {
+export const ExportBar = React.memo(() => {
   const io = useSelector(state => state.tool.io);
   const exported = useSelector(state =>
     state.tool.io === "export" ? selectExported(state) : undefined,
@@ -46,16 +46,17 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
         <>
           {Object.entries(exported).map(([phase, csv]) => (
             <React.Fragment key={phase}>
-              <label>{phase}</label>
-
-              <Textarea
-                data-test="export-text"
-                data-test-item={phase}
-                rows={20}
-                key={phase}
-                value={`#${phase}\n${csv}`}
-                readOnly
-              />
+              <label>
+                <div>{phase}</div>
+                <Textarea
+                  data-test="export-text"
+                  data-test-item={phase}
+                  rows={20}
+                  key={phase}
+                  value={`#${phase}\n${csv}`}
+                  readOnly
+                />
+              </label>
             </React.Fragment>
           ))}
           <Button
@@ -77,19 +78,21 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
           {phases.map(phase => {
             return (
               <React.Fragment key={phase.slug}>
-                <label>{phase.name}</label>
-                <Textarea
-                  data-test="import-text"
-                  data-test-item={phase.slug}
-                  rows={20}
-                  value={importValue[phase.slug]}
-                  onChange={event => {
-                    setImportValue({
-                      ...importValue,
-                      [phase.slug]: event.target.value,
-                    });
-                  }}
-                />
+                <label>
+                  <div>{phase.slug}</div>
+                  <Textarea
+                    data-test="import-text"
+                    data-test-item={phase.slug}
+                    rows={20}
+                    value={importValue[phase.slug]}
+                    onChange={event => {
+                      setImportValue({
+                        ...importValue,
+                        [phase.slug]: event.target.value,
+                      });
+                    }}
+                  />
+                </label>
               </React.Fragment>
             );
           })}
