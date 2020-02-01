@@ -28,6 +28,7 @@ export interface ToolState {
   readonly dragEnd: Coords | undefined;
   readonly dragging: boolean;
   readonly dragStart: Coords | undefined;
+  readonly eraseMode: "designation" | "item";
   readonly export: boolean;
   readonly io: Io | undefined;
   readonly last: Tool | undefined;

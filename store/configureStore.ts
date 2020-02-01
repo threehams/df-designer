@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore, DeepPartial } from "redux";
+import { applyMiddleware, createStore } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
 import { tilesActions } from "./actions";
@@ -6,7 +6,7 @@ import { rootReducer } from "./reducers";
 import { State } from "./types";
 
 export const configureStore = (
-  initialState: DeepPartial<State> | undefined,
+  initialState: State | undefined,
   options: { isServer: boolean },
 ) => {
   const store = createStore(

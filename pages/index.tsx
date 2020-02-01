@@ -1,9 +1,10 @@
-import { Global } from "@emotion/core";
+import { Global, ThemeProvider } from "@emotion/react";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import {
   Box,
   CommandBar,
+  EraseBar,
   ExportBar,
   Grid,
   SelectBar,
@@ -12,6 +13,7 @@ import {
 import { useHotkeys } from "../components/useHotkeys";
 import { selectTool } from "../store/reducers/toolReducer";
 import React from "react";
+import { theme } from "../static/theme";
 
 const Loading = () => <Box width="100vh" height="100vh" background="black" />;
 
@@ -20,12 +22,19 @@ const Artboard = dynamic(import("../components/Artboard"), {
   loading: Loading,
 });
 
+const sidebarComponents = {
+  select: SelectBar,
+  paint: CommandBar,
+  rectangle: CommandBar,
+  erase: EraseBar,
+};
+
 export const Index = () => {
   useHotkeys();
   const tool = useSelector(selectTool);
-  const MainSidebar = tool === "select" ? SelectBar : CommandBar;
+  const Sidebar = sidebarComponents[tool];
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Global
         styles={`
           body {
@@ -53,13 +62,13 @@ export const Index = () => {
           <Artboard />
         </Box>
         <Box gridArea="leftbar" width={300} overflow="visible auto">
-          <MainSidebar />
+          <Sidebar />
         </Box>
         <Box gridArea="rightbar" width={300} overflow="visible auto">
           <ExportBar />
         </Box>
       </Grid>
-    </>
+    </ThemeProvider>
   );
 };
 

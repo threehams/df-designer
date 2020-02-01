@@ -23,7 +23,7 @@ const tileValue = (tile: Tile | undefined, adjustment: Adjustment) => {
 export const AdjustmentBar = ({ tile }: Props) => {
   const commandMap = selectCommandMap();
   const adjustmentMap = selectAdjustmentMap();
-  // we implicitly know this is non-null based on it being rendered
+  // we implicitly know this is non-null based on it being rendered.
   // not great, would be nice to store this with the object?
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const name = commandMap[tile.item!].name;

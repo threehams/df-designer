@@ -1,11 +1,7 @@
-/** @jsx jsx */
-import { css, jsx } from "@emotion/core";
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { MouseEventHandler } from "react";
 import { space, SpaceProps } from "styled-system";
-
-// eslint-disable-next-line no-unused-expressions
-jsx; // tslint:disable-line
 
 interface Props {
   active?: boolean;
@@ -21,8 +17,8 @@ export const Button = styled.button<Props & SpaceProps>`
   ${props =>
     props.color === "primary" &&
     css`
-      background-color: red;
-      border: 2px solid red;
+      background-color: ${props.theme.colors.primary};
+      border: 2px solid ${props.theme.colors.primary};
       color: white;
     `}
   ${props =>
@@ -35,8 +31,8 @@ export const Button = styled.button<Props & SpaceProps>`
     props.color === "secondary" &&
     props.active &&
     css`
-      background-color: dodgerblue;
-      border: 2px solid dodgerblue;
+      background-color: ${props.theme.colors.secondary};
+      border: 2px solid ${props.theme.colors.secondary};
       color: white;
     `}
   display: ${props => (props.block ? "block" : "inline-block")};

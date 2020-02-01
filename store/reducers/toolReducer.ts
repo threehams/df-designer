@@ -11,6 +11,7 @@ const INITIAL_STATE: ToolState = {
   dragEnd: undefined,
   dragging: false,
   dragStart: undefined,
+  eraseMode: "designation",
   export: false,
   io: undefined,
   last: undefined,
