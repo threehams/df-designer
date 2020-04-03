@@ -10,5 +10,5 @@
     ],
     "next/babel"
   ],
-  "plugins": ["emotion"]
+  "plugins": ["@emotion/babel-plugin"]
 }

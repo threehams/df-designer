@@ -1,6 +1,7 @@
 export * from "./Box";
 export * from "./Button";
 export * from "./CommandBar";
+export * from "./EraseBar";
 export * from "./ExportBar";
 export * from "./Flex";
 export * from "./Grid";

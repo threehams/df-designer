@@ -13,7 +13,7 @@ const download = (filename: string, text: string) => {
   element.click();
 };
 
-export const ExportBar: React.FunctionComponent = React.memo(() => {
+export const ExportBar = React.memo(() => {
   const io = useSelector(state => state.tool.io);
   const exported = useSelector(state =>
     state.tool.io === "export" ? selectExported(state) : undefined,
@@ -27,7 +27,6 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
         <Button
           mr={1}
           block
-          data-test="import"
           onClick={() => dispatch(toolActions.setIo({ io: "import" }))}
           active={io === "import"}
         >
@@ -35,7 +34,6 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
         </Button>
         <Button
           block
-          data-test="export"
           onClick={() => dispatch(toolActions.setIo({ io: "export" }))}
           active={io === "export"}
         >
@@ -46,20 +44,18 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
         <>
           {Object.entries(exported).map(([phase, csv]) => (
             <React.Fragment key={phase}>
-              <label>{phase}</label>
-
-              <Textarea
-                data-test="export-text"
-                data-test-item={phase}
-                rows={20}
-                key={phase}
-                value={`#${phase}\n${csv}`}
-                readOnly
-              />
+              <label>
+                <div>{phase}</div>
+                <Textarea
+                  rows={20}
+                  key={phase}
+                  value={`#${phase}\n${csv}`}
+                  readOnly
+                />
+              </label>
             </React.Fragment>
           ))}
           <Button
-            data-test="export-download-all"
             color="primary"
             onClick={() => {
               Object.entries(exported).forEach(([phase, csv]) => {
@@ -77,24 +73,23 @@ export const ExportBar: React.FunctionComponent = React.memo(() => {
           {phases.map(phase => {
             return (
               <React.Fragment key={phase.slug}>
-                <label>{phase.name}</label>
-                <Textarea
-                  data-test="import-text"
-                  data-test-item={phase.slug}
-                  rows={20}
-                  value={importValue[phase.slug]}
-                  onChange={event => {
-                    setImportValue({
-                      ...importValue,
-                      [phase.slug]: event.target.value,
-                    });
-                  }}
-                />
+                <label>
+                  <div>{phase.slug}</div>
+                  <Textarea
+                    rows={20}
+                    value={importValue[phase.slug]}
+                    onChange={event => {
+                      setImportValue({
+                        ...importValue,
+                        [phase.slug]: event.target.value,
+                      });
+                    }}
+                  />
+                </label>
               </React.Fragment>
             );
           })}
           <Button
-            data-test="import-all"
             color="primary"
             onClick={() =>
               dispatch(tilesActions.importAll({ importMap: importValue }))

@@ -3,7 +3,15 @@ import { range } from "lodash";
 import { ActionType, getType } from "typesafe-actions";
 import * as coordinates from "../../lib/coordinates";
 import { tilesActions } from "../actions";
-import { Command, State, Tile, TilesMap, TilesState, ZPatch } from "../types";
+import {
+  Command,
+  State,
+  Tile,
+  TilesMap,
+  TilesState,
+  ZPatch,
+  MultitileCommand,
+} from "../types";
 
 export const INITIAL_STATE: TilesState = {
   data: range(0, 128).reduce((result, zIndex) => {
@@ -89,14 +97,20 @@ export const tilesReducer = (
     outerDraft.data[state.zLevel] = produce(
       state.data[state.zLevel],
       draft => {
+        // Save a reference to the current state of things as we
+        // mutate the draft
         const currentTiles = state.data[state.zLevel];
         switch (action.type) {
           case getType(tilesActions.updateTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
-            const newTile = addCommand(command, draft[id], id);
-            if (newTile) {
-              draft[id] = newTile;
+            if ("width" in command && "height" in command) {
+              addMultiCommand(command, id, draft);
+            } else {
+              const newTile = addCommand(command, draft[id], id);
+              if (newTile) {
+                draft[id] = newTile;
+              }
             }
             break;
           }
@@ -195,12 +209,7 @@ export const tilesReducer = (
           case getType(tilesActions.removeTile): {
             const { x, y, command } = action.payload;
             const id = coordinates.toId(x, y);
-            const newTile = removeCommand(command, draft[id]);
-            if (newTile) {
-              draft[id] = newTile;
-            } else {
-              delete draft[id];
-            }
+            removeTile(id, draft, currentTiles, command);
             break;
           }
           case getType(tilesActions.setAdjustment): {
@@ -254,6 +263,42 @@ export const tilesReducer = (
   });
 };
 
+const removeTile = (
+  id: string,
+  draft: Draft<TilesMap>,
+  currentTiles: TilesMap,
+  command: Command,
+): void => {
+  if (currentTiles[id]) {
+    if (currentTiles[id]?.multitileOrigin) {
+      removeTile(
+        currentTiles[id]?.multitileOrigin,
+        draft,
+        currentTiles,
+        command,
+      );
+    } else if ("width" in command && "height" in command) {
+      coordinates
+        .neighborIds(coordinates.fromId(id), {
+          startX: 0,
+          startY: 0,
+          endX: command.width - 1,
+          endY: command.height - 1,
+        })
+        .forEach(neighborId => {
+          draft[neighborId][command.type] = undefined;
+        });
+    }
+  }
+
+  const newTile = removeCommand(command, draft[id]);
+  if (newTile) {
+    draft[id] = newTile;
+  } else {
+    delete draft[id];
+  }
+};
+
 const deleteAll = (draft: Draft<TilesMap>) => {
   for (const id of Object.keys(draft)) {
     delete draft[id];
@@ -277,7 +322,7 @@ const addCommand = (
   current: Draft<Tile> | undefined,
   id: string,
 ): Tile | undefined => {
-  if (command.type !== "designation" && (!current || !current.designation)) {
+  if (!canPlace(command, current)) {
     return undefined;
   }
   if (!current) {
@@ -286,12 +331,58 @@ const addCommand = (
       coordinates: coordinates.fromId(id),
       designation: undefined,
       item: undefined,
+      multitileOrigin: undefined,
       adjustments: {},
       [command.type]: command.slug,
     };
   }
   current[command.type] = command.slug;
   return current;
+};
+
+// Add
+const addMultiCommand = (
+  command: MultitileCommand,
+  id: string,
+  draft: Draft<TilesMap>,
+): void => {
+  const neighborIds = coordinates.neighborIds(coordinates.fromId(id), {
+    startX: 0,
+    startY: 0,
+    endX: command.width - 1,
+    endY: command.height - 1,
+  });
+  const available = neighborIds.every(neighborId => {
+    return canPlace(command, draft[neighborId]);
+  });
+  if (!available) {
+    return;
+  }
+
+  neighborIds.forEach(neighborId => {
+    const current = draft[neighborId];
+    const multitileOrigin = neighborId !== id ? id : undefined;
+    if (!current) {
+      draft[neighborId] = {
+        id,
+        coordinates: coordinates.fromId(id),
+        designation: undefined,
+        multitileOrigin,
+        adjustments: {},
+        [command.type]: command.slug,
+      };
+    } else {
+      current[command.type] = command.slug;
+      current.multitileOrigin = multitileOrigin;
+    }
+  });
+};
+
+const canPlace = (command: Command, current: Draft<Tile> | undefined) => {
+  return !(
+    command.type !== "designation" &&
+    (!current || !current.designation)
+  );
 };
 
 export const selectTile = (

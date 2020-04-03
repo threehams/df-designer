@@ -1,6 +1,6 @@
 import { Container, Sprite, Stage } from "@inlet/react-pixi";
 import { settings, utils, SCALE_MODES, Texture } from "pixi.js";
-import React, { memo, useState } from "react";
+import React, { memo, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as coordinates from "../../lib/coordinates";
 import { useHotKey } from "../../lib/useHotKey";
@@ -8,6 +8,7 @@ import { tilesActions } from "../../store/actions";
 import {
   selectSelection,
   selectSelectionOffset,
+  selectCurrentCommand,
 } from "../../store/reducers/toolReducer";
 import { selectChunks } from "../../store/selectors";
 import { Chunk, Coords, SelectedCoords, TileSprite } from "../../store/types";
@@ -19,22 +20,10 @@ utils.skipHello();
 
 const LEFT_MOUSE_BUTTON = 1;
 
-const webGlSupported = () => {
-  try {
-    var canvas = document.createElement("canvas");
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-    );
-  } catch (e) {
-    return false;
-  }
-};
-
 interface ArtboardProps {
   chunks: Chunk[];
 }
-const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
+const Artboard = ({ chunks }: ArtboardProps) => {
   const selection = useSelector(selectSelection);
   const selectionOffset = useSelector(selectSelectionOffset);
   const dispatch = useDispatch();
@@ -44,14 +33,32 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
     endX: 0,
     endY: 0,
   });
+  const cursorSize = useSelector(state => {
+    const command = selectCurrentCommand(state);
+    if ("width" in command && "height" in command) {
+      return { width: command.width, height: command.height };
+    }
+    return { width: 1, height: 1 };
+  });
   const keysPressed = useHotKey();
+  const webGlSupported = useMemo(() => {
+    try {
+      var canvas = document.createElement("canvas");
+      return !!(
+        window.WebGLRenderingContext &&
+        (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+      );
+    } catch (e) {
+      return false;
+    }
+  }, []);
 
   return (
     <Stage
       width={2048}
       height={2048}
       data-test="stage"
-      options={{ forceCanvas: !webGlSupported() }}
+      options={{ forceCanvas: !webGlSupported }}
     >
       <Container>
         <Sprite
@@ -82,7 +89,13 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
           const key = `${chunk.startX},${chunk.endY}`;
           return <ChunkTiles key={key} tiles={chunk.tiles} />;
         })}
-        <Cursor {...cursorPosition} />
+        <Cursor
+          startX={cursorPosition.startX}
+          startY={cursorPosition.startY}
+          endX={cursorPosition.startX + (cursorSize.width - 1)}
+          endY={cursorPosition.startY + (cursorSize.height - 1)}
+          {...cursorSize}
+        />
         {selection && (
           <Cursor {...coordinates.offset(selection, selectionOffset)} />
         )}
@@ -94,7 +107,7 @@ const Artboard: React.FC<ArtboardProps> = ({ chunks }) => {
 interface ChunkProps {
   tiles: TileSprite[];
 }
-const ChunkTiles: React.FunctionComponent<ChunkProps> = memo(({ tiles }) => {
+const ChunkTiles = memo(({ tiles }: ChunkProps) => {
   return (
     <>
       {tiles.map(tile => {
@@ -124,7 +137,7 @@ const tilePosition = ({ x, y }: Coords) => {
 };
 
 // separated to avoid per-frame recalculations
-const ArtboardTiles: React.FC = () => {
+const ArtboardTiles = () => {
   const chunks = useSelector(selectChunks);
   return <Artboard chunks={chunks} />;
 };

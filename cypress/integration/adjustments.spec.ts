@@ -13,53 +13,42 @@ describe("adjustments", () => {
         },
       ]);
       cy.visit("/");
-      cy.getId({ name: "tool", item: "select" }).click();
-      cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
+      cy.findByText("Select").click();
+      cy.findByTestId("stage").then(clickTile({ x: 1, y: 1 }));
     });
 
     it("deselects when pressing esc", () => {
-      cy.getId("stage").then(triggerHotkeys("esc"));
-      cy.getId("adjustment-bar-item-name").should("not.exist");
+      cy.findByTestId("stage").then(triggerHotkeys("esc"));
+      cy.findByTestId("adjustment-bar").should("not.exist");
     });
 
     it("shows the correct adjustments", () => {
-      cy.getId("adjustment-bar-item-name").should("have.text", "Bed");
-      cy.getId({ name: "adjustment-bar-check", item: "makeBedroom" }).should(
-        "exist",
-      );
+      cy.findByTestId("adjustment-bar").should("contain.text", "Bed");
+      cy.findByLabelText("Make Bedroom").should("exist");
     });
 
     describe("without resize", () => {
       it("exports the correct string", () => {
-        cy.getId({ name: "adjustment-bar-check", item: "makeBedroom" }).check();
-        cy.getId("export").click();
-        cy.getId({ name: "export-text", item: "query" }).should(
-          "have.value",
-          "#query\nr",
-        );
+        cy.findByLabelText("Make Bedroom").check();
+        cy.findByText("Export").click();
+        cy.findByLabelText("query").should("have.value", "#query\nr");
       });
     });
 
     describe("with resize", () => {
       it("exports the correct string", () => {
-        cy.getId({ name: "adjustment-bar-check", item: "makeBedroom" }).check();
-        cy.getId({ name: "adjustment-bar-increment", item: "makeBedroom" })
+        cy.findByLabelText("Make Bedroom").check();
+        cy.findByLabelText("Increment Make Bedroom Size")
           .click()
           .click();
-        cy.getId("export").click();
-        cy.getId({ name: "export-text", item: "query" }).should(
-          "have.value",
-          "#query\nr++",
-        );
-        cy.getId({ name: "adjustment-bar-decrement", item: "makeBedroom" })
+        cy.findByText("Export").click();
+        cy.findByLabelText("query").should("have.value", "#query\nr++");
+        cy.findByLabelText("Decrement Make Bedroom Size")
           .click()
           .click()
           .click()
           .click();
-        cy.getId({ name: "export-text", item: "query" }).should(
-          "have.value",
-          "#query\nr--",
-        );
+        cy.findByLabelText("query").should("have.value", "#query\nr--");
       });
     });
   });
@@ -75,13 +64,13 @@ describe("adjustments", () => {
         },
       ]);
       cy.visit("/");
-      cy.getId({ name: "tool", item: "select" }).click();
-      cy.getId("stage").then(clickTile({ x: 1, y: 1 }));
+      cy.findByText("Select").click();
+      cy.findByTestId("stage").then(clickTile({ x: 1, y: 1 }));
     });
 
     it("shows the item name", () => {
-      cy.getId("adjustment-bar-item-name").should(
-        "have.text",
+      cy.findByTestId("adjustment-bar").should(
+        "contain.text",
         "Food Stockpile",
       );
     });

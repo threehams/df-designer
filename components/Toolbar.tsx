@@ -6,26 +6,22 @@ import { Button } from "./";
 import { Box } from "./Box";
 import { Flex } from "./Flex";
 
-export const Toolbar: React.FunctionComponent = () => {
+export const Toolbar = () => {
   const tool = useSelector(selectTool);
   const undoSteps = useSelector(state => state.tiles.past.length);
   const redoSteps = useSelector(state => state.tiles.future.length);
   const zLevel = useSelector(state => state.tiles.zLevel);
   const dispatch = useDispatch();
   return (
-    <Flex p={2} data-test="toolbar">
+    <Flex p={2}>
       <Box mr={3}>
-        <Button
-          onClick={() => dispatch(tilesActions.resetBoard())}
-          data-test="reset"
-        >
+        <Button onClick={() => dispatch(tilesActions.resetBoard())}>
           Reset
         </Button>
       </Box>
       <Box mr={3}>
         <Button
           disabled={!undoSteps}
-          data-test="undo"
           onClick={() => dispatch(tilesActions.undo())}
           mr={1}
         >
@@ -33,7 +29,6 @@ export const Toolbar: React.FunctionComponent = () => {
         </Button>
         <Button
           disabled={!redoSteps}
-          data-test="redo"
           onClick={() => dispatch(tilesActions.redo())}
         >
           Redo
@@ -41,8 +36,6 @@ export const Toolbar: React.FunctionComponent = () => {
       </Box>
       <Box mr={3}>
         <Button
-          data-test="tool"
-          data-test-item="select"
           onClick={() => dispatch(toolActions.setTool({ tool: "select" }))}
           active={tool === "select"}
           mr={1}
@@ -50,8 +43,6 @@ export const Toolbar: React.FunctionComponent = () => {
           Select
         </Button>
         <Button
-          data-test="tool"
-          data-test-item="paint"
           onClick={() => dispatch(toolActions.setTool({ tool: "paint" }))}
           active={tool === "paint"}
           mr={1}
@@ -59,8 +50,6 @@ export const Toolbar: React.FunctionComponent = () => {
           Paint
         </Button>
         <Button
-          data-test="tool"
-          data-test-item="paint-rectangle"
           onClick={() => dispatch(toolActions.setTool({ tool: "rectangle" }))}
           active={tool === "rectangle"}
           mr={1}
@@ -68,8 +57,6 @@ export const Toolbar: React.FunctionComponent = () => {
           Paint Rectangle
         </Button>
         <Button
-          data-test="tool"
-          data-test-item="erase"
           onClick={() => dispatch(toolActions.setTool({ tool: "erase" }))}
           active={tool === "erase"}
         >
@@ -77,20 +64,13 @@ export const Toolbar: React.FunctionComponent = () => {
         </Button>
       </Box>
       <Flex flexWrap="nowrap" alignItems="center">
-        <Button
-          data-test="z-level-down"
-          onClick={() => dispatch(tilesActions.zLevelDown())}
-          mr={1}
-        >
+        <Button onClick={() => dispatch(tilesActions.zLevelDown())} mr={1}>
           Down Level
         </Button>
-        <Box mr={1} data-test="z-level">
+        <Box mr={1} title="Z Level">
           {zLevel}
         </Box>
-        <Button
-          data-test="z-level-up"
-          onClick={() => dispatch(tilesActions.zLevelUp())}
-        >
+        <Button onClick={() => dispatch(tilesActions.zLevelUp())}>
           Up Level
         </Button>
       </Flex>

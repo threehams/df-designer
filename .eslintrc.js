@@ -27,7 +27,7 @@ module.exports = {
     "@typescript-eslint/no-inferrable-types": "error",
     "@typescript-eslint/no-namespace": "error",
     "@typescript-eslint/no-unnecessary-type-assertion": "error",
-    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-unused-vars": warnOnLocal,
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/prefer-function-type": "error",
     "@typescript-eslint/restrict-plus-operands": "error",
@@ -72,7 +72,6 @@ module.exports = {
     "no-sequences": "error",
     "no-shadow": "error",
     "no-unused-expressions": warnOnLocal,
-    "no-unused-vars": warnOnLocal,
     "padding-line-between-statements": [
       warnOnLocal,
       {
